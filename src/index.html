@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>California Health Maps</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/static/favicon.png" />
+
+    <!-- jQuery and Bootstrap -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <!-- Leaflet and TopoJSON -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
+    <script type="text/javascript" src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+    <!-- Leaflet-PIP for point-in-polygon calculation -->
+    <script type="text/javascript" src="https://unpkg.com/@mapbox/leaflet-pip@1.1.0/leaflet-pip.js"></script>
+
+    <!-- Papa Parse CSV parser -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js"></script>
+
+    <!-- Highcharts -->
+    <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  
+    <!-- Montserrat font -->
+    <link rel="stylesheet" type="text/css" media="all" href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap" />
+
+    <!-- Tooltipster for awesome tooltips -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/tooltipster@4.2.6/dist/css/tooltipster.bundle.min.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tooltipster@4.2.6/dist/js/tooltipster.bundle.min.js"></script>
+
+    <!-- polyfills (tip: es6-promise recommended for best IE compat) -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/@ungap/url-search-params"></script>
+    <script type="text/javascript" src="https://unpkg.com/es7-object-polyfill"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/polyfill-object-assign@1.0.0/index.min.js"></script>
+
+    <!-- Google Analytics; see also logGoogleAnalyticsEvent() calls where we log a lot of stuff -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-XXXXXXXXX-1');
+    </script>
+
+    <!-- our own awesomesauce -->
+    <link rel="stylesheet" type="text/css" href="index.css?[hash]" />
+    <script type="text/javascript" src="index.js?[hash]"></script>
+</head>
+<body>
+
+    <!--
+    section: top intro text, logo, and so on
+    -->
+    <div class="container noprint">
+        <p class="intro-text">
+            This is an interactive mapping tool of health data for various zones in my state. You can map cancer incidence for common invasive cancer sites and filter by sex and race/ethnicity. <a href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
+        </p>
+    </div><!--/container section-->
+
+
+    <!--
+    section: above the map and filters
+    Download and Print, and Cancer Incidence to fill space
+    -->
+    <div class="container above-map noprint">
+        <div class="row">
+            <div class="col-md">
+                <h2 class="nomargin" tabindex="0">Cancer Incidence <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="cases"></i></h2>
+            </div>
+            <div class="col-md right">
+                <!-- download button is atypical: toggles an epxandind DIV within itself, of the real download options -->
+                <button class="btn" id="downloadbutton" aria-label="Show options for downloading the map and data" aria-haspopup="true" aria-controls="downloadoptions">
+                    <i class="fa fa-download"></i> Download <i class="fa fa-caret-down"></i>
+                </button>
+
+                <div id="downloadoptions" class="d-none" aria-expanded="false">
+                    <a href="javascript:void(0);" data-export="map" title="Download a PNG image of the map"><i class="fa fa-download"></i> Download Map</a>
+                    <a href="javascript:void(0);" target="_blank" data-export="zonedata" title="Download data for the selected CTA Zone"><i class="fa fa-download"></i> Zone Data</a>
+                    <a href="static/downloads/californiahealthmaps_zones_all.zip" target="_blank" data-export="alldata" title="Download data for all CTA Zones"><i class="fa fa-download"></i> All Data</a>
+                </div>
+
+                <button class="btn btn-alternate" id="printpagebutton"><i class="fa fa-print"></i> Print Page</button>
+            </div>
+        </div>
+    </div><!--/container section-->
+
+
+    <!--
+    section: filters and map
+    -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md noprint">
+                <!--
+                that text in these pickers forms the source of truth for labeling values via getLabelFor(), e.g. getLabelFor('race', 'W') => 'White'
+                That is to say, editing these select options will change the labels sitewide whereever getLabelFor() is used. cool, eh?
+                -->
+                <div class="data-filters">
+                    <div class="input-group">
+                        <label for="data-filters-address">Location Search <span class="warnmessage d-none" style="padding: 1px 5px; display: block; margin: 0 0 5px 0;"></span></label>
+                        <input class="form-control" type="text" name="address" id="data-filters-address" placeholder="Search by address or city" aria-label="Enter address to select an area to report" />
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+  
+                    <div class="input-group">
+                        <label for="data-filters-site">Cancer Site/Type</label>
+                        <select name="site" id="data-filters-site" aria-label="Select the cancer site to report">
+                            <option value="AllSite">All Cancer Sites</option>
+                            <option value="Breast" data-sex="Female">Breast Cancer</option>
+                            <option value="CRC">Colorectal Cancer</option>
+                            <option value="Kidney">Kidney and Renal Pelvis Cancer</option>
+                            <option value="Liver">Liver Cancer</option>
+                            <option value="Lung">Lung Cancer</option>
+                            <option value="Lymph">Non-Hodgkins Lymphoma</option>
+                            <option value="Mela">Melanoma of the Skin</option>
+                            <option value="Pancreas">Pancreatic Cancer</option>
+                            <option value="Prostate" data-sex="Male">Prostate Cancer</option>
+                            <option value="Thyroid">Thyroid Cancer</option>
+                            <option value="Urinary">Urinary Bladder Cancer</option>
+                            <option value="Uterine" data-sex="Female">Uterine Corpus Cancer</option>
+                        </select>
+                    </div>
+  
+                    <div class="input-group">
+                        <label for="data-filters-sex">Sex <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="sex"></i></label>
+                        <select name="sex" id="data-filters-sex" aria-label="Select the sex to report">
+                            <option value="Both">All Sexes</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+  
+                    <div class="input-group">
+                        <label for="data-filters-race">Race/Ethnicity <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="race"></i></label>
+                        <select name="race" id="data-filters-race" aria-label="Select the race/ethnicity to report">
+                        <option value="">All Ethnicities</option>
+                        <option value="W">Non-Hispanic White</option>
+                        <option value="B">Non-Hispanic Black</option>
+                        <option value="H">Hispanic</option>
+                        <option value="A">Asian/Pacific Islander</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 col-lg-8">
+                <div class="printonly" id="logo-img-print" aria-hidden="true">
+                    <img src="/static/CaliforniaHealthMapsLogoNoText.png" alt="CHM Logo" />
+                    <h1 class="site-title-1" aria-label="California Health Maps" tabindex="0">California</h1>
+                    <h1 class="site-title-2" aria-hidden="true">Health Maps</h1>
+                </div>
+
+                <div class="map" id="map" aria-hidden="true"></div>
+            </div>
+        </div>
+    </div><!--/container section-->
+
+
+    <!--
+    section: data readouts
+    filter summary, incidence stats, cities and counties lists
+    overall AAIR and cases summary
+    -->
+    <div class="container data-readouts">
+        <div class="row">
+            <div class="col-md-6 col-lg-5">
+                <!-- the filter summary see performSearchShowFilters() -->
+                <div class="data-filters-summary" role="heading"></div>
+
+                <table class="table-sm">
+                    <thead>
+                        <tr>
+                            <th class="left"><span class="title" tabindex="0">Cancer Statistics<br/>2012-2016</span></th>
+                            <th data-region="cta">Zone</th>
+                            <th data-region="state">Statewide</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Cases</th>
+                            <td class="center" data-region="cta"><span data-region="cta" data-statistic="cases"></span></td>
+                            <td class="center" data-region="state"><span data-region="state" data-statistic="cases"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Age Adjusted Incidence Rate <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="aair"></i><br/>(95% LCI, 95% UCI) <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="confidenceinterval"></i></th>
+                            <td class="center" data-region="cta">
+                                <span data-region="cta" data-statistic="aair"></span>
+                                <br/>
+                                <span data-region="cta" data-statistic="lciuci"></span>
+                            </td>
+                            <td class="center" data-region="state">
+                                <span data-region="state" data-statistic="aair"></span>
+                                <br/>
+                                <span data-region="state" data-statistic="lciuci"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!--/left side-->
+            <div class="col-md-6 col-lg-7">
+                <!-- incidence rate barchart by race and sex -->
+                <span role="heading">
+                    <span class="title" tabindex="0">Age Adjusted Incidence Rate</span>
+                    <br/>
+                    <span class="subtitle" tabindex="0"><span data-statistic="cancersite">All Cancer Sites</span> - <span data-statistics="ctaname">Statewide</span> <span data-statistics="ctaid"></span></span>
+                </span>
+
+                <div class="incidence-barchart" id="incidence-barchart" aria-label="Chart of AAIR by race and sex for the selected filters"></div>
+            </div><!--/right side-->
+        </div>
+
+        <p class="small">
+          According to California Department of Public Health guidelines, cancer incidence rates cannot be reported if based on &lt;15 cancer cases and/or a population of &lt;10,000 to ensure confidentiality and stable statistical rates.
+        </p>
+    </div><!--/container section-->
+
+
+    <!--
+    section: data readouts
+    filter summary, incidence stats, cities and counties lists
+    demographics tables for the CTA and Statewide, broken up by type of demographic
+    -->
+    <div class="container demog-readouts">
+        <!-- the CHM logo at the top of the page when printed; see CSS for a page-break forcing this section onto page 2 -->
+        <div class="printonly" id="logo-page2-print" aria-hidden="true">
+            <img src="/static/CaliforniaHealthMapsLogoNoText.png" alt="CHM Logo" />
+            <h1 class="site-title-1" aria-label="California Health Maps" tabindex="0">California</h1>
+            <h1 class="site-title-2" aria-hidden="true">Health Maps</h1>
+        </div>
+
+        <div class="row"><!-- two columns of tables; see initPrintPage() where we fuss with these to make them change size in print mode -->
+            <div class="col-md-6">
+                <table class="table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th class="nowrap left">
+                                <span role="heading">
+                                    <span class="title" tabindex="0" aria-label="Name of area reported"><span data-statistics="ctaname">California</span> <span data-statistics="ctaid"></span></span>
+                                    <br/>
+                                </span>
+                                <span class="subtitle" tabindex="0">Demographics</span>
+                            </th>
+                            <th class="nowrap" data-region="cta" aria-hidden="true">Zone</th>
+                            <th class="nowrap" data-region="state" aria-hidden="true">Statewide</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Population</th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="population"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="population"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Non-Hispanic White <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctwhite"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="white"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="white"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Non-Hispanic Black <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctblack"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="black"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="black"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Hispanic <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pcthispanic"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="hispanic"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="hispanic"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Asian/Pacific Islander <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctasian"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="asian"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="asian"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Foreign-Born <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctforeign"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="foreign"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="foreign"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Rural <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctrural"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="rural"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="rural"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Socioeconomic Status <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="nses"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="nses"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="nses"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!-- end of column containing tables -->
+            <div class="col-md-6">
+                <br />
+
+                <table class="table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th class="nowrap left"><span class="subtitle" tabindex="0">Healthcare Access and Use</span></th>
+                            <th class="nowrap" data-region="cta" aria-hidden="true">Zone</th>
+                            <th class="nowrap" data-region="state" aria-hidden="true">Statewide</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">% Uninsured <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctuninsured"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="uninsured"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="uninsured"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Routine Checkups <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctcheckups"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctcheckups"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctcheckups"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Delayed Care <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctdelayedcare"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctdelayedcare"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctdelayedcare"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Colorectal Cancer Screening <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctcolonscreen"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctcolonscreen"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctcolonscreen"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Mammograms <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctmammogram"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctmammogram"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctmammogram"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Pap Smears <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctpap"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctpap"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctpap"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Preventive Care <span class="small">(Men, 65+ years)</span> <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctcare65m"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctcare65m"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctcare65m"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Preventive Care <span class="small">(Women, 65+ years)</span> <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctcare65f"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctcare65f"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctcare65f"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+        
+                <br />
+        
+                <table class="table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th class="nowrap left"><span class="subtitle" tabindex="0">Health and Well-Being</span></th>
+                            <th class="nowrap" data-region="cta" aria-hidden="true">Zone</th>
+                            <th class="nowrap" data-region="state" aria-hidden="true">Statewide</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">% Adult Obesity <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctobese"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctobese"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctobese"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Food Insecure <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctfoodinsecure"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctfoodinsecure"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctfoodinsecure"></span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">% Physical Activity <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctphysactive"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctphysactive"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctphysactive"></span></td>
+                        </tr>
+                        <tr>
+                           <th scope="row">% Smoking <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctsmoke"></i></th>
+                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctsmoke"></span></td>
+                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctsmoke"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!-- end of column containing tables -->
+        </div>
+    </div><!--/container section-->
+
+
+    <!--
+    section: learn
+    a tab-set for FAQ, methodology, about us, ...
+    with a spacer above it
+    -->
+    <div class="container learn-spacer noprint">
+        <hr />
+    </div>
+
+    <div class="container learn-text noprint" id="learn-text">
+        <h2 class="title" role="header">Learn</h2>
+
+        <ul class="nav nav-pills nav-justified">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#learn-about">About This Project</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-method">Methodology</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-faq">FAQs</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-glossary">Definitions</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane container active" id="learn-about">
+                <p>
+                    The California Health Maps project aims to provide data for geographies beyond county-level statistics to better serve cancer control,  public health, and policy efforts.
+                </p>
+                <p>
+                    California Health Maps allows users to interactively map health data for California at a geographic level called zones, which are aggregates of census tracts. We have used a data-driven approach to define 578 zones for California, based on similar characteristics (poverty, urbanicity, racial/ethnic minority composition) and a minimum of 50,000 residents. These areas are generally smaller than county, but larger than census tract. Zones vary in population size from 51,229 to 98,764 with the number of census tracts ranging from 5 to 25.
+                </p>
+                <p>
+                    California Health Maps include 5-year cancer incidence rates based on the most current data for 12 of the most common invasive cancer sites by sex and race/ethnicity (non-Hispanic White, non-Hispanic Black, Hispanic, and non-Hispanic Asian/Pacific Islander). It also includes selected population sociodemographic data based on 2010 Census and 2008-2012 American Community Survey data, and health and well-being, and health care access and use data from 500 Cities/CDC BRFSS and the 2015-2016 California Health Interview Survey.
+                </p>
+                <p class="title">Project Team</p>
+                <p>
+                    <a target="_blank" href="http://cancerregistry.ucsf.edu">Greater Bay Area Cancer Registry (University of California, San Francisco)</a>
+                    <br/>
+                    <a target="_blank" href="https://csp.usc.edu/">Los Angeles Cancer Surveillance Program (University of Southern California)</a>
+                    <br/>
+                    <a target="_blank" href="http://seer.cancer.gov">National Cancer Institute</a>
+                    <br/>
+                    <a target="_blank" href="https://www.westat.com/project/using-gis-interpret-spatial-context-and-cancer-risk">Westat, Inc.</a>
+                    <br/>
+                    <a target="_blank" href="http://healthpolicy.ucla.edu/chis/Pages/default.aspx">California Health Interview Survey</a>
+                </p>
+                <p class="title">Funding</p>
+                <p>
+                    <a target="_blank" href="https://www.cdph.ca.gov/Programs/CCDPHP/DCDIC/CDSRB/Pages/California-Cancer-Registry.aspx">California Department of Public Health</a>
+                    <br/>
+                    <a target="_blank" href="http://seer.cancer.gov">National Cancer Institute</a>
+                    <br/>
+                    University of California, Davis, Comprehensive Cancer Center
+                </p>
+            </div><!--/tab-pane -->
+            <div class="tab-pane container" id="learn-method">
+                <p>
+                    On this website, data are shown by cancer reporting zone.  These zones have been designed so that they have a minimum population, have similar demographic and socioeconomic characteristics, and are geographically compact (they minimize the distance between different parts of the zone).  The minimum population for each zone is 50,000 people.
+                </p>
+                <p>
+                    Counties with larger populations (more than 100,000 people) were divided into multiple zones by combining adjacent census tracts.  For the rest of the state, adjacent counties and parts of counties were combined to form zones.  Three demographic and socioeconomic characteristics were used to determine similarity: the percent minority population (percent of the population who are not non-Hispanic White), percent of the population with incomes below poverty, and the proportion of the population living in urban and rural areas.
+                </p>
+                <p>
+                    We used population data from Census 2010 and Census 2010 tract geographies to construct the zones.  Poverty data came from the American Community Survey 2012-2016 5-year data.  We used a software zone design program called <a href="https://www.geodata.soton.ac.uk/software/AZTool/" target="_blank">AZTool</a> to identify aggregations of adjacent tracts and counties that optimize the three objectives: a target population of 50,000, geographic compactness, and similarity in terms of minority population, poverty, and urbanicity characteristics.
+                </p>
+            </div><!--/tab-pane -->
+            <div class="tab-pane container" id="learn-faq">
+                <div class="faqs_toggle"><button class="pointer">Expand all FAQs</button></div>
+    
+                <div class="usa-accordion">
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq1">
+                        What is a census tract aggregation zone?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="usa-accordion__content" hidden="">
+                        Census tract aggregation zones are developed based on combining adjacent census tracts on the basis of similarity in population sociodemographic characteristics: poverty, rurality, and racial/ethnic minority (i.e., non-White) composition. Zones are required to have a minimum population of 50,000. In total, there are 578 zones for California. Zones vary in population size from 51,229 to 98,764 with the number of census tracts ranging from 5 to 25. These areas are generally smaller than a county, but larger than census tract to help provide additional options for understanding disease burden and better facilitate public health and policy planning. 
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq2">
+                        Who developed the census tract aggregation zones?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="usa-accordion__content" hidden="">
+                        The census tract aggregation zones were developed by the California Health Maps team including partners at Westat and the National Cancer Institute as part of a collaborative effort to provide cancer data at small (generally smaller than county) area levels. Stakeholder input was gathered and incorporated in the development process.
+                    </div>
+
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq2">
+                        What are the benefits of using these census tract aggregation zones?
+                        </button>
+                    </h2>
+                    <div id="faq12" class="usa-accordion__content" hidden="">
+                        Counties in California can span up to hundreds of miles and include large and diverse populations. Surveillance of cancer burden at these large geographic scales may not be meaningful nor adequate for identifying areas with higher  disease rates. This information can be used by cancer centers, healthcare organizations, community organizations, and policy makers better serve cancer control, public health, and policy efforts.
+                    </div>
+
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq3">
+                        What is the California Cancer Registry?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="usa-accordion__content" hidden="">
+                        The <a target="_blank" href="http://ccrcal.org">California Cancer Registry (CCR)</a> is California's statewide population-based cancer surveillance system. It collects information about almost all cancers diagnosed in California. The CCR is recognized as one of the leading cancer registries in the world, and has been the cornerstone of a substantial amount of research on cancer in the California population. To date the CCR has collected detailed information on over 7 million cases of cancer among Californians diagnosed from 1988 forward, and more than 175,000 new cases are added annually.                    
+                        <br/><br/>
+                        The California Cancer Registry is established in accordance with California Health and Safety (HSC) code, sections 103875-103885, requiring that cancer information be reported by law. HSC code section 100330 is also passed, requiring that all information collected remains confidential, patient identities kept anonymous, and patients informed, in accordance with California Code of Regulations, Title 17, Section 2593. Under this authority, all health care providers and facilities providing diagnostic or treatment services to cancer patients in California are required to report information about such patients to the state cancer registry, via the regional registries. The Department has designated the three regional cancer registries in California, the <a target="_blank" href="https://crgc-cancer.org/">Cancer Registry of Greater California</a>, the <a target="_blank" href="https://csp.usc.edu/">Los Angeles Cancer Surveillance System</a>, and the <a target="_blank" href="http://cancerregistry.ucsf.edu">Greater Bay Area Cancer Registry</a> as its agents for the purpose of collecting such data on behalf of this registry. The three California registries are part of the National Cancer Institute’s <a target="_blank" href="http://seer.cancer.gov">Surveillance, Epidemiology and End Results (SEER) Program</a>.
+                    </div>
+
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq4">
+                        How did you choose which cancer sites to include?
+                        </button>
+                    </h2>
+
+                    <div id="faq13" class="usa-accordion__content" hidden="">
+                        As we are reporting cancer incidence rates for small areas, the minimum reporting requirements allow us to report rates for the top 12 cancer sites.
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq4">
+                        Will the cancer incidence data be updated?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="usa-accordion__content" hidden="">
+                        We plan to update California Health Maps to include the most current 5-year cancer incidence data as they become available, typically in the Spring of each year.
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq5">
+                        Why are cancer incidence data available only through 2016? Why are population sociodemographic data only reported for 2008-2012?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="usa-accordion__content" hidden="">
+                        It takes several years for cancer incidence data for an entire population to be considered “complete,” that is, when a cancer registry is confident that all new cases of cancer have been reported. Selected population sociodemographic data and population estimates for calculating cancer incidence rates are from the 2010 Census short form, the most recent year of complete census data. Additional sociodemographic data are from the 2008-2012 American Community Survey; although more current American Community Survey data are available, these years were selected to more closely correspond to the other sociodemographic data and the population estimate data used for calculating cancer incidence rates.
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq6">
+                        What is Census and American Community Survey data?
+                        </button>
+                    </h2>
+                    <div id="faq6" class="usa-accordion__content" hidden="">
+                        For the purposes of determining voting districts and congressional Representation, the U.S. Census is required by the Constitution to count everyone in the country every 10 years, but they do a lot more than that. The <a target="_blank" href="https://www.census.gov/programs-surveys/acs">American Community Survey</a> has been conducted by the U.S. Census Bureau since 2005 and provides detailed population and housing information replacing data previously collected on the Census long form.
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq7">
+                        Why do some zones not have incidence rates?
+                        </button>
+                    </h2>
+                    <div id="faq7" class="usa-accordion__content" hidden="">
+                        According to California Department of Public Health guidelines, cancer incidence rates cannot be reported if based on &lt;15 cancer cases and/or a population &lt;10,000 to ensure confidentiality and stable statistical rates. 
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq8">
+                        Can zones be aggregated and a new cancer incidence rate be calculated?
+                        </button>
+                    </h2>
+                    <div id="faq8" class="usa-accordion__content" hidden="">
+                        Not at this time, but a detailed list of zones and corresponding census tracts can be <a href="static/californiahealthmaps_zonedtracts.xlsx" target="_blank">downloaded here</a>.
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq9">
+                        Why are data not available for other or more granular racial/ethnic groups (e.g., American Indians, Asian or Latinx ethnic groups) or non-binary genders?
+                        </button>
+                    </h2>
+                    <div id="faq9" class="usa-accordion__content" hidden="">
+                        We have not reported small-area level cancer incidence data for smaller racial/ethnic groups or non-binary genders due to small cancer case counts and population estimates at the zone levels to ensure confidentiality and stable statistical rates. In addition, at this time, some of these data are not consistently collected within the California Cancer Registry nor available in population estimate data.
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq10">
+                        Does my neighborhood influence my cancer risk? What factors in my neighborhood contribute to the cancer incidence rate?
+                        </button>
+                    </h2>
+                    <div id="faq10" class="usa-accordion__content" hidden="">
+                        Studies have shown that where we live (and work and learn) affect our opportunities for physical activity, social engagement and support, access to healthy and affordable food, and exposure to stress and harmful chemicals.​ These factors can influence opportunities for health promotion and disease prevention.
+                        <br/><br/>
+                        Cancer is a group of diseases with many possible causes including genetic and clinical factors as well as social determinants of health. Common risk factors for cancer include smoking and tobacco use, diet and physical activity, sun and other types of radiation, viruses (e.g., HPV, Hepatitis B and C), chronic inflammation, and environmental exposures. Neighborhoods may influence cancer through multiple pathways including material deprivation, psychosocial mechanisms, health behaviors, and access to resources.
+                    </div>
+    
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq11">
+                            Why are neighborhood data on population sociodemographic factors provided? Do they cause cancer?
+                        </button>
+                    </h2>
+                    <div id="faq11" class="usa-accordion__content" hidden="">
+                        The neighborhood data are provided to characterize the zones based on several key social and built environment attributes. These are cross-sectional data on neighborhoods and cancer incidence so inferences regarding causes of cancer cannot be made. We have provided these data for the zones to help provide additional context for the observed cancer incidence rates. For example, a zone may have high colorectal cancer incidence rates; understanding the population-level characteristics of that zone can help community organizations and healthcare facilities target their screening and prevention programs toward the predominant populations within the zone.
+                        <br/><br/>
+                        Neighborhood measures were developed using data from census tracts. For socioeconomic status, we averaged the index scores across the census tracts within each zone and determined statewide quintiles at the zone-level. For Census/ACS other measures, we calculated a population weighted average of the values across census tracts for each zone. CHIS data estimates were developed using small area estimation methods described in these publications: <a target="_blank" href="https://ajph.aphapublications.org/doi/full/10.2105/AJPH.2015.302810">Generating Health Estimates by Zip Code: A Semiparametric Small Area Estimation Approach Using the California Health Interview Survey</a> and <a target="_blank" href="https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssa.12351">A design‐based approach to small area estimation using a semiparametric generalized linear mixed model</a>. For 500 Cities/CDC BRFSS measures, we averaged the values across census tracts for each zone; for more details on how they developed census tract estimates please see <a target="blank" href="https://www.cdc.gov/500cities/methodology.htm">the 500 Cities methodology page</a>.
+                    </div>
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq12">
+                            What is CHIS?
+                        </button>
+                    </h2>
+                    <div id="faq11" class="usa-accordion__content" hidden="">
+                        The <a href="https://healthpolicy.ucla.edu/chis/Pages/default.aspx" target="_blank">California Health Interview Survey</a> (CHIS) is the largest state health survey in the nation. It is a web and telephone survey that asks questions on a wide range of health topics. CHIS is conducted on a continuous basis allowing the survey to generate timely one-year estimates. CHIS provides representative data on all 58 counties in California and provides a detailed picture of the health and health care needs of California’s large and diverse population.
+                    </div>
+                    <h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq12">
+                            What is 500 Cities?
+                        </button>
+                    </h2>
+                    <div id="faq11" class="usa-accordion__content" hidden="">
+                        The <a href="https://www.cdc.gov/500cities/index.htm" target="_blank">500 Cities</a> project is a collaboration between CDC, the Robert Wood Johnson Foundation, and the CDC Foundation. The purpose of the 500 Cities Project is to provide city- and census tract-level small area estimates for chronic disease risk factors, health outcomes, and clinical preventive service use for the largest 500 cities in the United States. Data sources used to generate these measures include Behavioral Risk Factor Surveillance System (BRFSS) data (2016, 2015), Census Bureau 2010 census population data, and American Community Survey (ACS) 2012-2016, 2011-2015 estimates.
+                    </div>
+                </div><!--/accordion-->
+            </div><!--/tab-pane -->
+            <div class="tab-pane container" id="learn-glossary">
+                <!--
+                note that these are the same as the #tooltips_contents ... mostly
+                because some terms do not have a tooltip and some terms have slightly different text, they are maintained separately
+                -->
+                <p>
+                    <b>Aggregation:</b> Collections of smaller units grouped together for the purposes of statistical reporting. See Methodology for more information.
+                </p>
+                <p>
+                    <b>Age-Adjusted Incidence Rate (AAIR):</b> Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the California Health Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
+                </p>
+                <p>
+                    <b>Breast Cancer Screening:</b> Percent of women aged 50-74 years who have received a mammogram in the past 2 years.<br>
+                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+                </p>
+                <p>
+                    <b>Cervical Cancer Screening:</b> Percent of women aged 21–65 years who have not received a hysterectomy and have received a Papanicolaou (Pap) smear within the previous 3 years.<br>
+                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+                </p>
+                <p>
+                    <b>Confidence Interval:</b> A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers are subject to less variation.
+                </p>
+                <p>
+                    <b>Colorectal Cancer Screening:</b> Percent of adults aged 50–75 years who have received a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the past 10 years.<br>
+                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+                </p>
+                <p>
+                    <b>Data Suppression:</b> According to California Department of Public Health guidelines, cancer incidence rates cannot be reported if based on fewer than 15 cancer cases and/or 10,000 population counts. Incidence rates with fewer than 15 cases and/or 10,000 population-at-risk for a given cancer site/sex/racial or ethnic group are not shown to ensure confidentiality and stable statistical rates.
+                </p>
+                <p>
+                    <b>Delayed Care:</b> Percent of adults who delayed or did not get medicine/medical services in the past year.<br>
+                    <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+                </p>
+                <p>
+                    <b>Demographics:</b> Statistical data relating to the population and particular groups within it.
+                </p>
+                <p>
+                    <b>Food Insecure:</b> Percent of adults in low-income households (&lt;200% of the Federal Poverty Line) that are hungry or at risk of hunger.<br>
+                    <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+                </p>
+                <p>
+                    <b>Foreign Born:</b> Percent of residents who were born outside the United States.<br>
+                    <span class="source">Source: American Community Survey, 2008-2012.</span>
+                </p>
+                <p>
+                    <b>Incidence:</b> The number of new cases of cancer diagnosed in 2012-2016 (5 years).
+                </p>
+                <p>
+                    <b>Neighborhood Socioeconomic Status:</b> A composite measure of seven indicator variables created by principal component analysis; indicators include: education, blue collar job, unemployment, household income, poverty, rent, and house value.<br>
+                    <span class="source">Source: American Community Survey, 2008-2012.</span>
+                </p>
+                <p>
+                    <b>Over 65:</b> Percent of residents age 65 years and older.<br>
+                    <span class="source">Source: American Community Survey, 2008-2012.</span>
+                </p>
+                <p>
+                    <b>Adult Obesity:</b> Percent of adults with a body mass index (kilograms/square meter) of 30 or greater.<br> <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+                </p>
+                <p>
+                    <b>Physical Activity:</b> Percent of adults that walked at least 150 minutes in the past week for either leisure or transportation.<br>
+                    <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+                </p>
+                <p>
+                    <b>Race/Ethnicity:</b> Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites.
+                </p>
+                <p>
+                    <b>Racial/Ethnic Composition:</b> Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
+                    <span class="source">Source: US Census, 2010.</span>
+                </p>
+                <p>
+                    <b>Rural:</b> Percent of residents who reside in blocks that are designated as rural.<br>
+                    <span class="source">Source: American Community Survey, 2008-2012.</span>
+                </p>
+                <p>
+                    <b>Sex:</b> California Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+                </p>
+                <p>
+                    <b>Smoking:</b> Percent of adults who are current smokers.<br>
+                    <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+                </p>
+                <p>
+                    <b>Uninsured:</b> Percent of residents who did not have health insurance.<br>
+                    <span class="source">Source: American Community Survey, 2008-2012.</span>
+                </p>
+                <p>
+                    <b>Preventive Care:</b> Percent of men or women 65 years and older who have received all of the following: an influenza vaccination in the past year; a pneumococcal vaccination ever; either a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the previous 10 years; and (for women only) a mammogram in the past 2 years.<br>
+                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+                </p>
+                <p>
+                    <b>Routine Checkups:</b> Percent of adults who report having been to a doctor for a routine checkup (e.g., a general physical exam, not an exam for a specific injury, illness, condition) in the previous year.<br>
+                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+                </p>
+                <!-- end of Definitions P items -->
+            </div><!--/tab-pane -->
+        </div><!--/tab-content-->
+    </div><!--/container section-->
+
+
+    <!--
+    section: footer
+    -->
+    <footer class="footer noprint">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 left">
+                    <a href="https://www.greeninfo.org/" target="_blank"><img src="/static/greeninfo.png" style="height: 30px;" /></a>
+                    &nbsp;
+                    Site by <a href="https://www.greeninfo.org/" target="_blank">GreenInfo Network</a>
+                </div>
+                <div class="col-sm-6 right small">
+                    Citation: University of California, San Francisco. California Health Maps website. https://www.californiahealthmaps.org.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!--
+    not a visible section: HTML blocks for the tooltips; see initLayerTooltips()
+    note that other glossaries exist, and they are all managed separately because that's how it is
+    - the Glossary section of the Learn section, HTML above
+    - the data download ZIP files metadata, makedownloadzip.py
+    -->
+    <div id="tooltip_contents" tabindex="-1">
+        <div aria-hidden="true" data-tooltip="cases">
+            The number of new cases of cancer diagnosed in 2012-2016 (5 years)
+        </div>
+        <div aria-hidden="true" data-tooltip="aair">
+            Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the California Health Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
+        </div>
+        <div aria-hidden="true" data-tooltip="confidenceinterval">
+              A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers are subject to less variation.
+        </div>
+        <div aria-hidden="true" data-tooltip="pctuninsured">
+            Percent of residents who did not have health insurance.<br>
+            <span class="source">Source: American Community Survey, 2008-2012.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctwhite">
+            Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
+            <span class="source">Source: US Census, 2010.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctblack">
+            Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
+            <span class="source">Source: US Census, 2010.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pcthispanic">
+            Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
+            <span class="source">Source: US Census, 2010.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctasian">
+            Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
+            <span class="source">Source: US Census, 2010.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctforeign">
+            Percent of residents who were born outside the United States.<br>
+            <span class="source">Source: American Community Survey, 2008-2012.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctrural">
+            Percent of residents who reside in blocks that are designated as rural.<br>
+            <span class="source">Source: American Community Survey, 2008-2012.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="nses">
+            A composite measure of seven indicator variables created by principal component analysis; indicators include: education, blue collar job, unemployment, household income, poverty, rent, and house value.<br>
+            <span class="source">Source: American Community Survey, 2008-2012.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="race">
+            Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites.
+        </div>
+        <div aria-hidden="true" data-tooltip="sex">
+            California Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+        </div>
+        <div aria-hidden="true" data-tooltip="pctcolonscreen">
+            Percent of adults aged 50–75 years who have received a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the past 10 years.<br>
+            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctmammogram">
+            Percent of women aged 50-74 years who have received a mammogram in the past 2 years.<br>
+            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctcare65m">
+            Percent of men or women 65 years and older who have received all of the following: an influenza vaccination in the past year; a pneumococcal vaccination ever; either a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the previous 10 years.<br>
+            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctcare65f">
+            Percent of men or women 65 years and older who have received all of the following: an influenza vaccination in the past year; a pneumococcal vaccination ever; either a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the previous 10 years, and a mammogram in the past 2 years.<br>
+            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctcheckups">
+            Percent of adults who report having been to a doctor for a routine checkup (e.g., a general physical exam, not an exam for a specific injury, illness, condition) in the previous year.<br>
+            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctpap">
+            Percent of women aged 21–65 years who have not received a hysterectomy and have received a Papanicolaou (Pap) smear within the previous 3 years.<br>
+            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctdelayedcare">
+            Delayed Care:</b> Percent of adults who delayed or did not get medicine/medical services in the past year.<br>
+            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctsmoke">
+            Percent of adults who are current smokers.<br>
+            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctfoodinsecure">
+            Percent of adults in low-income households (&lt;200% of the Federal Poverty Line) that are hungry or at risk of hunger.<br>
+            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctphysactive">
+            Percent of adults that walked at least 150 minutes in the past week for either leisure or transportation.<br>
+            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+        </div>
+        <div aria-hidden="true" data-tooltip="pctobese">
+            Percent of adults with a body mass index (kilograms/square meter) of 30 or greater.<br>
+            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+        </div>
+    </div>
+
+
+</body>
+</html>
