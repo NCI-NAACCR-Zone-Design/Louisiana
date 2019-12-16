@@ -26,9 +26,7 @@ var MIN_ZOOM = 6;
 var MAX_ZOOM = 15;
 
 // for the geocoder: our Bing API key
-// and a mechanism to cache results so we don't have to re-geocode every time the form changes
 var BING_API_KEY = '';
-var GEOCODE_CACHE = {};
 
 // colors for the incidence bar chart
 var BARCHART_COLOR_ALL = '#446374';
@@ -37,13 +35,43 @@ var BARCHART_COLOR_MALE = '#c4deec';
 
 // URLs of our data files, storage for them in memory for filtering and querying, and raw copies for exporting
 var DATA_URL_CTAGEOM = 'static/data/cta.json';
-var CTATOPOJSONDATA;
-
 var DATA_URL_CANCER = 'static/data/cancerincidence.csv';
 var DATA_URL_DEMOGS = 'static/data/demographics.csv';
 var DATA_URL_CTACOUNTY = 'static/data/counties_by_cta.csv';
 var DATA_URL_CTACITY = 'static/data/cities_by_cta.csv';
-var DATA_CANCER, DATA_DEMOGS, DATA_CTACITY, DATA_CTACOUNTY;
+
+// the set of options for search filters: cancer site, race, and time period
+// each definition is the field value from the incidence CSV, mapped onto a human-readable label
+// remember that cancer site and sex and time period, are used to find a specific row in cancerincidence.csv
+// while race determines which column/field to use within that row
+// e.g. CTA + sex + cancersite + timeperiod = filter to 1 incidence row, then race=B means to use B_AAIR, B_LCI, B_UCI
+var SEARCHOPTIONS_CANCERSITE = [
+    { value: 'AllSite', label: "All Cancer Sites" },
+    { value: 'Breast', label: "Breast Cancer" },
+    { value: 'CRC', label: "Colorectal Cancer" },
+    { value: 'Kidney', label: "Kidney and Renal Pelvis Cancer" },
+    { value: 'Liver', label: "Liver Cancer" },
+    { value: 'Lung', label: "Lung Cancer" },
+    { value: 'Lymph', label: "Non-Hodgkins Lymphoma" },
+    { value: 'Mela', label: "Melanoma of the Skin" },
+    { value: 'Pancreas', label: "Pancreatic Cancer" },
+    { value: 'Prostate', label: "Prostate Cancer" },
+    { value: 'Thyroid', label: "Thyroid Cancer" },
+    { value: 'Urinary', label: "Urinary Bladder Cancer" },
+    { value: 'Uterine', label: "Uterine Corpus Cancer" },
+];
+var SEARCHOPTIONS_RACE = [
+    { value: '', label: "All Ethnicities" },
+    { value: 'W', label: "Non-Hispanic White" },
+    { value: 'B', label: "Non-Hispanic Black" },
+    { value: 'H', label: "Hispanic" },
+    { value: 'A', label: "Asian/Pacific Islander" },
+];
+var SEARCHOPTIONS_SEX = [
+    { value: 'Both', label: "All Sexes" },
+    { value: 'Male', label: "Male" },
+    { value: 'Female', label: "Female" },
+];
 
 // the styles for CTA polygons by incidence rate
 // see also performSearchMap() which assigns colors based on math
@@ -66,6 +94,20 @@ var CTA_STYLE_DEMOG = {
     Q4: { fillOpacity: 0.75, fillColor: '#4b5aa3', stroke: false },
     Q5: { fillOpacity: 0.75, fillColor: '#293885', stroke: false },
 };
+
+
+//
+// STORAGE
+// these are declarations, and not onstants that you should need to modify
+//
+
+// storage for the parsed TopoJSON document, the parsed CSV rows, etc.
+// these are mutated during the init functions to become constants
+var CTATOPOJSONDATA, DATA_CANCER, DATA_DEMOGS, DATA_CTACITY, DATA_CTACOUNTY;
+
+// a cache of geocoder results, so we don't have to re-geocode every time the form changes
+// saves big on API keys, e.g. we don't need to hit Bing if someone changes the cancer site filter
+var GEOCODE_CACHE = {};
 
 
 //
@@ -500,9 +542,23 @@ function initMapAndPolygonData () {
 
 
 function initDataFilters () {
+    // part 1: fill in the SELECT options from the configurable constants
+    const $searchwidgets_site = $('div.data-filters select#data-filters-site');
+    const $searchwidgets_sex = $('div.data-filters select#data-filters-sex');
+    const $searchwidgets_race = $('div.data-filters select#data-filters-race');
+    SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
+        $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_site);
+    });
+    SEARCHOPTIONS_RACE.forEach(function (option) {
+        $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_race);
+    });
+    SEARCHOPTIONS_SEX.forEach(function (option) {
+        $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_sex);
+    });
+
+    // part 2: add actions to the search widgets
     // the search widgets: select race/sex/cancer and trigger a search
     // some selections may need to force others, e.g. some cancer selections will force a sex selection
-
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
     const $filtersummary = $('div.data-filters-summary');
 
@@ -805,10 +861,6 @@ function performSearchDemographics (searchparams) {
     else {
         $('div.demog-readouts [data-region="cta"]').show();
     }
-
-//GDA
-console.debug(demogdata_cta);
-console.debug(demogdata_state);
 
     // now fill in the blanks
     const ctanametext = searchparams.ctaname;

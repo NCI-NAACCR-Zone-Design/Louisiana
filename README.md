@@ -101,6 +101,13 @@ If you get errors that some Python module is missing, install them via `pip3 ins
 After running all of them, be sure to run `npm run build` to update the web server so your new files will show up.
 
 
+### Changing Data Filtering Options
+
+The filtering options available for Sex, Cancer Site, Race/Ethnicity, and Time Range may need adjustment to fit your own data, if have a different set of options for these filters, or if you use different domain values for these fields.
+
+The filter options may be defined in `index.js` by the `SEARCHOPTIONS_CANCERSITE`, `SEARCHOPTIONS_RACE`, `SEARCHOPTIONS_SEX`, and `SEARCHOPTIONS_TIME` options.
+
+
 ### Cosmetic and Look-and-Feel
 
 * *Browser title bar* -- Look in `src/index.html` for the `title`.
