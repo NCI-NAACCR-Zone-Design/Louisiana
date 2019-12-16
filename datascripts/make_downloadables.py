@@ -74,6 +74,7 @@ class DownloadableZipsMaker:
                 thisdatarow = {
                     'Sex': row['sex'],
                     'Cancer': row['cancer'],
+                    'Years': row['years'],
                     'PopTot': int(float(row['PopTot'])) if row['PopTot'] is not None else None,
                     'AAIR': float(row['AAIR']) if row['AAIR'] is not None else None,
                     'LCI': float(row['LCI']) if row['LCI'] is not None else None,
@@ -242,6 +243,7 @@ class DownloadableZipsMaker:
             'URL',
             'Sex',
             'Cancer',
+            'Years',
             'PopTot',
             'AAIR',
             'LCI',
