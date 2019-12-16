@@ -216,6 +216,7 @@ function initTooltips () {
             distance: 0,
             maxWidth: 300,
             side: [ 'right', 'bottom', 'top' ],
+            contentCloning: true,
             interactive: true, // don't auto-dismiss on mouse activity inside, let user copy text, follow links, ...
             functionBefore: function (instance, helper) {  // close open ones before opening this one
                 jQuery.each(jQuery.tooltipster.instances(), function (i, instance) {

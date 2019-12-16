@@ -15,11 +15,11 @@ You need the Mapshaper CLI and GDAL/OGR CLI tools installed. To check, run `maps
 
 You need to set up a Github repository where this will be hosted. The repository may be private. It must have Github Pages enabled and set to serve from the `docs/` directory (not the `gh-pages` branch).
 
-You need a shapefile of the cancer zones. GDA DETAILS AND REVIEW
+You need a shapefile of the cancer zones. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
 
-You need your demographics dataset, giving statistics for each zone. GDA DETAILS AND REVIEW
+You need your demographics dataset, giving statistics for each zone. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
 
-You need a spreadsheet of cancer statistics, giving statistics for each zone. GDA DETAILS AND REVIEW
+You need a spreadsheet of cancer statistics, giving statistics for each zone. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
 
 
 ### Getting Started
@@ -58,10 +58,19 @@ The `datascripts/` folder has some tools written in Python for importing your ow
 
 The sample files provided in `datascripts/inputs/` were used to set up the template demo, and may be a useful reference.
 
-* *DemographicsByCTAZone.xlsx* -- Demographic statistics source file, Excel spreadsheet
+* *DemographicsByCTAZone.xlsx* -- Demographic statistics source file, Excel spreadsheet.
+  * One row per CTA Zone.
+  * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
+  * The special `Zone` name *Statewide* should be used to indicate statewide data.
+  * GDA TBD note here about potential `DEMOGRAPHICS_TABLE` structure and how these fields may be made visible in the Demographics table.
+  * GDA TBD note here about potential `CHOROPLETH_OPTIONS` structure and how these fields may be used as options for choropleth maps.
 * *IncidenceByCTAZone.xlsx* -- Excel spreadsheet providing cancer incidence data.
   * One row per combination of CTA Zone X Sex X Site X Time Frame.
   * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
+  * The special `Zone` name *Statewide* should be used to indicate statewide data.
+  * GDA TBD note here about potential `SEARCH_CANCERSITES` structure and how one would configure their set of cancer sites.
+  * GDA TBD note here about potential `SEARCH_DATERANGES` structure and how one would configure their set of date ranges as a search filter.
+  * GDA TBD note here about potential `CHOROPLETH_OPTIONS` structure and how these fields may be used as options for choropleth maps.
 * *CTAZones.shp* -- CTA Zones shapefile, providing boundaries for the map.
   * This should be provided in WGS84 (plain lat-lon) SRS.
   * Relevant attributes are as follows:
@@ -96,13 +105,27 @@ After running all of them, be sure to run `npm run build` to update the web serv
 
 * *Browser title bar* -- Look in `src/index.html` for the `title`.
 
+* *Footer, credits, and citation* -- Look in `src/index.html` for the `footer`.
+
 * *Favicon* -- Replace `/static/favicon.png` with an appropriate image. Don't forget to `npm run build`.
 
 * *Introductory text/logo/navbar* -- Look in `src/index.html` for the `intro-text` section.
 
+* *Map starting view* -- Look in `src/index.js` for the definition of `MAP_BBOX` which defines lat-lng coordinates for `[[south, west], [north, east]]` The website http://bboxfinder.com is very useful here. *Note that the actual bounding box viewed depends on a lot of factors such as the size of the browser window, so the map view may not be precisely what you want and may not be the same on different displays.*
+
 * *Google Analytics* -- Look in `src/index.html` for a `script` tag pointing at *www.googletagmanager.com* Fill in your UA code _in two places_ here.
 
-* *Bing API Key* -- Look in `src/index.html` for the definition of `BING_API_KEY` Until you set this, you will not be able to search for addresses.
+* *Bing API Key* -- Look in `src/index.html` for the definition of `BING_API_KEY` Until you set this, you will not be able to search for addresses. A Bing Maps API key is free, and their terms of use are quite flexible. See https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key for more information.
+
+* *About this Project* -- Look in `src/index.html` for the `learn-about`.
+
+* *Methodology* -- Look in `src/index.html` for the `learn-method`.
+
+* *FAQs* -- Look in `src/index.html` for the `learn-faq`.
+
+* *Glossary* -- Look in `src/index.html` for the `learn-glossary`.
+
+* *Tooltip i icons* -- Within `src/index.html` you may create tooltip I icons, with HTML such as this: `<i class="fa fa-info-circle" aria-hidden="true" data-tooltip="yourtermhere"></i>` The tooltip HTML for each such tooltip, is provided in `tooltip_contents` Each DIV has a `data-tooltip` attribute corresponding to the `data-tooltip` used in the `<i>` element.
 
 
 ### Customizing Data Downloads
