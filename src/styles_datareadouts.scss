@@ -1,0 +1,118 @@
+/*
+ * DATA READOUTS, actually several: chart, cancer table, demographic table, map, ...
+ */
+
+div.container.data-readouts {
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    div.data-filters-summary {
+        margin-bottom: 0.75em;
+
+        span[data-filter] {
+            display: table;
+            background-color: $midpurple;
+            color: white;
+            font-size: 16px;
+            padding: 5px;
+            margin-bottom: 10px;
+            position: relative;
+
+            &.data-filter-clear {
+                cursor: pointer;
+                padding: 5px 35px 5px 5px;
+            }
+
+            .summary-close {
+                background-color: $darkpurple;
+                position: absolute;
+                right: 0;
+                top: 0;
+                height: 100%;
+                padding: 0 8px;
+            }
+
+            i {  /* X clear button */
+                position: relative;
+                top: 12.5%;
+            }
+            
+
+            &[data-filter="address"] {
+                font-size: 24px;
+                height: 38px;
+                
+                i {  /* X clear button */
+                    font-size: 20px;
+                }
+            }
+            &[data-filter="site"] {
+                font-size: 20px;
+                
+                i {  /* X clear button */
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+
+    table {
+        width: 100%;
+
+        thead {
+            th {
+                font-size: 16px;
+                line-height: 16px;
+                text-align: center;
+            }
+        }
+
+        tbody {
+            td, th[scope] {  /* this table is weird: not striped, with white separation; tip: border-collapse applies to first+last too, throwing off pixel-perfect alignment to other stuff */
+                background-color: $lightpurple;
+                line-height: 20px;
+                font-size: 16px;
+                font-weight: 400;
+
+                border-bottom: 5px solid white;
+                &:first-child, &:nth-child(2) {
+                    border-right: 5px solid white;
+                }
+
+                &:last-child {
+                    color: $nearblack;
+                }
+            }
+
+            span[data-statistic="lciuci"] {  /* exception: subtext in a cell, with special colors */
+                color: $midgrey;
+                font-size: 16px;
+            }
+        }
+    }
+
+    #incidence-barchart {
+        height: 350px;
+        width: 100%;
+        margin-top: 10px;  /* spacing from the title above */
+
+        &.printing {
+            width: 475px; /* see initPrintPage() where we have hacks such as triggering a resize event to reflow the chart */
+        }
+    }
+
+    /* cities/counties location readout */
+    span[data-statistic="locations"] {
+        display: block;
+        margin-bottom: .5em;
+
+        div {
+            b {
+                font-weight: normal;
+                color: $midgrey;
+            }
+            span {
+            }
+        }
+    }
+}

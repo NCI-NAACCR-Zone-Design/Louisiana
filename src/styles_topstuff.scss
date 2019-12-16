@@ -1,0 +1,53 @@
+/*
+ * LOGO
+ */
+
+#logo-img {
+    img {
+        float: left;
+        margin-right: 8px;
+        height: 4.2em;
+        width: auto;
+    }
+}
+
+h1.site-title-1 {
+    color: $midorange;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: -4px;
+}
+
+h1.site-title-2 {
+    font-weight: 400;
+    font-size: 28px;
+    text-transform: uppercase;
+}
+
+
+
+/*
+ * TOP INTRO TEXT
+ */
+
+div.container.intro-text {
+    @media screen and (max-width: 767px) {  /* hack to add margin to these, on small screens, so the spacing is nicer */
+        > div {
+            margin-top: 10px;
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+    }
+}
+
+
+
+/*
+ * DOWNLOAD / PRINT BAR
+ * but not the Download button and its weird behaviors; that has its own stylesheet
+ */
+
+div.container.above-map {
+    margin-bottom: 10px;
+}

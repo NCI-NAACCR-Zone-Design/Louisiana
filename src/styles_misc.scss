@@ -1,0 +1,130 @@
+/*
+ * GENERAL STYLES
+ */
+
+* {  /* printing: yes, colors and images are important! */
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+}
+
+body, html {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: $nearblack;
+    line-height: 24px;
+}
+
+h1 {
+    color: $darkpurple;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+h2 {
+    color: $midpurple;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+h2.title {  /* a special type of H2 that's smaller; used to be H3 but ARIA says no */
+    color: $midpurple;
+    font-size: 21px;
+    font-weight: normal;
+}
+
+.title {
+    color: $midpurple;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.subtitle {
+    color: $midpurple;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.warnmessage {
+    background-color: $warnmessagebgcolor;
+    color: $warnmessagetextcolor;
+}
+
+hr {
+    border-top: 1px solid $lightgrey;
+    margin: 0;
+}
+
+label { font-weight:normal; }
+
+a {
+    color: $nearblack;
+    &:hover, &:active {
+        color: $midorange;
+    }
+    text-decoration: underline;
+}
+
+.lighten {
+    color: $lightgrey;
+    fill: $lightgrey;  /* for Highcharts which are SVG tspan elements */
+}
+
+.small {
+    font-size: 80%;
+    line-height: 18px;
+}
+
+.navbar {
+    display: block;
+}
+
+table {
+    thead {
+        th {
+            font-weight: normal;
+            background-color: white;
+            color: $midgrey;
+            vertical-align: bottom;
+            text-align: center;
+        }
+    }
+
+    tbody {
+        td, th[scope] {
+            background-color: white;
+            color: $midgrey;
+            font-size: 16px;
+        }
+    }
+
+    &.table-striped {  /* override Bootstrap color */
+        tbody {
+            tr:nth-child(odd) td {
+                background-color: $lightpurple;
+            }
+        }
+    }
+}
+
+i.fa-info-circle {  /* these are used exclusively for tooltip triggers, so get a cursor effect */
+    cursor: pointer;
+}
+
+
+
+
+/*
+ * OTHER UTILITY CLASSES
+ */
+
+.center { text-align:center !important; }
+.right { text-align:right !important; }
+.left { text-align:left !important; }
+.bold { font-weight:bold !important; }
+.nowrap { white-space:nowrap !important; }
+
+.rightfloat { float: right; }
+
+.pointer { cursor: pointer; }
+
+.nomargin { margin: 0; }
