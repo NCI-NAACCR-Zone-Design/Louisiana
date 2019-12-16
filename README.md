@@ -90,9 +90,10 @@ The sample files provided in `datascripts/inputs/` were used to set up the templ
 
 The scripts are written for Python 3, and are as follows. It is recommended that they be run in this order.
 
-* `python3 make_ctageofile.py` -- Creates `static/data/cta.json` which is the TopoJSON file providing CTA Zone boundaries for onto the map.
+* `python3 make_ctageofile.py` -- Creates `static/data/cta.json` which is the TopoJSON file providing CTA Zone boundaries for the map.
 * `python3 make_demogcsv.py` -- Creates `static/data/demographics.csv` which provides demographics for each CTA Zone.
 * `python3 make_incidencecsv.py` -- Creates `static/data/cancerincidence.csv` which provides incidence for each CTA Zone.
+* `python3 make_countygeofile.py` -- Creates `static/data/countybounds.json` which is the TopoJSON file providing county boundaries for the map.
 * `python3 make_placescsv.py` -- Creates `static/data/counties_by_cta.csv` and `static/data/cities_by_cta.csv` which provide a list of places intersecting each CTA Zone.
 * `python3 make_downloadables.py` -- Creates the downloadable ZIP files under `static/downloads/`.
 

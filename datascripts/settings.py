@@ -6,6 +6,7 @@ OUTPUT_INCIDENCECSV = "../static/data/cancerincidence.csv"
 OUTPUT_DEMOGCSV = "../static/data/demographics.csv"
 OUTPUT_COUNTYCSV = "../static/data/counties_by_cta.csv"
 OUTPUT_CITYCSV = "../static/data/cities_by_cta.csv"
+OUTPUT_COUNTYJSON = "../static/data/countybounds.json"
 
 # the downloadable ZIP files; one of all data, and for each CTA Zone
 # all ZIP files will have a readme file added for credits, disclaimer, metadata
