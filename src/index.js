@@ -112,6 +112,48 @@ var CTA_STYLE_DEMOG = {
     Q5: { fillOpacity: 0.75, fillColor: '#293885', stroke: false },
 };
 
+// map layers to be offered in the lower-right Map Layers control
+// note some contrived use of panes here so we can stack bondaries above and below the CTA Zone boundaries, which are GeoJSON in the overlayPane
+var MAP_LAYERS = [
+    {
+        id: 'basemap',
+        label: "Base Map",
+        checked: true,
+        layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+            pane: 'tilePane',
+            zIndex: 0,
+            attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
+        }),
+    },
+    {
+        id: 'labels',
+        label: "Labels",
+        checked: true,
+        layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}{r}.png', {
+            pane: 'popupPane',
+            zIndex: 999,
+            attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
+        }),
+    },
+    {
+        id: 'cities',
+        label: "Cities",
+        layer: L.tileLayer('https://gin-public-tiles.s3.us-east-2.amazonaws.com/cities_ca/{z}/{x}/{y}.png', {
+            pane: 'popupPane',
+            zIndex: 10,
+        }),
+    },
+    {
+        id: 'streets',
+        label: "Streets",
+        layer: L.tileLayer('http://a.tile.stamen.com/toner-lines/{z}/{x}/{y}.png', {
+            pane: 'markerPane',  // between CTA lines and CTA fills
+            attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
+            opacity: 0.75,
+        }),
+    },
+];
+
 
 //
 // STORAGE
@@ -450,50 +492,23 @@ function initMapAndPolygonData () {
         icon: blackIcon
     });
 
-    // some overlays, some of which are always on and not present in the LayerPicker control
-    // note some contrived layer stacking using panes and zIndex
-    // so we can stack CTA vector layers and these tile layers in some unusual ways, e.g. streets in between two vector layers, labels always at top, ...
-    // some of this is possible only because we do not use popups nor markers, so we can use their panes
-    // if we were to introduce markers/popups some re-engineering would be required
-    MAP.overlays = {
-        basemap: L.tileLayer('https://api.mapbox.com/styles/v1/greeninfo/cjwtpm0wu0z151cmnk860muld/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ3JlZW5pbmZvIiwiYSI6Ik1HUWRtdEkifQ.aWQKcu787DGrDq7LN5r2iA', {
-            pane: 'tilePane',
-            zIndex: 0,
-            attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
-        }),
-        labels: L.tileLayer('https://api.mapbox.com/styles/v1/greeninfo/cjwuuxwam0x8t1cl8ga2qsexs/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ3JlZW5pbmZvIiwiYSI6Ik1HUWRtdEkifQ.aWQKcu787DGrDq7LN5r2iA', {
-            pane: 'popupPane',
-            zIndex: 999,
-            attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
-        }),
-        counties: L.tileLayer('https://gin-public-tiles.s3.us-east-2.amazonaws.com/counties_ca/{z}/{x}/{y}.png', {
-            pane: 'popupPane',
-            zIndex: 10,
-        }),
-        cities: L.tileLayer('https://gin-public-tiles.s3.us-east-2.amazonaws.com/cities_ca/{z}/{x}/{y}.png', {
-            pane: 'popupPane',
-            zIndex: 10,
-        }),
-        streets: L.tileLayer('https://api.mapbox.com/styles/v1/greeninfo/cjwtq3r3s2bep1cpcfdm9t8ua/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ3JlZW5pbmZvIiwiYSI6Ik1HUWRtdEkifQ.aWQKcu787DGrDq7LN5r2iA', {
-            pane: 'markerPane',  // between CTA lines and CTA fills
-            attribution: 'Map tiles by <a target="_blank" href="http://www.mapbox.com">MapBox</a>.<br />Data &copy; <a target="_blank" href="http://openstreetmap.org/copyright" target="_blank">OpenStreetMap contributings</a>',
-            opacity: 0.75,
-        }),
-    };
-    MAP.overlays.basemap.addTo(MAP);
-
+    // the layer-picker control
     MAP.layerpicker = new L.Control.LayerPicker({
         expanded: true,
-        layers: [
-            { id: 'labels', label: "Labels", layer: MAP.overlays.labels, checked: true },
-            { id: 'counties', label: "Counties", layer: MAP.overlays.counties },
-            { id: 'cities', label: "Cities", layer: MAP.overlays.cities },
-            { id: 'streets', label: "Streets", layer: MAP.overlays.streets },
-        ],
+        layers: MAP_LAYERS,
         onLayerChange: function (layerid, show) {
             logGoogleAnalyticsEvent('map', show ? 'overlay-on' : 'overlay-off', layerid);
         },
     }).addTo(MAP);
+
+    // a hack for printing; the printing system fails if there are any tile errors
+    // try to catch those and create new transparent PNGs for missing tiles, to appease it
+    function handleTileError (error) {
+        error.tile.src = 'static/transparent_256x256.png';
+    }
+    MAP_LAYERS.forEach(function (maplayeroption) {
+        maplayeroption.layer.on('tileerror', handleTileError);
+    });
 
     // for printing, see initDownloadButtons()
     // this includes events to toggle the button between Download and Wait modes, which differs from the approach used by CSV exporter
@@ -512,14 +527,6 @@ function initMapAndPolygonData () {
             // within the choroplethlegend control which we do not hide, setPrintMode() sets certain CSS to show/hide those items
         ],
     }).addTo(MAP);
-
-    // another hack for printing; the printing system fails if there are any tile errors
-    // try to catch those and create new transparent PNGs for missing tiles, to appease it
-    function handleTileError (error) {
-        error.tile.src = 'static/transparent_256x256.png';
-    }
-    MAP.overlays.cities.on('tileerror', handleTileError);
-    MAP.overlays.counties.on('tileerror', handleTileError);
 
     // the TopoJSON layer of CTAs
     // and a custom control to color them forming a choropleth, and to change that coloring
@@ -620,7 +627,7 @@ function initDataFilters () {
     $filtersummary.on('keypress', 'div', function (event) {
         if (event.keyCode == 13) $(this).click();  // ARIA/508 translate hitting enter as clicking
     });
-    $filtersummary.on('click', 'div', function () {
+    $filtersummary.on('click', 'div[data-filter]', function () {
         const whichfilter = $(this).closest('span').attr('data-filter');
         const $widget = $searchwidgets.filter(`[name="${whichfilter}"]`);
 
@@ -975,7 +982,7 @@ function performSearchPlaces (searchparams) {
     }
     if (cities.length) {
         const text = cities.join(', ');
-        const $block = $('<div></div>').html(`<b>Cities: </b>`).appendTo($box);
+        const $block = $('<div></div>').html(`<b>Places: </b>`).appendTo($box);
         $('<span></span>').text(text).appendTo($block);
     }
 }
