@@ -45,7 +45,7 @@ var DATA_URL_CTACITY = 'static/data/cities_by_cta.csv';
 // remember that cancer site and sex and time period, are used to find a specific row in cancerincidence.csv
 // while race determines which column/field to use within that row
 // e.g. CTA + sex + cancersite + timeperiod = filter to 1 incidence row, then race=B means to use B_AAIR, B_LCI, B_UCI
-var SEARCHOPTIONS_CANCERSITE = [
+var SEARCHOPTIONS_CANCERSITE = [  // filter values for "cancer" field
     { value: 'AllSite', label: "All Cancer Sites" },
     { value: 'Breast', label: "Breast Cancer" },
     { value: 'CRC', label: "Colorectal Cancer" },
@@ -60,17 +60,24 @@ var SEARCHOPTIONS_CANCERSITE = [
     { value: 'Urinary', label: "Urinary Bladder Cancer" },
     { value: 'Uterine', label: "Uterine Corpus Cancer" },
 ];
-var SEARCHOPTIONS_RACE = [
+var SEARCHOPTIONS_SEX = [  // filter values for "sex" field
+    { value: 'Both', label: "All Sexes" },
+    { value: 'Male', label: "Male" },
+    { value: 'Female', label: "Female" },
+];
+var SEARCHOPTIONS_TIME = [  // filter values for "years" field
+    { value: '05yrs', label: "5-Year: 2012-2016" },
+    { value: '10yrs', label: "10-Year: 2010-2019" },
+    //{ value: '01yr', label: "1-Year: 2015" },
+    //{ value: '05yrs', label: "5-Year: 2011-2015" },
+    //{ value: '10yrs', label: "10-Year: 2006-2015" },
+];
+var SEARCHOPTIONS_RACE = [  // field prefix for AAIR, LCI, UCI fields within the incidence row
     { value: '', label: "All Ethnicities" },
     { value: 'W', label: "Non-Hispanic White" },
     { value: 'B', label: "Non-Hispanic Black" },
     { value: 'H', label: "Hispanic" },
     { value: 'A', label: "Asian/Pacific Islander" },
-];
-var SEARCHOPTIONS_SEX = [
-    { value: 'Both', label: "All Sexes" },
-    { value: 'Male', label: "Male" },
-    { value: 'Female', label: "Female" },
 ];
 
 // the styles for CTA polygons by incidence rate
@@ -546,6 +553,8 @@ function initDataFilters () {
     const $searchwidgets_site = $('div.data-filters select#data-filters-site');
     const $searchwidgets_sex = $('div.data-filters select#data-filters-sex');
     const $searchwidgets_race = $('div.data-filters select#data-filters-race');
+    const $searchwidgets_time = $('div.data-filters select#data-filters-time');
+
     SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
         $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_site);
     });
@@ -555,6 +564,13 @@ function initDataFilters () {
     SEARCHOPTIONS_SEX.forEach(function (option) {
         $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_sex);
     });
+    SEARCHOPTIONS_TIME.forEach(function (option) {
+        $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_time);
+    });
+
+    if (getOptionCount('time') < 2) {  // some datasets have only 1 option, sop  showing this is silly
+        $searchwidgets_time.closest('div.input-group').hide();
+    }
 
     // part 2: add actions to the search widgets
     // the search widgets: select race/sex/cancer and trigger a search
@@ -818,6 +834,14 @@ function performSearchShowFilters (searchparams) {
     }
 
     {
+        const text = getLabelFor('time', searchparams.time);
+        if (getOptionCount('time') > 1) {  // some datasets have only 1 option, so reiterating it with an X to clear it, is silly
+            const $box = $('<span data-filter="time"></span>').text(text).appendTo($filtersummary);
+            $box.prop('tabindex', '0').addClass('data-filter-clear').append('<div class="summary-close"><i class="fa fa-times noprint" tabindex="0" aria-label="Click to clear this filter"></i></div>');
+        }
+    }
+
+    {
         const text = getLabelFor('site', searchparams.site);
         const $box = $('<span data-filter="site"></span>').text(text).appendTo($filtersummary);
         if (searchparams.site != 'AllSite') {
@@ -954,8 +978,8 @@ function performSearchIncidenceReadout (searchparams) {
     //
     // note that we could end up with 0 rows e.g. there is no row for Male Uterine nor Female Prostate
     // we could also end up with null values for some data, e.g. low sample sizes so they chose not to report a value
-    const cancerdata_cta = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.cancer == searchparams.site && row.sex == searchparams.sex)[0];
-    const cancerdata_state = DATA_CANCER.filter(row => row.Zone == 'Statewide' && row.cancer == searchparams.site && row.sex == searchparams.sex)[0];
+    const cancerdata_cta = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.years == searchparams.time && row.cancer == searchparams.site && row.sex == searchparams.sex)[0];
+    const cancerdata_state = DATA_CANCER.filter(row => row.Zone == 'Statewide' && row.years == searchparams.time && row.cancer == searchparams.site && row.sex == searchparams.sex)[0];
 
     let text_cases_cta = 'no data';
     let text_aair_cta = 'no data';
@@ -1024,7 +1048,7 @@ function performSearchIncidenceChart (searchparams) {
 
     // filter to the cancer + CTA then sub-=filter by sex
     // note that we could end up with 0 rows for some of these, e.g. there is no row for Male Uterine nor Female Prostate
-    const cancerdata = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.cancer == searchparams.site);
+    const cancerdata = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.years == searchparams.time && row.cancer == searchparams.site);
     const cancerdata_both = cancerdata.filter(row => row.sex == 'Both')[0];
     const cancerdata_female = cancerdata.filter(row => row.sex == 'Female')[0];
     const cancerdata_male = cancerdata.filter(row => row.sex == 'Male')[0];
@@ -1188,7 +1212,7 @@ function performSearchMap (searchparams) {
     if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {
         DATA_CANCER
         .filter(row => row.Zone != 'Statewide')
-        .filter(row => row.cancer == searchparams.site && row.sex == searchparams.sex)
+        .filter(row => row.years == searchparams.time && row.cancer == searchparams.site && row.sex == searchparams.sex)
         .forEach((row) => {
             let choropleth_score;
             switch (rankthemby) {
@@ -1435,25 +1459,23 @@ function geocodeAddress (address, callback) {
 }
 
 
-function getLabelFor (whichpicker, whichvalue) {
+function getLabelFor (fieldname, value) {
     // utility function: examine the given SELECT element and find the text for the given value
     // thus the pickers' options become the source of truth for labeling these
     // which we do in a bunch of places: bar chart series, text readouts demographic readouts, ...
 
-    let text;
-    switch (whichpicker) {
-        case 'site':
-            text = $(`div.data-filters select[name="site"] option[value="${whichvalue}"]`).text();
-            break;
-        case 'race':
-            text = $(`div.data-filters select[name="race"] option[value="${whichvalue}"]`).text();
-            break;
-        case 'sex':
-            text = $(`div.data-filters select[name="sex"] option[value="${whichvalue}"]`).text();
-            break;
-    }
+    const $picker = $(`div.data-filters select[name="${fieldname}"]`);
+    const $option = $picker.find(`option[value="${value}"]`);
+    const labeltext = $option.text();
 
-    return text;
+    return labeltext;
+}
+
+
+function getOptionCount (fieldname) {
+    const $picker = $(`div.data-filters select[name="${fieldname}"]`);
+    const $options = $picker.find('option');
+    return $options.length;
 }
 
 
@@ -1466,6 +1488,7 @@ function compileParams (addextras=false) {
         sex: $searchwidgets.filter('[name="sex"]').val(),
         site: $searchwidgets.filter('[name="site"]').val(),
         race: $searchwidgets.filter('[name="race"]').val(),
+        time: $searchwidgets.filter('[name="time"]').val(),
     };
 
     // these are only used for some weird cases such as URL params not for searching

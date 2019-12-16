@@ -33,25 +33,7 @@ div.container.data-readouts {
             }
 
             i {  /* X clear button */
-                position: relative;
-                top: 12.5%;
-            }
-            
-
-            &[data-filter="address"] {
-                font-size: 24px;
-                height: 38px;
-                
-                i {  /* X clear button */
-                    font-size: 20px;
-                }
-            }
-            &[data-filter="site"] {
-                font-size: 20px;
-                
-                i {  /* X clear button */
-                    font-size: 18px;
-                }
+                line-height: 2.25;
             }
         }
     }
