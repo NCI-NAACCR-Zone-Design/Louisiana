@@ -21,7 +21,8 @@ require('./printing-leaflet-easyPrint.js');
 
 // the map and some constants
 var MAP;
-var MAP_BBOX = [[32, -124.7 ], [42, -114]];
+var MAP_BBOX = [[ 39.313, -124.459 ], [ 42.024, -119.949 ]];  // [[s, w], [n, e]]
+
 var MIN_ZOOM = 6;
 var MAX_ZOOM = 15;
 
