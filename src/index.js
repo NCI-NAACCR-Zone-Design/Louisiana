@@ -67,7 +67,6 @@ var SEARCHOPTIONS_SEX = [  // filter values for "sex" field
 ];
 var SEARCHOPTIONS_TIME = [  // filter values for "years" field
     { value: '05yrs', label: "5-Year: 2012-2016" },
-    { value: '10yrs', label: "10-Year: 2010-2019" },
     //{ value: '01yr', label: "1-Year: 2015" },
     //{ value: '05yrs', label: "5-Year: 2011-2015" },
     //{ value: '10yrs', label: "10-Year: 2006-2015" },
