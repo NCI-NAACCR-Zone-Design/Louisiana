@@ -109,6 +109,8 @@ The filtering options available for Sex, Cancer Site, Race/Ethnicity, and Time R
 
 The filter options may be defined in `index.js` by the `SEARCHOPTIONS_CANCERSITE`, `SEARCHOPTIONS_RACE`, `SEARCHOPTIONS_SEX`, and `SEARCHOPTIONS_TIME` options.
 
+Some cancers may be specific to a single sex, e.g. uterine cancer does not occur in males, nor prostate in females. To address these cases, see the `CANCER_SEXES` setting. If a cancer site is selected which only applies to one sex, that sex will be automaticaly selected if that cancer is selected. If a sex is selected, then invalid cancer site options for that sex will be disabled.
+
 
 ### Cosmetic and Look-and-Feel
 

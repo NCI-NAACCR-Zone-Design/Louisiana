@@ -79,6 +79,16 @@ var SEARCHOPTIONS_RACE = [  // field prefix for AAIR, LCI, UCI fields within the
     { value: 'A', label: "Asian/Pacific Islander" },
 ];
 
+// if any of the cancer sites should apply to only one sex, you may define that here
+// the left-hand side (key) here is a cancer site value from SEARCHOPTIONS_CANCERSITE
+// and the right-hand side (value) is a sex value from SEARCHOPTIONS_SEX
+// if a cancer is selected, that sex will be auto-selected
+var CANCER_SEXES = {
+    'Breast': 'Female',
+    'Uterine': 'Female',
+    'Prostate': 'Male',
+};
+
 // the styles for CTA polygons by incidence rate
 // see also performSearchMap() which assigns colors based on math
 var CTA_STYLE_NODATA = { fillOpacity: 0.25, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1 };
@@ -549,10 +559,10 @@ function initMapAndPolygonData () {
 
 function initDataFilters () {
     // part 1: fill in the SELECT options from the configurable constants
-    const $searchwidgets_site = $('div.data-filters select#data-filters-site');
-    const $searchwidgets_sex = $('div.data-filters select#data-filters-sex');
-    const $searchwidgets_race = $('div.data-filters select#data-filters-race');
-    const $searchwidgets_time = $('div.data-filters select#data-filters-time');
+    const $searchwidgets_site = $('div.data-filters select[name="site"]');
+    const $searchwidgets_sex = $('div.data-filters select[name="sex"]');
+    const $searchwidgets_race = $('div.data-filters select[name="race"]');
+    const $searchwidgets_time = $('div.data-filters select[name="time"]');
 
     SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
         $(`<option value="${option.value}">${option.label}</option>`).appendTo($searchwidgets_site);
@@ -572,18 +582,19 @@ function initDataFilters () {
     }
 
     // part 2: add actions to the search widgets
-    // the search widgets: select race/sex/cancer and trigger a search
+    // the search widgets: select race/sex/cancer/time and trigger a search
     // some selections may need to force others, e.g. some cancer selections will force a sex selection
     const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
     const $filtersummary = $('div.data-filters-summary');
 
     $searchwidgets.change(function () {
-        // look for some forced selections based on our new selection
+        // before we submit the search, see if we need to select a specific sex for some sex-restricted cancer types
         const $this = $(this);
-        const autopick_sex = $this.find('option:selected').attr('data-sex');
-
-        if (autopick_sex) {
-            $searchwidgets.filter('[name="sex"]').val(autopick_sex);
+        if ($this.is($searchwidgets_site)) {
+            const autopick_sex = CANCER_SEXES[$this.val()];
+            if (autopick_sex) {
+                $searchwidgets_sex.val(autopick_sex);
+            }
         }
 
         // go ahead and search
