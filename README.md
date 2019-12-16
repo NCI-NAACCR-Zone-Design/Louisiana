@@ -98,6 +98,8 @@ The scripts are written for Python 3, and are as follows. It is recommended that
 
 If you get errors that some Python module is missing, install them via `pip3 install -r requirements.txt`
 
+Some settings may be adjsted in `settings.py` such as the URL of your website.
+
 After running all of them, be sure to run `npm run build` to update the web server so your new files will show up.
 
 
@@ -135,12 +137,16 @@ The filter options may be defined in `index.js` by the `SEARCHOPTIONS_CANCERSITE
 * *Tooltip i icons* -- Within `src/index.html` you may create tooltip I icons, with HTML such as this: `<i class="fa fa-info-circle" aria-hidden="true" data-tooltip="yourtermhere"></i>` The tooltip HTML for each such tooltip, is provided in `tooltip_contents` Each DIV has a `data-tooltip` attribute corresponding to the `data-tooltip` used in the `<i>` element.
 
 
-### Customizing Data Downloads
+### Customizing Data Download ZIP Files
 
-See `datascripts/make_downloadables.py` and look for `csvHeaderRow()` This determines which fields will be added to the download ZIPs. The functions `aggregateIncidenceData()` and `aggregateDemographicData()` are used to make some data corrections and formatting, and in some cases to change the field names.
+The downloadable ZIP files are created by the `datascripts/make_downloadables.py` script.
 
-The file `datascripts/input/readme.txt` will be included in each of the downloadable ZIP files. This would be suitable as metadata such as a data dictionary, a disclaimer, credits, etc.
+The functions `aggregateIncidenceData()` and `aggregateDemographicData()` will read the incidence dataset and the demographic dataset, and will perform various massage/correction to the data, and will rename fields for the purpose of putting them in the output files.
 
-The fields in the CSVs are a composite of demographic fields and incidence fields from `static/data/demographics.csv` and `static/data/cancerincidence.csv`.
+The function `csvHeaderRow()` defines the sequence of fields as they appear in the CSV. All fields here must be the fields created in `aggregateIncidenceData()` and `aggregateDemographicData()` However, it is *not required* that every field in `aggregateIncidenceData()` and `aggregateDemographicData()` be used in the final, downloadable CSVs.
 
-After running the script to generate new download files, be sure to run `npm run build` to update the web server so your new files will show up.
+Lastly, note that all ZIP files will include the `datascripts/readme.txt` file. This would be suitable as metadata such as a data dictionary, a disclaimer, credits, etc.
+
+Also important:
+* The website's CSVs and JSON files under `static/data/` are the source for the content of the ZIP files. As such, it is recommended that `make_downloadables.py` be run *after* the other scripts which update those website files.
+* Don't forget to run `npm run build` after running `make_downloadables.py`, so your new files will show up in the website.
