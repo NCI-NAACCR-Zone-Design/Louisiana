@@ -213,7 +213,7 @@ function initLoadInitialState () {
     const params = new URLSearchParams(window.location.search);
 
     // a very simple model: params are named same as their widget, and are straight-up values
-    ['address', 'site', 'sex', 'race'].forEach((fieldname) => {
+    ['address', 'site', 'sex', 'race', 'time'].forEach((fieldname) => {
         const $widget = $searchwidgets.filter(`[name="${fieldname}"]`);
         const value = params.get(fieldname);
 
