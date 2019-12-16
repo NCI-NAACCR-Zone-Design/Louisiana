@@ -40,6 +40,7 @@ var DATA_URL_CANCER = 'static/data/cancerincidence.csv';
 var DATA_URL_DEMOGS = 'static/data/demographics.csv';
 var DATA_URL_CTACOUNTY = 'static/data/counties_by_cta.csv';
 var DATA_URL_CTACITY = 'static/data/cities_by_cta.csv';
+var DATA_URL_COUNTYGEOM = 'static/data/countybounds.json';
 
 // the set of options for search filters: cancer site, race, and time period
 // each definition is the field value from the incidence CSV, mapped onto a human-readable label
@@ -112,8 +113,12 @@ var CTA_STYLE_DEMOG = {
     Q5: { fillOpacity: 0.75, fillColor: '#293885', stroke: false },
 };
 
+// the style to use for the MAP_LAYERS.county GeoJSON overlay
+var COUNTYBOUNDS_STYLE = { fill: false, color: 'black', weight: 2 };
+
 // map layers to be offered in the lower-right Map Layers control
-// note some contrived use of panes here so we can stack bondaries above and below the CTA Zone boundaries, which are GeoJSON in the overlayPane
+// we have some complicated desires for layer stacking, such as labels and streets (L.TileLayer raster tiles) showing above CTA Zones (L.GeoJSON paths in overlayPane)
+// so our choice of panes here is somewhat contrived and complicated
 var MAP_LAYERS = [
     {
         id: 'basemap',
@@ -136,12 +141,9 @@ var MAP_LAYERS = [
         }),
     },
     {
-        id: 'cities',
-        label: "Cities",
-        layer: L.tileLayer('https://gin-public-tiles.s3.us-east-2.amazonaws.com/cities_ca/{z}/{x}/{y}.png', {
-            pane: 'popupPane',
-            zIndex: 10,
-        }),
+        id: 'counties',
+        label: "Counties",
+        layer: undefined,  // see initFixCountyOverlay() where we patch this in to become a L.GeoJSON layer, since that comes after startup promises but before initMap()
     },
     {
         id: 'streets',
@@ -162,7 +164,8 @@ var MAP_LAYERS = [
 
 // storage for the parsed TopoJSON document, the parsed CSV rows, etc.
 // these are mutated during the init functions to become constants
-var CTATOPOJSONDATA, DATA_CANCER, DATA_DEMOGS, DATA_CTACITY, DATA_CTACOUNTY;
+var CTATOPOJSONDATA, COUNTYTOPOJSONDATA;
+var DATA_CANCER, DATA_DEMOGS, DATA_CTACITY, DATA_CTACOUNTY;
 
 // a cache of geocoder results, so we don't have to re-geocode every time the form changes
 // saves big on API keys, e.g. we don't need to hit Bing if someone changes the cancer site filter
@@ -178,6 +181,9 @@ $(document).ready(function () {
     const waitforparsing = [
         new Promise(function(resolve) {
             $.get(DATA_URL_CTAGEOM, (data) => { resolve(data); }, 'json');
+        }),
+        new Promise(function(resolve) {
+            $.get(DATA_URL_COUNTYGEOM, (data) => { resolve(data); }, 'json');
         }),
         new Promise(function(resolve) {
             Papa.parse(DATA_URL_DEMOGS, {
@@ -229,13 +235,15 @@ $(document).ready(function () {
         // save these to the globals that we'll read/filter/display
         // then send them to postprocessing for data fixes
         CTATOPOJSONDATA = datasets[0];
-        DATA_DEMOGS = datasets[1];
-        DATA_CANCER = datasets[2];
-        DATA_CTACOUNTY = datasets[3];
-        DATA_CTACITY = datasets[4];
+        COUNTYTOPOJSONDATA = datasets[1];
+        DATA_DEMOGS = datasets[2];
+        DATA_CANCER = datasets[3];
+        DATA_CTACOUNTY = datasets[4];
+        DATA_CTACITY = datasets[5];
 
         initFixDemographicDataset();
         initFixCancerDataset();
+        initFixCountyOverlay();
 
         // and we can finally get started!
         initMapAndPolygonData();
@@ -343,6 +351,17 @@ function initFixDemographicDataset () {
     // no data fixes at the moment; see docs where I describe re-exporting the CSV to fix number formats
 
     // console.log(DATA_DEMOGS);
+}
+
+
+function initFixCountyOverlay () {
+//GDA
+    const maplayerinfo = MAP_LAYERS.filter(function (maplayerinfo) { return maplayerinfo.id == 'counties'; })[0];
+    maplayerinfo.layer = L.topoJson(COUNTYTOPOJSONDATA, {
+        pane: 'tooltipPane',
+        zIndex: 500,
+        style: COUNTYBOUNDS_STYLE,  // see performSearchMap() where these are reassigned based on filters
+    });
 }
 
 
