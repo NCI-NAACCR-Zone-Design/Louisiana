@@ -173,9 +173,8 @@ function initLoadInitialState () {
         }
     });
 
-    // well, not so simple: per issue 101 we have a special custom behavior
-    // that we only zoom to CTA if an address is entered manually OR at page load
-    // set that flag
+    // on page load, fill in the address box too BUT ALSO set its hasbeenchanged attribute so that performSearch() will zoom to the CTA Zone
+    // there is behavior not to re-zoom the map if a non-address field was the cause, e.g. changing sex should not re-zoom the map
     if (params.get('address')) {
         const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
         const $addrbox = $searchwidgets.filter('[name="address"]');
@@ -490,9 +489,7 @@ function initMapAndPolygonData () {
         },
     }).addTo(MAP);
 
-    // clicking the map = find latlng, hand off as a latlng address aearch
-    // historical note: per issue 94, JSOn layers used to handle clicks to pass CTA name as an address search,
-    // but later decided it should act like a point/address by leaving a marker
+    // clicking the map = find latlng, set this as a latlng address search, and let performSearch() take its course
     MAP.on('singleclick', function (event) {
         const $searchwidgets = $('div.data-filters input[type="text"], div.data-filters select');
         const $addressbox = $searchwidgets.filter('[name="address"]');
@@ -522,9 +519,10 @@ function initDataFilters () {
         performSearch();
     });
 
-    // unusual custom behavior per issue 101:
-    // zooming to the selected CTA only happens if text was entered here manually, or else at page load
-    // other address-fill-in behaviors such as clicking the map, should not trigger a zoom-to-area when search is done
+
+    // performSearch() will zoom the map to the searched CTA Zone, but only if the reason for the search was a changed address search
+    // e.g. changing sex should not re-zoom the map
+    // this hasbeenchanged datum is how we detect that an address change is the reason for the re-search
     $searchwidgets.filter('[name="address"]')
     .keydown(function (event) {
         // don't update our flag if the keypress was a tab; it was probably a screenreader just passing through
@@ -878,7 +876,7 @@ function performSearchPlaces (searchparams) {
     cities.sort();
 
     // create the target area and position it
-    // yes this is brittle against changes to performSearchShowFilters() but that's this iteration of the request, issue 55
+    // design is that it comes in the middle of the data-filters-summary, which is kind of brittle if we change that layout, and also weird UX, but that was the decision
     const $filtersummary = $('div.data-filters-summary');
     const $putafterthisone = $filtersummary.find('span[data-filter="address"]');
     const $box = $('<span data-statistic="locations"></span>').insertAfter($putafterthisone);
@@ -897,12 +895,13 @@ function performSearchPlaces (searchparams) {
 
 
 function performSearchIncidenceReadout (searchparams) {
-    // incidence table is one CTA row, filtering for CTA+cancer+sex
-    // then using race to decide which fields are the target numbers
+    // incidence data is two rows:
+    // one row of the incidence CSV for CTA+cancer+sex+date combiantion
+    // plus the Statewide row for the same cancer+sex+date combination
+    // the race does not filter a row, but rather determines which fields are the relevant incidence/MOE numbers
+    //
     // note that we could end up with 0 rows e.g. there is no row for Male Uterine nor Female Prostate
-    // we could also end up with null values for some data, e.g. low sample sizes so they chose not to report a value, e.g. Black Male Lymph in Bakersfield
-
-    // hack per issue 54: they later decided they want both CTA and Statewide, but of course the state is also a region so these may be the same...
+    // we could also end up with null values for some data, e.g. low sample sizes so they chose not to report a value
     const cancerdata_cta = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.cancer == searchparams.site && row.sex == searchparams.sex)[0];
     const cancerdata_state = DATA_CANCER.filter(row => row.Zone == 'Statewide' && row.cancer == searchparams.site && row.sex == searchparams.sex)[0];
 
