@@ -86,28 +86,6 @@ var CANCER_SEXES = {
     'Prostate': 'Male',
 };
 
-// the styles for CTA polygons by incidence rate
-// see also performSearchMap() which assigns colors based on math
-var CTA_STYLE_NODATA = { fillOpacity: 0.25, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1 };
-var CTA_BORDER_DEFAULT = { color: '#b3b3b3', opacity: 1, weight: 1, fill: false };
-var CTA_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fill: false };
-
-var CTA_STYLE_INCIDENCE = {
-    Q1: { fillOpacity: 0.75, fillColor: '#ffffb3', stroke: false },
-    Q2: { fillOpacity: 0.75, fillColor: '#ffe066', stroke: false },
-    Q3: { fillOpacity: 0.75, fillColor: '#f99e26', stroke: false },
-    Q4: { fillOpacity: 0.75, fillColor: '#b36093', stroke: false },
-    Q5: { fillOpacity: 0.75, fillColor: '#873d6a', stroke: false },
-};
-
-var CTA_STYLE_DEMOG = {
-    Q1: { fillOpacity: 0.75, fillColor: '#e6eaff', stroke: false },
-    Q2: { fillOpacity: 0.75, fillColor: '#abb4e0', stroke: false },
-    Q3: { fillOpacity: 0.75, fillColor: '#7683c2', stroke: false },
-    Q4: { fillOpacity: 0.75, fillColor: '#4b5aa3', stroke: false },
-    Q5: { fillOpacity: 0.75, fillColor: '#293885', stroke: false },
-};
-
 // colors for the incidence bar chart; these mirror the SEARCHOPTIONS_SEX options
 var BARCHART_COLORS_SEX = {
     'Both': '#446374',
@@ -141,6 +119,50 @@ var DEMOGRAPHIC_TABLES = [
             { field: 'PerForeignBorn', label: "% Foreign-Born", format: 'percent', tooltip_id: 'pctforeign' },
         ],
     },
+];
+
+// the Leaflet styles for those choropleth options defined in CHOROPLETH_OPTIONS below
+// the basic style in CHOROPLETH_STYLE_NODATA forms the base style for all CTAs
+// then CHOROPLETH_BORDER_DEFAULT and CHOROPLETH_BORDER_SELECTED are added to form a thicker border for selected/highlighted state
+// then CHOROPLETH_STYLE_INCIDENCE and CHOROPLETH_STYLE_DEMOGRAPHIC are added to form the choropleth coloring
+// see performSearchMap() which calculates scoring and uses these color ramps, to implement the choropleth behavior
+var CHOROPLETH_STYLE_NODATA = { fillOpacity: 0.25, fillColor: '#cccccc', color: 'black', opacity: 0.2, weight: 1 };
+
+var CHOROPLETH_BORDER_DEFAULT = { color: '#b3b3b3', opacity: 1, weight: 1, fill: false };
+var CHOROPLETH_BORDER_SELECTED = { color: '#293885', opacity: 1, weight: 5, fill: false };
+
+var CHOROPLETH_STYLE_INCIDENCE = {
+    Q1: { fillOpacity: 0.75, fillColor: '#ffffb3', stroke: false },
+    Q2: { fillOpacity: 0.75, fillColor: '#ffe066', stroke: false },
+    Q3: { fillOpacity: 0.75, fillColor: '#f99e26', stroke: false },
+    Q4: { fillOpacity: 0.75, fillColor: '#b36093', stroke: false },
+    Q5: { fillOpacity: 0.75, fillColor: '#873d6a', stroke: false },
+};
+
+var CHOROPLETH_STYLE_DEMOGRAPHIC = {
+    Q1: { fillOpacity: 0.75, fillColor: '#e6eaff', stroke: false },
+    Q2: { fillOpacity: 0.75, fillColor: '#abb4e0', stroke: false },
+    Q3: { fillOpacity: 0.75, fillColor: '#7683c2', stroke: false },
+    Q4: { fillOpacity: 0.75, fillColor: '#4b5aa3', stroke: false },
+    Q5: { fillOpacity: 0.75, fillColor: '#293885', stroke: false },
+};
+
+// options for the choropleth map (Color By)
+// each option is a demographic value and label like in DEMOGRAPHIC_TABLES,
+// or else the special values "AAIR" and "Cases" which will use the AAIR or Cases field from incidence data
+// see also leaflet-choroplethlegend.scss where their color gradients are defined
+var CHOROPLETH_OPTIONS = [
+    { field: 'Cases', label: "Cases", format: 'integer', colorramp: CHOROPLETH_STYLE_INCIDENCE },
+    { field: 'AAIR', label: "Incidence", format: 'float', colorramp: CHOROPLETH_STYLE_INCIDENCE },
+    { field: 'PopAll', label: "Population", format: 'integer', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PerRural', label: "% Rural", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PerUninsured', label: "% Uninsured", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'QNSES', label: "Socioeconomic Status", format: 'text', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PerWhite', label: "% Non-Hispanic White", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PerBlack', label: "% Non-Hispanic Black", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PerHispanic', label: "% Hispanic", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PerAPI', label: "% Asian/Pacific Islander", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PerForeignBorn', label: "% Foreign-Born", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
 ];
 
 // the style to use for the MAP_LAYERS.county GeoJSON overlay
@@ -617,18 +639,19 @@ function initMapAndPolygonData () {
 
     MAP.ctapolygonfills = L.topoJson(CTATOPOJSONDATA, {
         pane: 'shadowPane',
-        style: CTA_STYLE_NODATA,  // see performSearchMap() where these are reassigned based on filters
+        style: CHOROPLETH_STYLE_NODATA,  // see performSearchMap() where these are reassigned based on filters
     })
     .addTo(MAP);
 
     MAP.ctapolygonbounds = L.topoJson(CTATOPOJSONDATA, {
         pane: 'tooltipPane',
-        style: CTA_BORDER_DEFAULT,  // see performSearchMap() where these are reassigned based on filters
+        style: CHOROPLETH_BORDER_DEFAULT,  // see performSearchMap() where these are reassigned based on filters
     })
     .addTo(MAP);
 
     MAP.choroplethcontrol = new L.Control.ChoroplethLegend({
         expanded: true,
+        selectoptions: CHOROPLETH_OPTIONS,
         onChoroplethChange: (picked) => {
             performSearch();
             logGoogleAnalyticsEvent('map', 'choropleth', picked);
@@ -1229,11 +1252,11 @@ function performSearchMap (searchparams) {
         const istheone = ctaid == searchparams.ctaid;
 
         if (istheone) {
-            layer.setStyle(CTA_BORDER_SELECTED);
+            layer.setStyle(CHOROPLETH_BORDER_SELECTED);
             layer.bringToFront();
         }
         else {
-            layer.setStyle(CTA_BORDER_DEFAULT);
+            layer.setStyle(CHOROPLETH_BORDER_DEFAULT);
         }
     });
 
@@ -1247,22 +1270,22 @@ function performSearchMap (searchparams) {
 
     //
     // PART 2: choropleth
+    // the map has a CTA polygons layer, showing all CTAs colored to form a choropleth map
+    // the choice of value used to calculate and color, is selected by the custom MAP.choroplethcontrol
+    // which doesn't actually do the updating, but provides the UI for selection
+    // this-here function is what does the real choropleth work, as well as telling the control to update the legend
     //
 
-    // the map has a CTA polygons layer, showing all CTAs
-    // the choropleth shown depends on the cancer+sex filters and race column, kind of like the incidence readout
-    // but the choropleth and its legend will be quantiled by EITHER the Cases or AAIR count,
-    // depending on a UI in a map control  (why I don't believe in components; nothing ever has "single resonsibility")
-
-    // rank the CTAs by what... depends on this crazy map control
+    // rank the CTAs by what...
+    // depends on that map control; could be incidence data or demographic data
     const rankthemby = MAP.choroplethcontrol.getSelection();
+    const vizopt = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0];
+    const colors = [ vizopt.colorramp.Q1.fillColor, vizopt.colorramp.Q2.fillColor, vizopt.colorramp.Q3.fillColor, vizopt.colorramp.Q4.fillColor, vizopt.colorramp.Q5.fillColor ];
 
-    // the data for ramp scoring: may be cancer data, may be demogaphic data
-    // hash out a dict: CTA/Zone ID => score, for quick access later when we want to score the polygons
-    // scores may be based on cancerdata row, or may be based on demographics
+    // make up a dict of CTA scores for all CTA Zones, ZoneID => score
     const ctascores = {};
 
-    if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {
+    if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
         DATA_CANCER
         .filter(row => row.Zone != 'Statewide')
         .filter(row => row.years == searchparams.time && row.cancer == searchparams.site && row.sex == searchparams.sex)
@@ -1279,112 +1302,26 @@ function performSearchMap (searchparams) {
             ctascores[row.Zone] = choropleth_score;
         });
     }
-
-    if (['NSES', 'Uninsured', 'White', 'Black', 'Hispanic', 'Asian', 'Foreign', 'Rural', 'Checkups', 'Delayed', 'Colorectal', 'Mammogram', 'Pap', 'PrevMen', 'PrevWomen', 'Obesity', 'FoodInsecure', 'Activity', 'Smoking'].indexOf(rankthemby) != -1) {
+    else {  // demographic data
         DATA_DEMOGS
+        .filter(row => row.Zone != 'Statewide')  // only 1 demog row per CTZ Zone, so only filtering is Not Statewide
         .forEach((row) => {
-            let choropleth_score;
-            switch (rankthemby) {
-                case 'NSES':
-                    choropleth_score = row.QNSES;  // technically QSNES is already a quintile number; they did the math correctly so when we compute quintiles below, they match up perfectly
-                    break;
-                case 'Uninsured':
-                    choropleth_score = row.PerUninsured;
-                    break;
-                case 'White':
-                    choropleth_score = row.PerWhite;
-                    break;
-                case 'Black':
-                    choropleth_score = row.PerBlack;
-                    break;
-                case 'Hispanic':
-                    choropleth_score = row.PerHispanic;
-                    break;
-                case 'Asian':
-                    choropleth_score = row.PerAPI;
-                    break;
-                case 'Foreign':
-                    choropleth_score = row.PerForeignBorn;
-                    break;
-                case 'Rural':
-                    choropleth_score = row.PerRural;
-                    break;
-                case 'Checkups':
-                    choropleth_score = row.PerDocvisit;
-                    break;
-                case 'Delayed':
-                    choropleth_score = row.PerDelayCare;
-                    break;
-                case 'Colorectal':
-                    choropleth_score = row.PerFOBT;
-                    break;
-                case 'Mammogram':
-                    choropleth_score = row.PerMammo;
-                    break;
-                case 'Pap':
-                    choropleth_score = row.PerPap;
-                    break;
-                case 'PrevMen':
-                    choropleth_score = row.PerMenPrev;
-                    break;
-                case 'PrevWomen':
-                    choropleth_score = row.PerWomenPrev;
-                    break;
-                case 'Obesity':
-                    choropleth_score = row.PerObese;
-                    break;
-                case 'FoodInsecure':
-                    choropleth_score = row.PerFoodInsec;
-                    break;
-                case 'Activity':
-                    choropleth_score = row.Per150minPA;
-                    break;
-                case 'Smoking':
-                    choropleth_score = row.PerCurrSmk;
-                    break;
-            }
+            const choropleth_score = row[rankthemby];  // the control's selected value = a CHOROPLETH_OPTIONS "field" = a literal CSV column name
             ctascores[row.Zone] = choropleth_score;
         });
     }
 
-    // find the min and max
-    // again we may end up with bunk data, e.g. no data for All Breast or Male Uterine
-    // and we need to mak pretty versions: commas for ints, and 1 decimal for floats, depending on the value we're showing
+    // find the min and max, and send it to the control for display
     const allscores = Object.values(ctascores).filter(function (score) { return score; });
     const scoringmin = Math.min(...allscores);
     const scoringmax = Math.max(...allscores);
-
-    let scoremintext = scoringmin == Infinity ? 'No Data' : scoringmin;
-    let scoremaxtext = scoringmax == -Infinity ? 'No Data' : scoringmax;
-    switch (rankthemby) {
-        case 'Cases':  // integers; add commas
-            scoremaxtext = isNaN(scoremaxtext) ? scoremaxtext : scoremaxtext.toLocaleString();
-            scoremintext = isNaN(scoremintext) ? scoremintext : scoremintext.toLocaleString();
-            break;
-        case 'AAIR': // floats, round to 1 decimal
-        case 'Uninsured':
-        case 'White':
-        case 'Black':
-        case 'Hispanic':
-        case 'Asian':
-        case 'Foreign':
-        case 'Rural':
-        case 'Checkups':
-        case 'Delayed':
-        case 'Colorectal':
-        case 'Mammogram':
-        case 'Pap':
-        case 'PrevMen':
-        case 'PrevWomen':
-        case 'Obesity':
-        case 'FoodInsecure':
-        case 'Activity':
-        case 'Smoking':
-            scoremaxtext = isNaN(scoremaxtext) ? scoremaxtext : scoremaxtext.toFixed(1);
-            scoremintext = isNaN(scoremintext) ? scoremintext : scoremintext.toFixed(1);
-            break;
-    }
+    const legendformat = CHOROPLETH_OPTIONS.filter(function (vizopt) { return vizopt.field == rankthemby; })[0].format;
+    const scoremintext = scoringmin == Infinity ? 'No Data' : formatFieldValue(scoringmin, legendformat);
+    const scoremaxtext = scoringmax == -Infinity ? 'No Data' : formatFieldValue(scoringmax, legendformat);
     MAP.choroplethcontrol.setMinMax(scoremintext, scoremaxtext);
+
+    // update the color ramp gradient in the control
+    MAP.choroplethcontrol.setGradientColors(colors);
 
     // find quantiles to make up 5 classes, for use in the choropleth assignments coming up
     // thanks to buboh at https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
@@ -1406,43 +1343,14 @@ function performSearchMap (searchparams) {
     const q3brk = quantile(allscores, .60);
     const q4brk = quantile(allscores, .80);
 
-    // choropleth assignments: based on the quantile AND which color ramp we want to use, to style the polygon fills
-    let whichcolorramp;
-    switch (rankthemby) {
-        case 'Cases':
-        case 'AAIR':
-            whichcolorramp = CTA_STYLE_INCIDENCE;
-            break;
-        case 'NSES':
-        case 'Uninsured':
-        case 'White':
-        case 'Black':
-        case 'Hispanic':
-        case 'Asian':
-        case 'Foreign':
-        case 'Rural':
-        case 'Checkups':
-        case 'Delayed':
-        case 'Colorectal':
-        case 'Mammogram':
-        case 'Pap':
-        case 'PrevMen':
-        case 'PrevWomen':
-        case 'Obesity':
-        case 'FoodInsecure':
-        case 'Activity':
-        case 'Smoking':
-            whichcolorramp = CTA_STYLE_DEMOG;
-            break;
-    }
-
+    // assign the color/style to each CTA Zone polygon
     MAP.ctapolygonfills.eachLayer((layer) => {
         const ctaid = layer.feature.properties.Zone;
         const score = ctascores[ctaid];
 
         let style;
         if (score == null || score == undefined) {
-            style = Object.assign({}, CTA_STYLE_NODATA);
+            style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
         }
         else {
             let bucket = 'Q5';
@@ -1451,7 +1359,7 @@ function performSearchMap (searchparams) {
             else if (score <= q3brk) bucket = 'Q3';
             else if (score <= q4brk) bucket = 'Q4';
 
-            style = Object.assign({}, whichcolorramp[bucket]);  // take a copy!
+            style = Object.assign({}, vizopt.colorramp[bucket]);  // take a copy!
         }
 
         layer.setStyle(style);

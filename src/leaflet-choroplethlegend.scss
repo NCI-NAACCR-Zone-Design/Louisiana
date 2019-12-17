@@ -69,17 +69,10 @@
 			margin-bottom: 5px;
 		}
 
-		.leaflet-choroplethlegend-legendgradient {  /* these colors are same as in JS code for the CTA polygons */
+		.leaflet-choroplethlegend-legendgradient {
 			width: 200px;
 			height: 20px;
-			background-image: linear-gradient(to right, white, black); /* never really used except in development, see overrides below */
-
-			&.leaflet-choroplethlegend-ramp-incidence {
-				background-image: linear-gradient(to right, #ffffb3, #ffe066, #f99e26, #b36093, #873d6a);
-			}
-			&.leaflet-choroplethlegend-ramp-demographic {
-				background-image: linear-gradient(to right, #e6eaff, #abb4e0, #7683c2, #4b5aa3, #293885);
-			}
+			background-image: linear-gradient(to right, white, black); /* this is a fallback; colors will be set by performSearchMap() and CHOROPLETH_OPTIONS */
 		}
 
 		.leaflet-choroplethlegend-minvalue, .leaflet-choroplethlegend-maxvalue {
@@ -107,4 +100,3 @@
 		}
 	}
 }
-

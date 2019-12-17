@@ -1,9 +1,11 @@
 // custom crafted control for this one project
-// a legend control to switch between Cases and Incidence choropleths
+// a legend control to select a choropleth rendering. this just offers a UI to select which choropleth to use
+// see performSearchMap() which really does the work of generating the choropleth
 L.Control.ChoroplethLegend = L.Control.extend({
 	options: {
 		position: 'topright',
         expanded: false,
+		selectoptions: [],  // see index.js CHOROPLETH_OPTIONS
         onChoroplethChange: function () {},
 	},
 	initialize: function(options) {
@@ -30,114 +32,14 @@ L.Control.ChoroplethLegend = L.Control.extend({
         this.headtext = L.DomUtil.create('div', 'leaflet-choroplethlegend-headtext', this.content_expanded);
         this.headtext.innerHTML = 'Color By';
 
-        // gradient type selector
-        this.choroplethselector = L.DomUtil.create('select', 'leaflet-choroplethlegend-select', this.content_expanded);
-		this.choroplethselector.setAttribute('aria-label', 'Select how to color the map');
-
-        this.option_cases = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_cases.innerHTML = 'Cases';
-        this.option_cases.value = 'Cases';
-        this.option_cases.setAttribute('data-legend', 'incidence');
-
-        this.option_aair = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_aair.innerHTML = 'Incidence';
-        this.option_aair.value = 'AAIR';
-        this.option_aair.setAttribute('data-legend', 'incidence');
-
-        this.option_aair = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_aair.innerHTML = 'Socioeconomic Status';
-        this.option_aair.value = 'NSES';
-        this.option_aair.setAttribute('data-legend', 'demographic');
-
-        this.option_unins = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_unins.innerHTML = '% Uninsured';
-        this.option_unins.value = 'Uninsured';
-        this.option_unins.setAttribute('data-legend', 'demographic');
-
-        this.option_white = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_white.innerHTML = '% Non-Hispanic White';
-        this.option_white.value = 'White';
-        this.option_white.setAttribute('data-legend', 'demographic');
-
-        this.option_black = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_black.innerHTML = '% Non-Hispanic Black';
-        this.option_black.value = 'Black';
-        this.option_black.setAttribute('data-legend', 'demographic');
-
-        this.option_hisp = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_hisp.innerHTML = '% Hispanic';
-        this.option_hisp.value = 'Hispanic';
-        this.option_hisp.setAttribute('data-legend', 'demographic');
-
-        this.option_asian = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_asian.innerHTML = '% Asian/Pacific Islander';
-        this.option_asian.value = 'Asian';
-        this.option_asian.setAttribute('data-legend', 'demographic');
-
-        this.option_foreign = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_foreign.innerHTML = '% Foreign-Born';
-        this.option_foreign.value = 'Foreign';
-        this.option_foreign.setAttribute('data-legend', 'demographic');
-
-        this.option_rural = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_rural.innerHTML = '% Rural';
-        this.option_rural.value = 'Rural';
-        this.option_rural.setAttribute('data-legend', 'demographic');
-        
-        this.option_checkups = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_checkups.innerHTML = '% Routine Checkups';
-        this.option_checkups.value = 'Checkups';
-        this.option_checkups.setAttribute('data-legend', 'demographic');
-        
-        this.option_delayed = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_delayed.innerHTML = '% Delayed Care';
-        this.option_delayed.value = 'Delayed';
-        this.option_delayed.setAttribute('data-legend', 'demographic');
-        
-        this.option_colorectal = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_colorectal.innerHTML = '% Colorectal Cancer Screening';
-        this.option_colorectal.value = 'Colorectal';
-        this.option_colorectal.setAttribute('data-legend', 'demographic');
-        
-        this.option_mammogram = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_mammogram.innerHTML = '% Mammograms';
-        this.option_mammogram.value = 'Mammogram';
-        this.option_mammogram.setAttribute('data-legend', 'demographic');
-        
-        this.option_pap = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_pap.innerHTML = '% Pap Smears';
-        this.option_pap.value = 'Pap';
-        this.option_pap.setAttribute('data-legend', 'demographic');
-        
-        this.option_prevmen = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_prevmen.innerHTML = '% Preventive Care (Men, 65+ years)';
-        this.option_prevmen.value = 'PrevMen';
-        this.option_prevmen.setAttribute('data-legend', 'demographic');
-        
-        this.option_prevwomen = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_prevwomen.innerHTML = '% Preventive Care (Women, 65+ years)';
-        this.option_prevwomen.value = 'PrevWomen';
-        this.option_prevwomen.setAttribute('data-legend', 'demographic');
-        
-        this.option_obesity = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_obesity.innerHTML = '% Adult Obesity';
-        this.option_obesity.value = 'Obesity';
-        this.option_obesity.setAttribute('data-legend', 'demographic');
-        
-        this.option_foodinsecure = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_foodinsecure.innerHTML = '% Food Insecure';
-        this.option_foodinsecure.value = 'FoodInsecure';
-        this.option_foodinsecure.setAttribute('data-legend', 'demographic');
-        
-        this.option_activity = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_activity.innerHTML = '% Physical Activity';
-        this.option_activity.value = 'Activity';
-        this.option_activity.setAttribute('data-legend', 'demographic');
-        
-        this.option_smoking = L.DomUtil.create('option', '', this.choroplethselector);
-        this.option_smoking.innerHTML = '% Smoking';
-        this.option_smoking.value = 'Smoking';
-        this.option_smoking.setAttribute('data-legend', 'demographic');
+        // the choropleth-by-what-field selector and its optioons, driven by this.options.selectoptions
+        this.selector = L.DomUtil.create('select', 'leaflet-choroplethlegend-select', this.content_expanded);
+		this.selector.setAttribute('aria-label', 'Select how to color the map');
+		this.options.selectoptions.forEach((vizopt) => {
+			const option = L.DomUtil.create('option', '', this.selector);
+			option.innerHTML = vizopt.label;
+			option.value = vizopt.field;
+		});
 
         // the gradient legend and the min/max value words
         this.legendgradient = L.DomUtil.create('div', 'leaflet-choroplethlegend-legendgradient', this.content_expanded);
@@ -176,17 +78,9 @@ L.Control.ChoroplethLegend = L.Control.extend({
         }
 
         // when the selector is changed, call the suppled callback
-        // see also setMinMax()
-        L.DomEvent.addListener(this.choroplethselector, 'change', () => {
-			// call our callback to do whatever it is they wanted
-            const value = this.getSelection();
-            this.options.onChoroplethChange(value);
-
-			// reassign our legend gradient's CSS class to match the newly-selected layer
-			const whichlegend = this.choroplethselector.options[this.choroplethselector.selectedIndex].getAttribute('data-legend');
-			L.DomUtil.removeClass(this.legendgradient, 'leaflet-choroplethlegend-ramp-demographic');
-			L.DomUtil.removeClass(this.legendgradient, 'leaflet-choroplethlegend-ramp-incidence');
-			L.DomUtil.addClass(this.legendgradient, `leaflet-choroplethlegend-ramp-${whichlegend}`);
+        L.DomEvent.addListener(this.selector, 'change', () => {
+            const field = this.getSelection();
+            this.options.onChoroplethChange(field);
         });
 
 		// all done
@@ -201,24 +95,28 @@ L.Control.ChoroplethLegend = L.Control.extend({
 		L.DomUtil.addClass(this.container, 'leaflet-choroplethlegend-collapsed');
 	},
     getSelection: function () {
-        const value = this.choroplethselector.options[this.choroplethselector.selectedIndex].value;
+        const value = this.selector.options[this.selector.selectedIndex].value;
         return value;
     },
 	getSelectionLabel: function () {
-        const text = this.choroplethselector.options[this.choroplethselector.selectedIndex].innerHTML;
+        const text = this.selector.options[this.selector.selectedIndex].innerHTML;
         return text;
 	},
 	setSelection(newvalue) {
 		// see also the event listener that makes stuff happen
-		this.choroplethselector.value = newvalue;
+		this.selector.value = newvalue;
 
 		var event = new Event('change');
-		this.choroplethselector.dispatchEvent(event);
+		this.selector.dispatchEvent(event);
 	},
     setMinMax: function (minvalue, maxvalue) {
         this.legendminvalue.innerHTML = minvalue;
         this.legendmaxvalue.innerHTML = maxvalue;
     },
+	setGradientColors: function (colorlist) {
+		const csscolor = `linear-gradient(to right, ${colorlist.join(', ') })`;
+		this.legendgradient.style.backgroundImage = csscolor;
+	},
 	setPrintMode: function (printmodeon) {
 		// highly contrived to this use case: CSS rules exist to suppress and alter some elements when in "print mode"
 		if (printmodeon) {
