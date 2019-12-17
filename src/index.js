@@ -151,6 +151,7 @@ var CHOROPLETH_STYLE_DEMOGRAPHIC = {
 // each option is a demographic value and label like in DEMOGRAPHIC_TABLES,
 // or else the special values "AAIR" and "Cases" which will use the AAIR or Cases field from incidence data
 // see also leaflet-choroplethlegend.scss where their color gradients are defined
+// see formatFieldValue() for a list of supported format types
 var CHOROPLETH_OPTIONS = [
     { field: 'Cases', label: "Cases", format: 'integer', colorramp: CHOROPLETH_STYLE_INCIDENCE },
     { field: 'AAIR', label: "Incidence", format: 'float', colorramp: CHOROPLETH_STYLE_INCIDENCE },

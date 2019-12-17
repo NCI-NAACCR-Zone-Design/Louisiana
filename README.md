@@ -155,3 +155,19 @@ Lastly, note that all ZIP files will include the `datascripts/readme.txt` file. 
 Also important:
 * The website's CSVs and JSON files under `static/data/` are the source for the content of the ZIP files. As such, it is recommended that `make_downloadables.py` be run *after* the other scripts which update those website files.
 * Don't forget to run `npm run build` after running `make_downloadables.py`, so your new files will show up in the website.
+
+
+### Adding or Changing Demographic Data
+
+If you want to add or change the demographic fields, the following checklist outlines the required updates. Most of these are covered elsewhere within this document.
+
+* The new demographics XLSX with the new fields: `datascripts/inputs/DemographicsByCTAZone.xlsx`
+  * The `Zone` field contains the CTA Zone ID, which must match those in the CTA Zones shapefile and incidence spreadsheets.
+* The data-prep script at `datascripts/make_demogcsv.py` will need modifications in three places:
+  * to validate the fields,
+  * to write the CSV's header row,
+  * and to write out the data rows.
+* Optional: Edit `DEMOGRAPHIC_TABLES` to display the demographic field in the tables below the map.
+  * Formatting of the values is controlled by the `format` option. See formatFieldValue() for a list of supported format types.
+* Optional: Edit `CHOROPLETH_OPTIONS` to offer the demographic field as a choropleth map option.
+  * Formatting of the values when displayed in the legend, is controlled by the `format` option. See formatFieldValue() for a list of supported format types.
