@@ -119,26 +119,26 @@ var BARCHART_COLORS_SEX = {
 // see initDemographicTables() which creates the tables in DOM during setup
 // see performSearchDemographics() which fills them in with demographic data when an area is selected
 // each table defintion is a title for the table, and a set of rows for the table
-// each row is the demographics CSV field to use, its text label, and a choice of formatting for it
+// each row is the demographics CSV field to use, its text label, a choice of formatting for the value, and optional tooltip_id from #tooltip_contents
 // see formatFieldValue() for a list of supported format types
 var DEMOGRAPHIC_TABLES = [
     {
         title: "Population & Income",
         rows: [
-            { field: 'PopAll', label: "Population", format: 'integer' },
-            { field: 'PerRural', label: "% Rural", format: 'percent' },
-            { field: 'PerUninsured', label: "% Without Health Insurance", format: 'percent' },
-            { field: 'QNSES', label: "Socioeconomic Status", format: 'text' },  // actually a number but Statewide this is null and we don't want to show a 0
+            { field: 'PopAll', label: "Population", format: 'integer', tooltip_id: undefined },
+            { field: 'PerRural', label: "% Rural", format: 'percent', tooltip_id: 'pctrural' },
+            { field: 'PerUninsured', label: "% Without Health Insurance", format: 'percent', tooltip_id: 'pctuninsured' },
+            { field: 'QNSES', label: "Socioeconomic Status", format: 'text', tooltip_id: 'nses' },  // actually a number but always single digit, Statewide this is null and we don't want to show a 0
         ],
     },
     {
         title: "Race & Ethnicity",
         rows: [
-            { field: 'PerWhite', label: "% Non-Hispanic White", format: 'percent' },
-            { field: 'PerBlack', label: "% Non-Hispanic Black", format: 'percent' },
-            { field: 'PerHispanic', label: "% Hispanic", format: 'percent' },
-            { field: 'PerAPI', label: "% Asian/Pacific Islander", format: 'percent' },
-            { field: 'PerForeignBorn', label: "% Foreign-Born", format: 'percent' },
+            { field: 'PerWhite', label: "% Non-Hispanic White", format: 'percent', tooltip_id: 'pctrace' },
+            { field: 'PerBlack', label: "% Non-Hispanic Black", format: 'percent', tooltip_id: 'pctrace' },
+            { field: 'PerHispanic', label: "% Hispanic", format: 'percent', tooltip_id: 'pctrace' },
+            { field: 'PerAPI', label: "% Asian/Pacific Islander", format: 'percent', tooltip_id: 'pctrace' },
+            { field: 'PerForeignBorn', label: "% Foreign-Born", format: 'percent', tooltip_id: 'pctforeign' },
         ],
     },
 ];
@@ -528,9 +528,11 @@ function initDemographicTables () {
 
         const $tbody = $table.children('tbody');
         tableinfo.rows.forEach(function (tablerowinfo) {
-            const $tr = $(`
+            const tooltiphtml = tablerowinfo.tooltip_id ? `<i class="fa fa-info-circle" aria-hidden="true" data-tooltip="${tablerowinfo.tooltip_id}"></i>` : '';
+
+            $(`
                 <tr>
-                    <th scope="row">${tablerowinfo.label}</th>
+                    <th scope="row">${tablerowinfo.label} ${tooltiphtml}</th>
                     <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="${tablerowinfo.field}"></span></td>
                     <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="${tablerowinfo.field}"></span></td>
                 </tr>
