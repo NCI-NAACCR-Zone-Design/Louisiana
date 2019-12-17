@@ -5,7 +5,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/static/favicon.png" />
+    <link rel="icon" href="./static/favicon.png" />
 
     <!-- jQuery and Bootstrap -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -55,8 +55,8 @@
     </script>
 
     <!-- our own awesomesauce -->
-    <link rel="stylesheet" type="text/css" href="index.css?Mon_Dec_16_2019_17_16_26_GMT_0800__Pacific_Standard_Time_" />
-    <script type="text/javascript" src="index.js?Mon_Dec_16_2019_17_16_26_GMT_0800__Pacific_Standard_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Tue_Dec_17_2019_11_22_27_GMT_0800__Pacific_Standard_Time_" />
+    <script type="text/javascript" src="index.js?Tue_Dec_17_2019_11_22_27_GMT_0800__Pacific_Standard_Time_"></script>
 </head>
 <body>
 
@@ -539,7 +539,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-6 left">
-                    <a href="https://www.greeninfo.org/" target="_blank"><img src="/static/greeninfo.png" style="height: 30px;" /></a>
+                    <a href="https://www.greeninfo.org/" target="_blank"><img src="./static/greeninfo.png" style="height: 30px;" /></a>
                     &nbsp;
                     Site by <a href="https://www.greeninfo.org/" target="_blank">GreenInfo Network</a>
                 </div>
@@ -558,6 +558,12 @@
     - the data download ZIP files metadata, makedownloadzip.py
     -->
     <div id="tooltip_contents" tabindex="-1">
+        <div aria-hidden="true" data-tooltip="race">
+            Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites.
+        </div>
+        <div aria-hidden="true" data-tooltip="sex">
+            California Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+        </div>
         <div aria-hidden="true" data-tooltip="cases">
             The number of new cases of cancer diagnosed in 2012-2016 (5 years)
         </div>
@@ -571,19 +577,7 @@
             Percent of residents who did not have health insurance.<br>
             <span class="source">Source: American Community Survey, 2008-2012.</span>
         </div>
-        <div aria-hidden="true" data-tooltip="pctwhite">
-            Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
-            <span class="source">Source: US Census, 2010.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctblack">
-            Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
-            <span class="source">Source: US Census, 2010.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pcthispanic">
-            Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
-            <span class="source">Source: US Census, 2010.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctasian">
+        <div aria-hidden="true" data-tooltip="pctrace">
             Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
             <span class="source">Source: US Census, 2010.</span>
         </div>
@@ -598,56 +592,6 @@
         <div aria-hidden="true" data-tooltip="nses">
             A composite measure of seven indicator variables created by principal component analysis; indicators include: education, blue collar job, unemployment, household income, poverty, rent, and house value.<br>
             <span class="source">Source: American Community Survey, 2008-2012.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="race">
-            Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites.
-        </div>
-        <div aria-hidden="true" data-tooltip="sex">
-            California Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
-        </div>
-        <div aria-hidden="true" data-tooltip="pctcolonscreen">
-            Percent of adults aged 50–75 years who have received a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the past 10 years.<br>
-            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctmammogram">
-            Percent of women aged 50-74 years who have received a mammogram in the past 2 years.<br>
-            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctcare65m">
-            Percent of men or women 65 years and older who have received all of the following: an influenza vaccination in the past year; a pneumococcal vaccination ever; either a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the previous 10 years.<br>
-            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctcare65f">
-            Percent of men or women 65 years and older who have received all of the following: an influenza vaccination in the past year; a pneumococcal vaccination ever; either a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the previous 10 years, and a mammogram in the past 2 years.<br>
-            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctcheckups">
-            Percent of adults who report having been to a doctor for a routine checkup (e.g., a general physical exam, not an exam for a specific injury, illness, condition) in the previous year.<br>
-            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctpap">
-            Percent of women aged 21–65 years who have not received a hysterectomy and have received a Papanicolaou (Pap) smear within the previous 3 years.<br>
-            <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctdelayedcare">
-            Delayed Care:</b> Percent of adults who delayed or did not get medicine/medical services in the past year.<br>
-            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctsmoke">
-            Percent of adults who are current smokers.<br>
-            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctfoodinsecure">
-            Percent of adults in low-income households (&lt;200% of the Federal Poverty Line) that are hungry or at risk of hunger.<br>
-            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctphysactive">
-            Percent of adults that walked at least 150 minutes in the past week for either leisure or transportation.<br>
-            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctobese">
-            Percent of adults with a body mass index (kilograms/square meter) of 30 or greater.<br>
-            <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
         </div>
     </div>
 
