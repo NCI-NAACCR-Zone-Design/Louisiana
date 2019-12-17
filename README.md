@@ -17,11 +17,19 @@ You need the **NVM** and **Yarn** command-line tools installed. To check, run `y
 
 You need to set up a Github repository where this will be hosted. The repository may be private. It must have Github Pages enabled and set to serve from the `docs/` directory (not the `gh-pages` branch).
 
-You need a shapefile of the cancer zones. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
+You need a shapefile of the CTA Zones. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
 
 You need your demographics dataset, giving statistics for each zone. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
 
-You need a spreadsheet of cancer statistics, giving statistics for each zone. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
+For those demographics data, you may find it helpful to have a list of all what demographic fields exist and how you would like them labelled.
+
+You need a spreadsheet of cancer incidence statistics, giving statistics for each zone. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
+
+For those cancer incidence statistics, you may find it helpful to have a list of all domain values for the Sex, Years
+
+You need a shapefile of county boundaries for your state. A good source is ftp://ftp2.census.gov/geo/tiger/TIGER2019/COUNTY/
+
+You need a shapefile of city/CDP boundaries for your state. A good source is You need a shapefile ftp://ftp2.census.gov/geo/tiger/TIGER2019/PLACE/
 
 
 ### Getting Started
@@ -60,30 +68,69 @@ The `datascripts/` folder has some tools written in Python for importing your ow
 
 The sample files provided in `datascripts/inputs/` were used to set up the template demo, and may be a useful reference.
 
-* *DemographicsByCTAZone.xlsx* -- Demographic statistics source file, Excel spreadsheet.
-  * One row per CTA Zone.
-  * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
-  * The special `Zone` name *Statewide* should be used to indicate statewide data.
+* *tl_2019_XX_place.shp* -- Shapefile of census designated places, used to create a CSV of which cities/towns intersect each CTA Zone.
+  * The provided version was downloaded from ftp://ftp2.census.gov/geo/tiger/TIGER2019/PLACE/ The FTP site names the files by the state's FIPS code, e.g. California is FIPS code *06*.
+  * This should be provided in WGS84 (plain lat-lon) SRS.
+  * Relevant attributes are as follows:
+    * `PLACEFP` -- The FIPS code for this county. Used as a unique ID. If you use a different field name, edit the `CITYBOUNDS_IDFIELD` setting in `settings.py`.
+    * `NAME` -- The name of the city/place. If you use a different field name, edit the `CITYBOUNDS_NAMEFIELD` setting in `datascripts/settings.py`
+* *tl_2019_us_county.shp* -- Shapefile of counties, used to create a CSV of which counties intersect each CTA Zone.
+  * This should be provided in WGS84 (plain lat-lon) SRS.
+  * The provided version was downloaded from ftp://ftp2.census.gov/geo/tiger/TIGER2019/COUNTY/ The FTP site has one county file for all of the United States, and you will need to crop it to your state.
+  * The following attributes are used (see `settings.py`) and others are ignored:
+    * `COUNTYFP` -- The FIPS code for this county. Used as a unique ID. If you use a different field name, edit the `COUNTYBOUNDS_IDFIELD` setting in `settings.py`.
+    * `NAME` -- The name of the county. If you use a different field name, edit the `COUNTYBOUNDS_NAMEFIELD` setting in `datascripts/settings.py`
 * *IncidenceByCTAZone.xlsx* -- Excel spreadsheet providing cancer incidence data.
   * One row per combination of CTA Zone X Sex X Site X Time Frame.
   * The `Zones` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
-  * The special `Zone` name *Statewide* should be used to indicate statewide data.
+  * The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" will not be recignozed as Statewide!
+  * The worksheet to use is defined in `settings.py` in the `INPUT_CANCERXLS_SHEETNAME` setting. If you get an error that the worksheet doesn't exist, check this setting.
+  * The fields must be named as follows, and in this sequence:
+    * `ID` -- a unique ID for this row, not really used and OK to just enter anything. Do not leave this blank, as this would look like a blank row and be skipped.
+    * `sex` -- Domain value for filtering by sex.
+    * `cancer` -- Domain value for filtering by cancer site.
+    * `years` -- Domain value for filtering by time frame.
+    * `Zones` -- CTA Zone ID, correspnding to a CTA Zone in the CTA Zones shapefile.
+    * `W_PopTot` -- the PopTot, Cases, AAIR, LCI, and UCI are repeated for each Race option W, B, H, A
+    * `W_Cases`
+    * `W_AAIR`
+    * `W_LCI`
+    * `W_UCI`
+    * `B_PopTot`
+    * `B_Cases`
+    * `B_AAIR`
+    * `B_LCI`
+    * `B_UCI`
+    * `H_PopTot`
+    * `H_Cases`
+    * `H_AAIR`
+    * `H_LCI`
+    * `H_UCI`
+    * `A_PopTot`
+    * `A_Cases`
+    * `A_AAIR`
+    * `A_LCI`
+    * `A_UCI`
+    * `PopTot` -- Total population for AAIR calculation purposes
+    * `Cases` -- Number of cases of this cancer site + sex + time in this CTA Zone
+    * `AAIR` -- Age-adjusted incidence rate of this cancer site + sex + time in this CTA Zone
+    * `LCI` -- Lower end of confidence interval (LCI) for the AAIR
+    * `UCI` -- Upper end of confidence interval (UCI) for the AAIR
+* *DemographicsByCTAZone.xlsx* -- Demographic statistics source file, Excel spreadsheet.
+  * One row per CTA Zone.
+  * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
+  * The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" will not be recignozed as Statewide!
+  * The worksheet to use is defined in `settings.py` in the `INPUT_DEMOGXLS_SHEETNAME` setting. If you get an error that the worksheet doesn't exist, check this setting.
+  * The set of fields will vary, and you will need to make some edits:
+    * Edit `make_demogcsv.py` to validate your fields, and also to copy them into the output CSV.
+    * Edit `aggregateDemographicData()` in `make_downloadables.py` to define what fields are placed in the downloadable CSV and ZIP files.
 * *CTAZones.shp* -- CTA Zones shapefile, providing boundaries for the map.
   * This should be provided in WGS84 (plain lat-lon) SRS.
-  * Relevant attributes are as follows:
-    * `Zone` -- CTA Zone's unique ID, used to tie to other data (demogs, incidence)
-    * `ZoneName` -- CTA Zone's name for display
-* *tl_2019_06_place.shp* -- Shapefile of census designated places, used to create a CSV of which cities/towns intersect each CTA Zone.
-  * This should be provided in WGS84 (plain lat-lon) SRS.
-  * The provided version was downloaded from ftp://ftp2.census.gov/geo/tiger/TIGER2019/PLACE/ then cropped to those areas which intersect any CTA Zone. A second, manual clipping was also done to remove those which only intersect accidentally at edges.
-  * Relevant attributes are as follows:
-    * `NAME` -- The name of the county. See also the `CITYBOUNDS_NAMEFIELD` setting in `datascripts/settings.py`
-* *tl_2019_us_county.shp* -- Shapefile of counties, used to create a CSV of which counties intersect each CTA Zone.
-  * This should be provided in WGS84 (plain lat-lon) SRS.
-  * The provided version was downloaded from ftp://ftp2.census.gov/geo/tiger/TIGER2019/COUNTY/ then cropped to those areas which intersect any CTA Zone. A second, manual clipping was also done to remove those which only intersect accidentally at edges.
-  * Relevant attributes are as follows:
-    * `NAME` -- The name of the county. See also the `COUNTYBOUNDS_NAMEFIELD` setting in `datascripts/settings.py`
+  * Relevant attributes are as follows, and other fields will be ignored:
+    * `Zone` -- CTA Zone's unique ID, used to tie to other data (demogs, incidence). If you use a different feld name, edit the `CTAZONES_SHAPEFILE_IDFIELD` setting in `settings.py`.
+    * `ZoneName` -- CTA Zone's name for display. If you use a different feld name, edit the `CTAZONES_SHAPEFILE_NAMEFIELD` setting in `settings.py`.
 * *readme.txt* -- This file will be included in each of the downloadable ZIP files. This would be suitable as metadata such as a data dictionary, a disclaimer, credits, etc.
+  * Depending on your demographic statistics, you probably want to edit this.
 
 The scripts are written for Python 3, and are as follows. It is recommended that they be run in this order.
 
@@ -141,13 +188,22 @@ Some cancers may be specific to a single sex, e.g. uterine cancer does not occur
 
 The downloadable ZIP files are created by the `datascripts/make_downloadables.py` script.
 
+#### Controlling Which Fields Appear
+
 The functions `aggregateIncidenceData()` and `aggregateDemographicData()` will read the incidence dataset and the demographic dataset, and will perform various massage/correction to the data, and will rename fields for the purpose of putting them in the output files.
 
 The function `csvHeaderRow()` defines the sequence of fields as they appear in the CSV. All fields here must be the fields created in `aggregateIncidenceData()` and `aggregateDemographicData()` However, it is *not required* that every field in `aggregateIncidenceData()` and `aggregateDemographicData()` be used in the final, downloadable CSVs.
 
-Lastly, note that all ZIP files will include the `datascripts/readme.txt` file. This would be suitable as metadata such as a data dictionary, a disclaimer, credits, etc.
+#### The Readme File
 
-Also important:
+All generated ZIP files will include the `datascripts/readme.txt` file. This would be suitable as metadata such as a data dictionary, a disclaimer, credits, etc.
+
+#### Website URL
+
+The CSVs contain a `URL` field, which is a hyperlink to the website with that CTA Zone automatically selected. The URL used is the `WEBSITE_URL` setting in `settings.py`
+
+#### Other Notes
+
 * The website's CSVs and JSON files under `static/data/` are the source for the content of the ZIP files. As such, it is recommended that `make_downloadables.py` be run *after* the other scripts which update those website files.
 * Don't forget to run `npm run build` after running `make_downloadables.py`, so your new files will show up in the website.
 
@@ -162,6 +218,10 @@ If you want to add or change the demographic fields, the following checklist out
   * to validate the fields,
   * to write the CSV's header row,
   * and to write out the data rows.
+* The data-prep script at `datascripts/make_downloadables.py` will be used to re-create new downloadable CSVs and ZIPs, and you probably need to make some changes:
+  * Edit `aggregateDemographicData()` to reflect your demographic fields, as well as any data formatting, handling of no-data values, or other formatting.
+  * Edit `csvHeaderRow()` to put the massaged/formatted field into the final output CSV.
+  * Optional: Edit the `inputs/readme.txt` file which describes the fields.
 * Optional: Edit `DEMOGRAPHIC_TABLES` to display the demographic field in the tables below the map.
   * Formatting of the values is controlled by the `format` option. See formatFieldValue() for a list of supported format types.
 * Optional: Edit `CHOROPLETH_OPTIONS` to offer the demographic field as a choropleth map option.

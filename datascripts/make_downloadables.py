@@ -234,14 +234,17 @@ class DownloadableZipsMaker:
         # meaning this array can be used as CSV header, and also looped over to fetch fields when generating a CSV
         # in fact, see formatRowsForCsv() where we do exactly that
         return [
+            # the CTA Zone and an URL to the website
             'Zone',
-            'Counties',
-            'Cities',
             'URL',
+            # the filter criteria: sex, site, time
             'Sex',
             'Cancer',
             'Years',
-            'PopTot',
+            # counties and cities
+            'Counties',
+            'Places',
+            # AAIR/UCI/LCI for overall and then by races; these could vary if your set of race filters is different
             'AAIR',
             'LCI',
             'UCI',
@@ -261,6 +264,7 @@ class DownloadableZipsMaker:
             'Asian_AAIR',
             'Asian_LCI',
             'Asian_UCI',
+            # demographics, which tend to vary a lot between setups
             'QNSES',
             'PopAll',
             'PerRural',
@@ -299,7 +303,7 @@ class DownloadableZipsMaker:
                 thisrow['URL'] = thiszonestats['URL']
                 # add cities and counties
                 thisrow['Counties'] = ", ".join(thiszonestats['counties']) if 'counties' in thiszonestats else None
-                thisrow['Cities'] = ", ".join(thiszonestats['cities']) if 'cities' in thiszonestats else None
+                thisrow['Places'] = ", ".join(thiszonestats['cities']) if 'cities' in thiszonestats else None
                 # add demographics
                 for k, v in thiszonestats['demogs'].items():
                     thisrow[k] = v
