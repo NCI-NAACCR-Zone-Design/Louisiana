@@ -11,7 +11,8 @@ class ZoneFileConverter:
 
         print("    Reading {}".format(settings.INPUT_ZONESFILE))
 
-        command = "mapshaper {} -quiet -rename-layers {} -filter-fields {} -rename-fields {} -simplify dp {} -o format=topojson quantization={} precision={} {}".format(
+        command = "{} {} -quiet -rename-layers {} -filter-fields {} -rename-fields {} -simplify dp {} -o format=topojson quantization={} precision={} {}".format(
+            settings.MAPSHAPER_CLI,
             settings.INPUT_ZONESFILE,
             'ctazones',
             ','.join([

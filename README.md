@@ -15,8 +15,6 @@ See a demonstration at https://greeninfo-network.github.io/Westat-Cancer-Templat
 
 You need the **NVM** and **Yarn** command-line tools installed. To check, run `yarn --version` and `nvm --version`
 
-You need the Mapshaper CLI and GDAL/OGR CLI tools installed. To check, run `mapshaper -version` and `ogr2ogr --version`
-
 You need to set up a Github repository where this will be hosted. The repository may be private. It must have Github Pages enabled and set to serve from the `docs/` directory (not the `gh-pages` branch).
 
 You need a shapefile of the cancer zones. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
@@ -36,7 +34,7 @@ Select the appropriate Node version: `nvm use`
 
 Install dependencies: `yarn -i`
 
-Start the Webpack development web server: `npm run start` This will run a web server at http://localhost:8181/ where you can see your website under developments.
+Start the Webpack development web server: `npm run start` This will run a web server at http://localhost:8181/ where you can see your website under development.
 
 Edit the files under `src/` as needed. See the rest of this document for details on the types of changes you will want to make.
 

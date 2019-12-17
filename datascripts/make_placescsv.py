@@ -11,61 +11,25 @@ class PlacesIntersector:
     def run(self):
         print("PlacesIntersector")
 
-        self.reproject()
+        self.reproject(settings.INPUT_ZONESFILE, settings.REPROJECTED_ZONESFILE, settings.CTAZONES_SHAPEFILE_IDFIELD, settings.CTAZONES_SHAPEFILE_NAMEFIELD)
+        self.reproject(settings.INPUT_CITYBOUNDS_SHP, settings.REPROJECTED_CITY_SHP, settings.CITYBOUNDS_IDFIELD, settings.CITYBOUNDS_NAMEFIELD)
+        self.reproject(settings.INPUT_COUNTYBOUNDS_SHP, settings.REPROJECTED_COUNTY_SHP, settings.COUNTYBOUNDS_IDFIELD, settings.COUNTYBOUNDS_NAMEFIELD)
+
         self.findplaces(settings.REPROJECTED_CITY_SHP, settings.OUTPUT_CITYCSV, 'City')
         self.findplaces(settings.REPROJECTED_COUNTY_SHP, settings.OUTPUT_COUNTYCSV, 'County')
 
-    def reproject(self):
-        print("    Reproject")
+    def reproject(self, inputshp, outputshp, idfield, namefield):
+        # reproject the shapefile to an Albers so we can do area calculations in findplaces()
+        # and to standardize on there being only one attribute: name
+        print("    Reproject {}  => {}".format(inputshp, outputshp))
 
-        print("        {}  => {}".format(settings.INPUT_ZONESFILE, settings.REPROJECTED_ZONESFILE))
-
-        for ext in ['shp', 'shx', 'dbf', 'prj']:  # delete the target shapefile
-            basename = os.path.splitext(settings.REPROJECTED_ZONESFILE)[0]
-            if os.path.exists("{}.{}".format(basename, ext)):
-                os.unlink("{}.{}".format(basename, ext))
-
-        command = "ogr2ogr -t_srs epsg:3310 -sql 'SELECT {} AS id, {} AS name FROM {}' {} {}".format(
-            settings.CTAZONES_SHAPEFILE_IDFIELD, settings.CTAZONES_SHAPEFILE_NAMEFIELD,
-            os.path.splitext(os.path.basename(settings.INPUT_ZONESFILE))[0],
-            settings.REPROJECTED_ZONESFILE,
-            settings.INPUT_ZONESFILE
-        )
-        # print(command)
-        os.system(command)
-
-        # reproject the SHP to Albers 3310 so we can do accurate area measurements
-        # using an area threshold eliminates edge effects where a county/city intersects by 1 pixel
-        print("        {}  => {}".format(settings.INPUT_CITYBOUNDS_SHP, settings.REPROJECTED_CITY_SHP))
-
-        for ext in ['shp', 'shx', 'dbf', 'prj']:  # delete the target shapefile
-            basename = os.path.splitext(settings.REPROJECTED_CITY_SHP)[0]
-            if os.path.exists("{}.{}".format(basename, ext)):
-                os.unlink("{}.{}".format(basename, ext))
-
-        command = "ogr2ogr -t_srs epsg:3310 -sql 'SELECT {} AS name FROM {}' {} {}".format(
-            settings.CITYBOUNDS_NAMEFIELD,
-            settings.INPUT_CITYBOUNDS_SHP_LAYERNAME,
-            settings.REPROJECTED_CITY_SHP,
-            settings.INPUT_CITYBOUNDS_SHP
-        )
-        # print(command)
-        os.system(command)
-
-        # reproject the SHP to Albers 3310 so we can do accurate area measurements
-        # using an area threshold eliminates edge effects where a county/city intersects by 1 pixel
-        print("        {}  => {}".format(settings.INPUT_COUNTYBOUNDS_SHP, settings.REPROJECTED_COUNTY_SHP))
-
-        for ext in ['shp', 'shx', 'dbf', 'prj']:  # delete the target shapefile
-            basename = os.path.splitext(settings.REPROJECTED_COUNTY_SHP)[0]
-            if os.path.exists("{}.{}".format(basename, ext)):
-                os.unlink("{}.{}".format(basename, ext))
-
-        command = "ogr2ogr -t_srs epsg:3310 -sql 'SELECT {} AS name FROM {}' {} {}".format(
-            settings.COUNTYBOUNDS_NAMEFIELD,
-            settings.INPUT_COUNTYBOUNDS_SHP_LAYERNAME,
-            settings.REPROJECTED_COUNTY_SHP,
-            settings.INPUT_COUNTYBOUNDS_SHP
+        command = "{} {} -proj {} -filter-fields {} -rename-fields name={},id={} -o {} -quiet".format(
+            settings.MAPSHAPER_CLI,
+            inputshp,
+            settings.PLANAR_SRS,
+            ','.join([idfield, namefield]),
+            namefield, idfield,
+            outputshp
         )
         # print(command)
         os.system(command)

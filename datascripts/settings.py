@@ -42,12 +42,12 @@ INPUT_DEMOGXLS_SHEETNAME = 'Sheet1'
 # Census Designated Places shapefile and the County shapefile
 # used for the CTA-to-City and CTA-to-County CSV lookup CSVs
 INPUT_COUNTYBOUNDS_SHP = "./inputs/tl_2019_us_county.shp"
-INPUT_COUNTYBOUNDS_SHP_LAYERNAME = "tl_2019_us_county"
+COUNTYBOUNDS_IDFIELD = "COUNTYFP"
 COUNTYBOUNDS_NAMEFIELD = "NAME"
 REPROJECTED_COUNTY_SHP = "./tempfiles/counties.shp"
 
 INPUT_CITYBOUNDS_SHP = "./inputs/tl_2019_06_place.shp"
-INPUT_CITYBOUNDS_SHP_LAYERNAME = "tl_2019_06_place"
+CITYBOUNDS_IDFIELD = "PLACEFP"
 CITYBOUNDS_NAMEFIELD = "NAME"
 REPROJECTED_CITY_SHP = "./tempfiles/cities.shp"
 
@@ -55,6 +55,17 @@ REPROJECTED_CITY_SHP = "./tempfiles/cities.shp"
 SIMPLIFY = "20%"
 QUANTIZE = "1e5"
 LATLNGPRECISION = 0.0001
+
+# the path to the mapshaper CLI tool
+# this should be in node_modules/.bin as it was installed via yarn/npm
+MAPSHAPER_CLI = "../node_modules/.bin/mapshaper"
+
+# choose a planar SRS which preserves area well, e.g. EPSG:3083 for Texas-centric AEA, or 3310 for California Teale-Albers
+# this is used for finding the area of intersection, for finding city/county overlaps to CTA Zones
+PLANAR_SRS = "EPSG:3083"
+
+# and when reprojecting to a globe (lat-long) the SRS to use
+GLOBE_SRS = "EPSG:4326"
 
 # other constants and calculations
 SQMETERS_TO_ACRES = 0.000247105

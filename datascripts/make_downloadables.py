@@ -160,15 +160,12 @@ class DownloadableZipsMaker:
     def createMasterShapefile(self):
         print("    Generating CTA shapefile")
 
-        for ext in ['shp', 'shx', 'dbf', 'prj']:  # delete the target shapefile
-            basename = os.path.splitext(settings.TEMP_CTASHPFILE)[0]
-            if os.path.exists("{}.{}".format(basename, ext)):
-                os.unlink("{}.{}".format(basename, ext))
-
-        command = 'ogr2ogr -s_srs EPSG:4326 -t_srs EPSG:3310 -sql "SELECT Zone, ZoneName FROM {} ORDER BY Zone" {} {}'.format(
-            'ctazones',
-            settings.TEMP_CTASHPFILE,
-            settings.OUTPUT_CTATOPOJSON
+        command = "{} {} -proj {} -filter-fields {} -o {} -quiet".format(
+            settings.MAPSHAPER_CLI,
+            settings.OUTPUT_CTATOPOJSON,
+            settings.GLOBE_SRS,
+            ','.join(['Zone', 'ZoneName']),
+            settings.TEMP_CTASHPFILE
         )
         # print(command)
         os.system(command)
