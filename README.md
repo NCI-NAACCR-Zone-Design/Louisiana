@@ -4,6 +4,10 @@ This is a template for web developers to set to a website of cancer statistics l
 
 This is not a turnkey product with a 5-minute installer. It is a starting place for a web developer to set up a cancer mapper, and to begin customizing their own website.
 
+See the project on Github at https://github.com/GreenInfo-Network/Westat-Cancer-Template
+
+See a demonstration at https://greeninfo-network.github.io/Westat-Cancer-Template/
+
 
 ## Overview
 
