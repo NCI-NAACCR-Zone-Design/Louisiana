@@ -1081,10 +1081,13 @@ function performSearchIncidenceReadout (searchparams) {
         const value_lci = searchparams.race ? cancerdata_cta[`${searchparams.race}_LCI`] : cancerdata_cta['LCI'];
         const value_uci = searchparams.race ? cancerdata_cta[`${searchparams.race}_UCI`] : cancerdata_cta['UCI'];
 
-        if (value_cases != null) text_cases_cta = value_cases.toLocaleString();
-        if (value_aair != null) text_aair_cta = value_aair.toFixed(1);
+        const has_cases = ! isNaN(parseInt(value_cases));
+        const has_aair = ! isNaN(parseFloat(value_cases));
 
-        if (value_cases != null && value_aair != null) {
+        if (has_cases) text_cases_cta = value_cases.toLocaleString();
+        if (has_aair) text_aair_cta = value_aair.toFixed(1);
+
+        if (has_cases && has_aair) {
             const lcitext = (searchparams.race ? cancerdata_cta[`${searchparams.race}_LCI`] : cancerdata_cta['LCI']).toFixed(1);
             const ucitext = (searchparams.race ? cancerdata_cta[`${searchparams.race}_UCI`] : cancerdata_cta['UCI']).toFixed(1);
             text_lciuci_cta = `(${lcitext}, ${ucitext})`;
@@ -1100,10 +1103,13 @@ function performSearchIncidenceReadout (searchparams) {
         const value_lci = searchparams.race ? cancerdata_state[`${searchparams.race}_LCI`] : cancerdata_state['LCI'];
         const value_uci = searchparams.race ? cancerdata_state[`${searchparams.race}_UCI`] : cancerdata_state['UCI'];
 
-        if (value_cases != null) text_cases_state = value_cases.toLocaleString();
-        if (value_aair != null) text_aair_state = value_aair.toFixed(1);
+        const has_cases = ! isNaN(parseInt(value_cases));
+        const has_aair = ! isNaN(parseFloat(value_cases));
 
-        if (value_cases != null && value_aair != null) {
+        if (has_cases) text_cases_state = value_cases.toLocaleString();
+        if (has_aair) text_aair_state = value_aair.toFixed(1);
+
+        if (has_cases && has_aair) {
             const lcitext = (searchparams.race ? cancerdata_state[`${searchparams.race}_LCI`] : cancerdata_state['LCI']).toFixed(1);
             const ucitext = (searchparams.race ? cancerdata_state[`${searchparams.race}_UCI`] : cancerdata_state['UCI']).toFixed(1);
             text_lciuci_state = `(${lcitext}, ${ucitext})`;
