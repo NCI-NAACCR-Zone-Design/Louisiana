@@ -903,7 +903,7 @@ function performSearchReally (searchparams) {
     performSearchDemographics(searchparams);
     performSearchPlaces(searchparams);
     performSearchIncidenceReadout(searchparams);
-    performSearchIncidenceChart(searchparams);
+    performSearchIncidenceBarChart(searchparams);
     performSearchMap(searchparams);
     performSearchUpdateDataDownloadLinks(searchparams);
 }
@@ -1101,15 +1101,15 @@ function performSearchIncidenceReadout (searchparams) {
 }
 
 
-function performSearchIncidenceChart (searchparams) {
-    // incidence chart is multipl rows:
-    // filter by CTA and cancer, but keep data for all sex rows, and categorize by race
+function performSearchIncidenceBarChart (searchparams) {
+    // fill in text areas e.g. CTA Zone name
+    const $chart_section  = $('#incidence-barchart-section');
+    $chart_section.find('span[data-statistic="cancersite"]').text( getLabelFor('site', searchparams.site) );
+    $chart_section.find('span[data-statistics="ctaname"]').text(searchparams.ctaname);
+    $chart_section.find('span[data-statistics="ctaid"]').text(searchparams.ctaid ? `(${searchparams.ctaid})` : '');
 
-    // fill in this text; they want to re-re-state the cancer selection here too
-    let cancertext = getLabelFor('site', searchparams.site);
-    $('div.data-readouts span[data-statistic="cancersite"]').text(cancertext);
-
-    // filter to the cancer + CTA then sub-=filter by sex
+    // incidence chart is multiple rows: filter by CTA+cancer+time, but keep data for all sex rows, and categorize by race
+    // filter to the cancer + CTA then sub-filter by sex
     // note that we could end up with 0 rows for some of these, e.g. there is no row for Male Uterine nor Female Prostate
     const cancerdata = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.years == searchparams.time && row.cancer == searchparams.site);
     const cancerdata_both = cancerdata.filter(row => row.sex == 'Both')[0];
