@@ -29,11 +29,6 @@ var MAX_ZOOM = 15;
 // for the geocoder: our Bing API key
 var BING_API_KEY = '';
 
-// colors for the incidence bar chart
-var BARCHART_COLOR_ALL = '#446374';
-var BARCHART_COLOR_FEMALE = '#8caec0';
-var BARCHART_COLOR_MALE = '#c4deec';
-
 // URLs of our data files, storage for them in memory for filtering and querying, and raw copies for exporting
 var DATA_URL_CTAGEOM = 'static/data/cta.json';
 var DATA_URL_CANCER = 'static/data/cancerincidence.csv';
@@ -111,6 +106,13 @@ var CTA_STYLE_DEMOG = {
     Q3: { fillOpacity: 0.75, fillColor: '#7683c2', stroke: false },
     Q4: { fillOpacity: 0.75, fillColor: '#4b5aa3', stroke: false },
     Q5: { fillOpacity: 0.75, fillColor: '#293885', stroke: false },
+};
+
+// colors for the incidence bar chart; these mirror the SEARCHOPTIONS_SEX options
+var BARCHART_COLORS_SEX = {
+    'Both': '#446374',
+    'Female': '#8caec0',
+    'Male': '#c4deec',
 };
 
 // definitions for the table(s) of demographic info to show beneath the map and incidence table
@@ -1108,49 +1110,35 @@ function performSearchIncidenceBarChart (searchparams) {
     $chart_section.find('span[data-statistics="ctaname"]').text(searchparams.ctaname);
     $chart_section.find('span[data-statistics="ctaid"]').text(searchparams.ctaid ? `(${searchparams.ctaid})` : '');
 
-    // incidence chart is multiple rows: filter by CTA+cancer+time, but keep data for all sex rows, and categorize by race
-    // filter to the cancer + CTA then sub-filter by sex
-    // note that we could end up with 0 rows for some of these, e.g. there is no row for Male Uterine nor Female Prostate
-    const cancerdata = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.years == searchparams.time && row.cancer == searchparams.site);
-    const cancerdata_both = cancerdata.filter(row => row.sex == 'Both')[0];
-    const cancerdata_female = cancerdata.filter(row => row.sex == 'Female')[0];
-    const cancerdata_male = cancerdata.filter(row => row.sex == 'Male')[0];
+    // incidence chart is multiple rows: filter by CTA+cancer+time, but keep data for all sexes
+    // note that we could end up with 0 rows for some of these, e.g. Male Uterine nor Female Prostate, so undefined is a condition to handle
+    const incidencedata = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.years == searchparams.time && row.cancer == searchparams.site);
+    const incidencebysex = {};
+    SEARCHOPTIONS_SEX.forEach(function (sexoption) {
+        incidencebysex[sexoption.value] = incidencedata.filter(row => row.sex == sexoption.value)[0];
+    });
 
-    // form the chart series, categorizing by race (which is a field, not a filter)
-    const barchart_categories = [
-        getLabelFor('race', ''),
-        getLabelFor('race', 'W'),
-        getLabelFor('race', 'B'),
-        getLabelFor('race', 'H'),
-        getLabelFor('race', 'A'),
-    ];
-    const barchart_all = [
-        cancerdata_both ? cancerdata_both.AAIR : 0,
-        cancerdata_both ? cancerdata_both.W_AAIR : 0,
-        cancerdata_both ? cancerdata_both.B_AAIR : 0,
-        cancerdata_both ? cancerdata_both.H_AAIR : 0,
-        cancerdata_both ? cancerdata_both.A_AAIR : 0,
-    ];
-    const barchart_female = [
-        cancerdata_female ? cancerdata_female.AAIR : 0,
-        cancerdata_female ? cancerdata_female.W_AAIR : 0,
-        cancerdata_female ? cancerdata_female.B_AAIR : 0,
-        cancerdata_female ? cancerdata_female.H_AAIR : 0,
-        cancerdata_female ? cancerdata_female.A_AAIR : 0,
-    ];
-    const barchart_male = [
-        cancerdata_male ? cancerdata_male.AAIR : 0,
-        cancerdata_male ? cancerdata_male.W_AAIR : 0,
-        cancerdata_male ? cancerdata_male.B_AAIR : 0,
-        cancerdata_male ? cancerdata_male.H_AAIR : 0,
-        cancerdata_male ? cancerdata_male.A_AAIR : 0,
-    ];
+    // form the chart series for consumption by Highcharts
+    // race options form the categories, the sex options form the series
+    const barchart_categories = SEARCHOPTIONS_RACE.map(function (raceoption) {
+        return getLabelFor('race', raceoption.value);
+    });
+    const chartseries = SEARCHOPTIONS_SEX.map(function (sexoption) {
+        const incidencedatarow = incidencebysex[sexoption.value];  // the data row from above
 
-    const chartseries = [
-        { name: 'All Sexes', data: barchart_all, color: BARCHART_COLOR_ALL },
-        { name: 'Female', data: barchart_female, color: BARCHART_COLOR_FEMALE },
-        { name: 'Male', data: barchart_male, color: BARCHART_COLOR_MALE },
-    ];
+        const series = {  // Highcharts format: name, color, data[]
+            name: sexoption.label,
+            color: BARCHART_COLORS_SEX[sexoption.value],
+            data: SEARCHOPTIONS_RACE.map(function (raceoption) {  // values in the series, corresponding to the barchart_categories = AAIR for each race option
+                if (! incidencedatarow) return 0;  // no data for this sex = return all-0s
+                const field = raceoption.value ? `${raceoption.value}_AAIR` : 'AAIR';  // AAIR=total overall incidence; X_AAIR=incidence rate for a given race
+                const value = incidencedatarow[field];
+                return value;
+            }),
+        };
+
+        return series;
+    });
 
     // chart it!
     // a special hack here to insert "data not calculated" text any place where data are 0
