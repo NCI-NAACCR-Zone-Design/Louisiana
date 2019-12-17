@@ -64,15 +64,10 @@ The sample files provided in `datascripts/inputs/` were used to set up the templ
   * One row per CTA Zone.
   * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
   * The special `Zone` name *Statewide* should be used to indicate statewide data.
-  * GDA TBD note here about potential `DEMOGRAPHICS_TABLE` structure and how these fields may be made visible in the Demographics table.
-  * GDA TBD note here about potential `CHOROPLETH_OPTIONS` structure and how these fields may be used as options for choropleth maps.
 * *IncidenceByCTAZone.xlsx* -- Excel spreadsheet providing cancer incidence data.
   * One row per combination of CTA Zone X Sex X Site X Time Frame.
   * The `Zones` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
   * The special `Zone` name *Statewide* should be used to indicate statewide data.
-  * GDA TBD note here about potential `SEARCH_CANCERSITES` structure and how one would configure their set of cancer sites.
-  * GDA TBD note here about potential `SEARCH_DATERANGES` structure and how one would configure their set of date ranges as a search filter.
-  * GDA TBD note here about potential `CHOROPLETH_OPTIONS` structure and how these fields may be used as options for choropleth maps.
 * *CTAZones.shp* -- CTA Zones shapefile, providing boundaries for the map.
   * This should be provided in WGS84 (plain lat-lon) SRS.
   * Relevant attributes are as follows:
