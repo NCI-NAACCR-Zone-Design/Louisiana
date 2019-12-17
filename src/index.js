@@ -113,6 +113,34 @@ var CTA_STYLE_DEMOG = {
     Q5: { fillOpacity: 0.75, fillColor: '#293885', stroke: false },
 };
 
+// definitions for the table(s) of demographic info to show beneath the map and incidence table
+// see initDemographicTables() which creates the tables in DOM during setup
+// see performSearchDemographics() which fills them in with demographic data when an area is selected
+// each table defintion is a title for the table, and a set of rows for the table
+// each row is the demographics CSV field to use, its text label, and a choice of formatting for it
+// see formatFieldValue() for a list of supported format types
+var DEMOGRAPHIC_TABLES = [
+    {
+        title: "Population & Income",
+        rows: [
+            { field: 'PopAll', label: "Population", format: 'integer' },
+            { field: 'PerRural', label: "% Rural", format: 'percent' },
+            { field: 'PerUninsured', label: "% Without Health Insurance", format: 'percent' },
+            { field: 'QNSES', label: "Socioeconomic Status", format: 'text' },  // actually a number but Statewide this is null and we don't want to show a 0
+        ],
+    },
+    {
+        title: "Race & Ethnicity",
+        rows: [
+            { field: 'PerWhite', label: "% Non-Hispanic White", format: 'percent' },
+            { field: 'PerBlack', label: "% Non-Hispanic Black", format: 'percent' },
+            { field: 'PerHispanic', label: "% Hispanic", format: 'percent' },
+            { field: 'PerAPI', label: "% Asian/Pacific Islander", format: 'percent' },
+            { field: 'PerForeignBorn', label: "% Foreign-Born", format: 'percent' },
+        ],
+    },
+];
+
 // the style to use for the MAP_LAYERS.county GeoJSON overlay
 var COUNTYBOUNDS_STYLE = { fill: false, color: 'black', weight: 2 };
 
@@ -246,6 +274,7 @@ $(document).ready(function () {
         initFixCountyOverlay();
 
         // and we can finally get started!
+        initDemographicTables();
         initMapAndPolygonData();
         initDataFilters();
         initTooltips();
@@ -355,7 +384,6 @@ function initFixDemographicDataset () {
 
 
 function initFixCountyOverlay () {
-//GDA
     const maplayerinfo = MAP_LAYERS.filter(function (maplayerinfo) { return maplayerinfo.id == 'counties'; })[0];
     maplayerinfo.layer = L.topoJson(COUNTYTOPOJSONDATA, {
         pane: 'tooltipPane',
@@ -379,7 +407,6 @@ function initPrintPage () {
     const originalclasslist = $mapdomnode.className;
 
     const $incidencebarchart = $('#incidence-barchart');
-    const $demogtablecolumns = $('div.demog-readouts > div.row > div')
 
     $printbutton.data('ready-html', $printbutton.html() );  // fetch whatever the HTML is when the page loads, so we don't have to repeat ourselves here
     $printbutton.data('busy-html', '<i class="fa fa-clock"></i> Printing');
@@ -392,14 +419,10 @@ function initPrintPage () {
         $incidencebarchart.addClass('printing');
         window.dispatchEvent(new Event('resize'));
 
-        $demogtablecolumns.removeClass('col-md-6').addClass('col-12')
-
         setTimeout(function () {
             window.print();
 
             $incidencebarchart.removeClass('printing');
-
-            $demogtablecolumns.addClass('col-md-6').removeClass('col-12')
 
             $mapdomnode.className = originalclasslist;
             MAP.invalidateSize();
@@ -479,6 +502,40 @@ function initDownloadButtons () {
 
         // clear the "print mode hacks" in the map controls that were kept visible
         MAP.choroplethcontrol.setPrintMode(false);
+    });
+}
+
+
+function initDemographicTables () {
+    const $demographics_section = $('#demographic-tables');
+
+    DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
+        const $table = $(`
+            <table class="table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th class="nowrap left"><span class="subtitle" tabindex="0">${tableinfo.title}</span></th>
+                        <th class="nowrap right" data-region="cta" aria-hidden="true">Zone</th>
+                        <th class="nowrap right" data-region="state" aria-hidden="true">Statewide</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        `);
+
+        const $tbody = $table.children('tbody');
+        tableinfo.rows.forEach(function (tablerowinfo) {
+            const $tr = $(`
+                <tr>
+                    <th scope="row">${tablerowinfo.label}</th>
+                    <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="${tablerowinfo.field}"></span></td>
+                    <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="${tablerowinfo.field}"></span></td>
+                </tr>
+            `).appendTo($tbody);
+        });
+
+        $table.appendTo($demographics_section);
     });
 }
 
@@ -646,7 +703,7 @@ function initDataFilters () {
     $filtersummary.on('keypress', 'div', function (event) {
         if (event.keyCode == 13) $(this).click();  // ARIA/508 translate hitting enter as clicking
     });
-    $filtersummary.on('click', 'div[data-filter]', function () {
+    $filtersummary.on('click', '[data-filter]', function () {
         const whichfilter = $(this).closest('span').attr('data-filter');
         const $widget = $searchwidgets.filter(`[name="${whichfilter}"]`);
 
@@ -906,73 +963,42 @@ function performSearchShowFilters (searchparams) {
 
 function performSearchDemographics (searchparams) {
     // distill demographic data for the selected CTA
-    // no connection to the cancer dataset at all
+    // ths has no connection to the cancer dataset at all
+    // see DEMOGRAPHIC_TABLES and initDemographicTables() which created these tables during setup
+    const demogdata_cta = DATA_DEMOGS.filter(function (row) { return row.Zone == searchparams.ctaid; })[0];
+    const demogdata_state = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Statewide'; })[0];
 
-    const demogdata_cta = DATA_DEMOGS.filter(function (row) {
-        return row.Zone == searchparams.ctaid;
-    })[0];
-    const demogdata_state = DATA_DEMOGS.filter(function (row) {
-        return row.Zone == 'Statewide';
-    })[0];
+    const $demographics_section = $('#demographic-tables');
+    const $ctastats = $demographics_section.find('[data-region="cta"]');
 
-    // show/hide the CTA columns (well, actually, each individual cell)
+    // show/hide the CTA Zone content, depending whether a CTA Zone was selected (that is, not Statewide)
     if (searchparams.ctaid == 'Statewide') {
-        $('div.demog-readouts [data-region="cta"]').hide();
+        $ctastats.hide();
     }
     else {
-        $('div.demog-readouts [data-region="cta"]').show();
+        $ctastats.show();
     }
 
-    // now fill in the blanks
+    // fill in the blanks: the CTA name and ID
     const ctanametext = searchparams.ctaname;
     const ctaidtext = searchparams.ctaid == 'Statewide' ? '' : `(${demogdata_cta.Zone})`;
-    $('div.demog-readouts span[data-statistics="ctaname"]').text(ctanametext);
-    $('div.demog-readouts span[data-statistics="ctaid"]').text(ctaidtext);
-    $('div.demog-readouts span[data-statistics="ctaname"]').closest('span.subtitle').prop('aria-label', ctanametext + ' ' + ctaidtext);
+    $demographics_section.find('span[data-statistics="ctaname"]').text(ctanametext);
+    $demographics_section.find('span[data-statistics="ctaid"]').text(ctaidtext);
+    $demographics_section.find('span[data-statistics="ctaname"]').closest('span.subtitle').prop('aria-label', ctanametext + ' ' + ctaidtext);
 
-    $('div.demog-readouts span[data-region="cta"][data-statistic="population"]').text( demogdata_cta.PopAll.toLocaleString() );
-    $('div.demog-readouts span[data-region="cta"][data-statistic="uninsured"]').text(`${demogdata_cta.PerUninsured.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="cta"][data-statistic="white"]').text(`${demogdata_cta.PerWhite.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="cta"][data-statistic="black"]').text(`${demogdata_cta.PerBlack.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="cta"][data-statistic="hispanic"]').text(`${demogdata_cta.PerHispanic.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="cta"][data-statistic="asian"]').text(`${demogdata_cta.PerAPI.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="cta"][data-statistic="foreign"]').text(`${demogdata_cta.PerForeignBorn.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="cta"][data-statistic="rural"]').text(`${demogdata_cta.PerRural.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="cta"][data-statistic="nses"]').text(demogdata_cta.QNSES);
+    // fill in the blanks: demographics
+    // go over the DEMOGRAPHIC_TABLES which we used to construct the table, and fill in the corresponding values for CTA & Statewide demographics
+    DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
+        tableinfo.rows.forEach(function (tablerowinfo) {
+            const $slots_cta = $demographics_section.find(`span[data-region="cta"][data-statistic="${tablerowinfo.field}"]`);
+            const $slots_state = $demographics_section.find(`span[data-region="state"][data-statistic="${tablerowinfo.field}"]`);
+            const value_cta = formatFieldValue(demogdata_cta[tablerowinfo.field], tablerowinfo.format);
+            const value_state = formatFieldValue(demogdata_state[tablerowinfo.field], tablerowinfo.format);
 
-    $('div.demog-readouts span[data-region="state"][data-statistic="population"]').text( demogdata_state.PopAll.toLocaleString() );
-    $('div.demog-readouts span[data-region="state"][data-statistic="uninsured"]').text(`${demogdata_state.PerUninsured.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="state"][data-statistic="white"]').text(`${demogdata_state.PerWhite.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="state"][data-statistic="black"]').text(`${demogdata_state.PerBlack.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="state"][data-statistic="hispanic"]').text(`${demogdata_state.PerHispanic.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="state"][data-statistic="asian"]').text(`${demogdata_state.PerAPI.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="state"][data-statistic="foreign"]').text(`${demogdata_state.PerForeignBorn.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="state"][data-statistic="rural"]').text(`${demogdata_state.PerRural.toFixed(1)} %`);
-    $('div.demog-readouts span[data-region="state"][data-statistic="nses"]').text(' ');  // by definition stats SNES is undefined
-
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctcolonscreen"]').text(!isNaN(parseFloat(demogdata_cta.PerFOBT)) ? `${demogdata_cta.PerFOBT.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctmammogram"]').text(!isNaN(parseFloat(demogdata_cta.PerMammo)) ? `${demogdata_cta.PerMammo.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctcare65m"]').text(!isNaN(parseFloat(demogdata_cta.PerMenPrev)) ? `${demogdata_cta.PerMenPrev.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctcare65f"]').text(!isNaN(parseFloat(demogdata_cta.PerWomenPrev)) ? `${demogdata_cta.PerWomenPrev.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctcheckups"]').text(!isNaN(parseFloat(demogdata_cta.PerDocvisit)) ? `${demogdata_cta.PerDocvisit.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctpap"]').text(!isNaN(parseFloat(demogdata_cta.PerPap)) ? `${demogdata_cta.PerPap.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctdelayedcare"]').text(!isNaN(parseFloat(demogdata_cta.PerDelayCare)) ? `${demogdata_cta.PerDelayCare.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctsmoke"]').text(!isNaN(parseFloat(demogdata_cta.PerCurrSmk)) ? `${demogdata_cta.PerCurrSmk.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctfoodinsecure"]').text(!isNaN(parseFloat(demogdata_cta.PerFoodInsec)) ? `${demogdata_cta.PerFoodInsec.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctphysactive"]').text(!isNaN(parseFloat(demogdata_cta.Per150minPA)) ? `${demogdata_cta.Per150minPA.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="cta"][data-statistic="pctobese"]').text(!isNaN(parseFloat(demogdata_cta.PerObese)) ? `${demogdata_cta.PerObese.toFixed(1)} %` : '-');
-
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctcolonscreen"]').text(!isNaN(parseFloat(demogdata_state.PerFOBT)) ? `${demogdata_state.PerFOBT.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctmammogram"]').text(!isNaN(parseFloat(demogdata_state.PerMammo)) ? `${demogdata_state.PerMammo.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctcare65m"]').text(!isNaN(parseFloat(demogdata_state.PerMenPrev)) ? `${demogdata_state.PerMenPrev.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctcare65f"]').text(!isNaN(parseFloat(demogdata_state.PerWomenPrev)) ? `${demogdata_state.PerWomenPrev.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctcheckups"]').text(!isNaN(parseFloat(demogdata_state.PerDocvisit)) ? `${demogdata_state.PerDocvisit.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctpap"]').text(!isNaN(parseFloat(demogdata_state.PerPap)) ? `${demogdata_state.PerPap.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctdelayedcare"]').text(!isNaN(parseFloat(demogdata_state.PerDelayCare)) ? `${demogdata_state.PerDelayCare.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctsmoke"]').text(!isNaN(parseFloat(demogdata_state.PerCurrSmk)) ? `${demogdata_state.PerCurrSmk.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctfoodinsecure"]').text(!isNaN(parseFloat(demogdata_state.PerFoodInsec)) ? `${demogdata_state.PerFoodInsec.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctphysactive"]').text(!isNaN(parseFloat(demogdata_state.Per150minPA)) ? `${demogdata_state.Per150minPA.toFixed(1)} %` : '-');
-    $('div.demog-readouts span[data-region="state"][data-statistic="pctobese"]').text(!isNaN(parseFloat(demogdata_state.PerObese)) ? `${demogdata_state.PerObese.toFixed(1)} %` : '-');
+            $slots_cta.text(value_cta);
+            $slots_state.text(value_state);
+        });
+    });
 }
 
 
@@ -1592,4 +1618,48 @@ function logGoogleAnalyticsEvent (type, subtype, detail) {
         'event_category': subtype,
         'event_label': detail,
     });
+}
+
+
+function formatFieldValue (value, format) {
+    // try not to convert and format null/undefined; JS will format null as the string "null" which is silly
+    if ( value === null || value === undefined || value === 'NoData') return "";
+
+    let formatted;
+    switch (format) {
+        case 'text':
+            formatted = value;
+            break;
+        case 'integer':
+            formatted = parseInt(Math.round(value));
+            formatted = ! isNaN(formatted) ? formatted.toLocaleString() : '-';
+            break;
+        case 'float':
+            formatted = parseFloat(value);
+            formatted = ! isNaN(formatted) ? formatted.toFixed(1) : '-';
+            break;
+        case 'percent':
+            formatted = parseFloat(value);
+            formatted = ! isNaN(formatted) ? (formatted < 1 ? '&lt; 1' : formatted.toFixed(1)) : '-';
+            formatted = `${formatted} %`;
+            break;
+        case 'money':
+            formatted = parseInt(Math.round(value));
+            formatted = ! isNaN(formatted) ? '$' + formatted.toLocaleString() : '-';
+            break;
+        case 'phone':
+            formatted = value ? `<a target="_blank" href="tel:${value}">${value}</a>` : '-';
+            break;
+        case 'email':
+            formatted = value ? `<a target="_blank" href="mailto:${value}">${value}</a>` : '-';
+            break;
+        case 'url':
+            formatted = value ? (value.toLowerCase().substr(0, 4) == 'http' ? value : `http://${value}`) : null;
+            formatted = value ? `<a target="_blank" href="${formatted}">Open Website <i class="fa fa-external-link-square"></i></a>` : '-';
+            break;
+        default:
+            throw `formatFieldValue() got unexpected format type ${format}`;
+    }
+
+    return formatted;
 }

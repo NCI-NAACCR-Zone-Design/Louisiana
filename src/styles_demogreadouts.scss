@@ -1,7 +1,12 @@
-div.container.demog-readouts {
+#demographic-tables {
     table {
         width: 100%;
         margin-top: 5px;
+
+        margin-bottom: 20px;
+        &:last-child {
+            margin-bottom: 0;
+        }
 
         span.title, span.subtitle {
             color: $nearblack;
@@ -34,5 +39,10 @@ div.container.demog-readouts {
 
     @media print {
         page-break-before: always;
+    }
+
+    > span[role="heading"] {
+        padding-right: 0.3rem;
+        padding-left: 0.3rem;
     }
 }

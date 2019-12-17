@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>California Health Maps</title>
+    <title>Health Maps</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -146,12 +146,6 @@
                 </div>
             </div>
             <div class="col-md-7 col-lg-8">
-                <div class="printonly" id="logo-img-print" aria-hidden="true">
-                    <img src="/static/CaliforniaHealthMapsLogoNoText.png" alt="CHM Logo" />
-                    <h1 class="site-title-1" aria-label="California Health Maps" tabindex="0">California</h1>
-                    <h1 class="site-title-2" aria-hidden="true">Health Maps</h1>
-                </div>
-
                 <div class="map" id="map" aria-hidden="true"></div>
             </div>
         </div>
@@ -222,157 +216,13 @@
     filter summary, incidence stats, cities and counties lists
     demographics tables for the CTA and Statewide, broken up by type of demographic
     -->
-    <div class="container demog-readouts">
-        <div class="row"><!-- two columns of tables; see initPrintPage() where we fuss with these to make them change size in print mode -->
-            <div class="col-md-6">
-                <table class="table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th class="nowrap left">
-                                <span role="heading">
-                                    <span class="title" tabindex="0" aria-label="Name of area reported"><span data-statistics="ctaname">California</span> <span data-statistics="ctaid"></span></span>
-                                    <br/>
-                                </span>
-                                <span class="subtitle" tabindex="0">Demographics</span>
-                            </th>
-                            <th class="nowrap" data-region="cta" aria-hidden="true">Zone</th>
-                            <th class="nowrap" data-region="state" aria-hidden="true">Statewide</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">Population</th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="population"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="population"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Non-Hispanic White <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctwhite"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="white"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="white"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Non-Hispanic Black <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctblack"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="black"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="black"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Hispanic <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pcthispanic"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="hispanic"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="hispanic"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Asian/Pacific Islander <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctasian"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="asian"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="asian"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Foreign-Born <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctforeign"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="foreign"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="foreign"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Rural <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctrural"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="rural"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="rural"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Socioeconomic Status <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="nses"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="nses"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="nses"></span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div><!-- end of column containing tables -->
-            <div class="col-md-6">
-                <br />
+    <div class="container" id="demographic-tables">
+        <span role="heading">
+            <span class="title" tabindex="0" aria-label="Name of area reported"><span data-statistics="ctaname">Statewide</span> <span data-statistics="ctaid"></span></span>
+            <br/>
+        </span>
 
-                <table class="table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th class="nowrap left"><span class="subtitle" tabindex="0">Healthcare Access and Use</span></th>
-                            <th class="nowrap" data-region="cta" aria-hidden="true">Zone</th>
-                            <th class="nowrap" data-region="state" aria-hidden="true">Statewide</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">% Uninsured <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctuninsured"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="uninsured"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="uninsured"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Routine Checkups <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctcheckups"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctcheckups"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctcheckups"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Delayed Care <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctdelayedcare"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctdelayedcare"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctdelayedcare"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Colorectal Cancer Screening <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctcolonscreen"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctcolonscreen"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctcolonscreen"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Mammograms <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctmammogram"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctmammogram"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctmammogram"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Pap Smears <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctpap"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctpap"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctpap"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Preventive Care <span class="small">(Men, 65+ years)</span> <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctcare65m"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctcare65m"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctcare65m"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Preventive Care <span class="small">(Women, 65+ years)</span> <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctcare65f"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctcare65f"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctcare65f"></span></td>
-                        </tr>
-                    </tbody>
-                </table>
-        
-                <br />
-        
-                <table class="table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th class="nowrap left"><span class="subtitle" tabindex="0">Health and Well-Being</span></th>
-                            <th class="nowrap" data-region="cta" aria-hidden="true">Zone</th>
-                            <th class="nowrap" data-region="state" aria-hidden="true">Statewide</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">% Adult Obesity <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctobese"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctobese"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctobese"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Food Insecure <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctfoodinsecure"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctfoodinsecure"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctfoodinsecure"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">% Physical Activity <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctphysactive"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctphysactive"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctphysactive"></span></td>
-                        </tr>
-                        <tr>
-                           <th scope="row">% Smoking <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="pctsmoke"></i></th>
-                            <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="pctsmoke"></span></td>
-                            <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="pctsmoke"></span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div><!-- end of column containing tables -->
-        </div>
+        <!-- see initDemographicTables() and DEMOGRAPHIC_TABLES where tables are laid out here in this DIV, and performSearchDemographics() where those tables' values are filled in -->
     </div><!--/container section-->
 
 
@@ -398,13 +248,13 @@
         <div class="tab-content">
             <div class="tab-pane container active" id="learn-about">
                 <p>
-                    The California Health Maps project aims to provide data for geographies beyond county-level statistics to better serve cancer control,  public health, and policy efforts.
+                    The Health Maps project aims to provide data for geographies beyond county-level statistics to better serve cancer control,  public health, and policy efforts.
                 </p>
                 <p>
-                    California Health Maps allows users to interactively map health data for California at a geographic level called zones, which are aggregates of census tracts. We have used a data-driven approach to define 578 zones for California, based on similar characteristics (poverty, urbanicity, racial/ethnic minority composition) and a minimum of 50,000 residents. These areas are generally smaller than county, but larger than census tract. Zones vary in population size from 51,229 to 98,764 with the number of census tracts ranging from 5 to 25.
+                    Health Maps allows users to interactively map health data at a geographic level called zones, which are aggregates of census tracts. We have used a data-driven approach to define these zones, based on similar characteristics (poverty, urbanicity, racial/ethnic minority composition) and a minimum of 50,000 residents. These areas are generally smaller than county, but larger than census tract. Zones vary in population size from 51,229 to 98,764 with the number of census tracts ranging from 5 to 25.
                 </p>
                 <p>
-                    California Health Maps include 5-year cancer incidence rates based on the most current data for 12 of the most common invasive cancer sites by sex and race/ethnicity (non-Hispanic White, non-Hispanic Black, Hispanic, and non-Hispanic Asian/Pacific Islander). It also includes selected population sociodemographic data based on 2010 Census and 2008-2012 American Community Survey data, and health and well-being, and health care access and use data from 500 Cities/CDC BRFSS and the 2015-2016 California Health Interview Survey.
+                    Health Maps include 5-year cancer incidence rates based on the most current data for the most common invasive cancer sites by sex and race/ethnicity (non-Hispanic White, non-Hispanic Black, Hispanic, and non-Hispanic Asian/Pacific Islander). It also includes selected population sociodemographic data based on Census and American Community Survey data.
                 </p>
                 <p class="title">Project Team</p>
                 <p>
