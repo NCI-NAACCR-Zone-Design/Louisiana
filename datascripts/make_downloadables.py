@@ -186,7 +186,7 @@ class DownloadableZipsMaker:
         print("        CSV content")
         csvfilename = settings.MASTER_CSV_FILENAME
         zoneid = 'ALL'
-        self.fetchDataAndSaveCsk(zoneid, csvfilename)
+        self.fetchDataAndSaveCsv(zoneid, csvfilename)
         targetzip.write(csvfilename, os.path.basename(csvfilename))
 
         print("        Metadata document")  # not so easy! explicitly convert to CRLF linefeeds for poor folks stil using Notepad
@@ -215,14 +215,14 @@ class DownloadableZipsMaker:
 
             targetzip = zipfile.ZipFile(zipfilename, 'w', zipfile.ZIP_DEFLATED, 9)
 
-            self.fetchDataAndSaveCsk(zoneid, csvfilename)
+            self.fetchDataAndSaveCsv(zoneid, csvfilename)
             targetzip.write(csvfilename, os.path.basename(csvfilename))
 
             targetzip.writestr(os.path.basename(settings.DOWNLOADZIP_READMEFILE), readmetext)
 
             targetzip.close()
 
-    def fetchDataAndSaveCsk(self, zoneid, csvfilename):
+    def fetchDataAndSaveCsv(self, zoneid, csvfilename):
         # the big wrapper to fetch CSV rows for a CTA zone, generate CSV-shaped content, and save to disk
         headrow = self.csvHeaderRow()
         datarows = self.fetchRowsForCTA(zoneid)
