@@ -14,10 +14,10 @@ DOWNLOADS_DIR = "../static/downloads"
 DOWNLOADZIP_READMEFILE = "./inputs/readme.txt"
 
 MASTER_ZIPFILE_FILENAME = "all_zones.zip"
-MASTER_CSV_FILENAME = "all_zones.csv"
+MASTER_CSV_FILENAME = "./tempfiles/all_zones.csv"  # include the ./tempfiles/ path; it will be stripped in the ZIP
 
 PERCTA_ZIPFILES_FILENAME = "zone_{}.zip"
-PERCTA_CSV_FILENAME = "zone_{}.csv"
+PERCTA_CSV_FILENAME = "./tempfiles/zone_{}.csv"  # include the ./tempfiles/ path; it will be stripped in the ZIP
 
 TEMP_CTASHPFILE = './tempfiles/CTAZones_Download.shp'
 
