@@ -104,9 +104,9 @@ Edit `index.js` and set up `CHOROPLETH_OPTIONS` to offer demographics as a Color
 Verify the field and data requirements:
 * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
 * The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" or "All" will not be recognized as Statewide.
-* The `sex` field is domain values, and is used for filtering.
-* The `cancer` field is domain values, and is used for filtering.
-* The `years` field is domain values, and is used for filtering.
+* The `Sex` field is domain values, and is used for filtering.
+* The `Cancer` field is domain values, and is used for filtering.
+* The `Years` field is domain values, and is used for filtering.
 * The incidence data fields `Cases` `AAIR` `LCI` `UCI` and `PopTot` are used for reporting incidence and are required.
 * The same incidence fields must be defined for each race filter that you will define, and must be prefixed by the race's "short version". For example, If you use `W` as a domain value for race then that race will be reported using these fields: `W_Cases` `W_AAIR` `W_LCI` `W_UCI` `W_PopTot`.
 

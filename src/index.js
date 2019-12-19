@@ -301,8 +301,8 @@ $(document).ready(function () {
         DATA_CTACOUNTY = datasets[4];
         DATA_CTACITY = datasets[5];
 
-        initValidateIncidenceDataset();
         initValidateDemographicDataset();
+        initValidateIncidenceDataset();
         initFixCountyOverlay();
 
         // and we can finally get started!
@@ -403,9 +403,9 @@ function initValidateIncidenceDataset () {
 
     // the basic identifying fields, make sure they exist
     if (! DATA_CANCER[0].Zone) errors.push("Field not found: Zone");
-    if (! DATA_CANCER[0].sex) errors.push("Field not found: sex");
-    if (! DATA_CANCER[0].cancer) errors.push("Field not found: cancer");
-    if (! DATA_CANCER[0].years) errors.push("Field not found: years");
+    if (! DATA_CANCER[0].Sex) errors.push("Field not found: sex");
+    if (! DATA_CANCER[0].Cancer) errors.push("Field not found: cancer");
+    if (! DATA_CANCER[0].Years) errors.push("Field not found: years");
 
     // the basic incidence fields then the race incidence fields, make sure they exist
     if (! DATA_CANCER[0].PopTot) errors.push("Field not found: PopTot");
@@ -424,21 +424,21 @@ function initValidateIncidenceDataset () {
 
     // the filter fields: make sure all of the stated domain values in fact match any rows; if not, it's surely a typo
     // it only makes sense to check these if we did not encounter a "this field doesn't exist" error above
-    if (DATA_CANCER[0].cancer) {
+    if (DATA_CANCER[0].Cancer) {
         SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
-            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.cancer == option.value; }).length;
+            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.Cancer == option.value; }).length;
             if (! matchesthisvalue) errors.push(`Site filtering option ${option.value} not found in the data.`);
         });
     }
-    if (DATA_CANCER[0].sex) {
+    if (DATA_CANCER[0].Sex) {
         SEARCHOPTIONS_SEX.forEach(function (option) {
-            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.sex == option.value; }).length;
+            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.Sex == option.value; }).length;
             if (! matchesthisvalue) errors.push(`Sex filtering option ${option.value} not found in the data.`);
         });
     }
-    if (DATA_CANCER[0].years) {
+    if (DATA_CANCER[0].Years) {
         SEARCHOPTIONS_TIME.forEach(function (option) {
-            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.years == option.value; }).length;
+            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.Years == option.value; }).length;
             if (! matchesthisvalue) errors.push(`Time filtering option ${option.value} not found in the data.`);
         });
     }
@@ -456,14 +456,14 @@ function initValidateIncidenceDataset () {
     // check that all sex/time/site combinations will in fact match any rows, or else that they are noted in CANCER_SEXES
     // and that for each known-valid combination, at least one row is Statewide so we know they are using it
     // again, skip generating hundreds of errors if we the fields don't even exist (we caught that earlier)
-    if (DATA_CANCER[0].Zone && DATA_CANCER[0].cancer && DATA_CANCER[0].sex && DATA_CANCER[0].years) {
+    if (DATA_CANCER[0].Zone && DATA_CANCER[0].Cancer && DATA_CANCER[0].Sex && DATA_CANCER[0].Years) {
         SEARCHOPTIONS_SEX.forEach(function (sexoption) {
             SEARCHOPTIONS_TIME.forEach(function (timeoption) {
                 SEARCHOPTIONS_CANCERSITE.forEach(function (siteoption) {
                     if (CANCER_SEXES[siteoption.value] && CANCER_SEXES[siteoption.value] != sexoption.value) return;
 
                     const matchesthiscombo = DATA_CANCER.filter(function (row) {
-                        return row.years == timeoption.value && row.sex == sexoption.value && row.cancer == siteoption.value;
+                        return row.Years == timeoption.value && row.Sex == sexoption.value && row.Cancer == siteoption.value;
                     });
                     const hasstatewide = matchesthiscombo.filter(function (row) {
                         return row.Zone == 'Statewide';
@@ -1197,8 +1197,8 @@ function performSearchIncidenceReadout (searchparams) {
     //
     // note that we could end up with 0 rows e.g. there is no row for Male Uterine nor Female Prostate
     // we could also end up with null values for some data, e.g. low sample sizes so they chose not to report a value
-    const cancerdata_cta = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.years == searchparams.time && row.cancer == searchparams.site && row.sex == searchparams.sex)[0];
-    const cancerdata_state = DATA_CANCER.filter(row => row.Zone == 'Statewide' && row.years == searchparams.time && row.cancer == searchparams.site && row.sex == searchparams.sex)[0];
+    const cancerdata_cta = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
+    const cancerdata_state = DATA_CANCER.filter(row => row.Zone == 'Statewide' && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
 
     let text_cases_cta = 'no data';
     let text_aair_cta = 'no data';
@@ -1272,10 +1272,10 @@ function performSearchIncidenceBarChart (searchparams) {
 
     // incidence chart is multiple rows: filter by CTA+cancer+time, but keep data for all sexes
     // note that we could end up with 0 rows for some of these, e.g. Male Uterine nor Female Prostate, so undefined is a condition to handle
-    const incidencedata = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.years == searchparams.time && row.cancer == searchparams.site);
+    const incidencedata = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site);
     const incidencebysex = {};
     SEARCHOPTIONS_SEX.forEach(function (sexoption) {
-        incidencebysex[sexoption.value] = incidencedata.filter(row => row.sex == sexoption.value)[0];
+        incidencebysex[sexoption.value] = incidencedata.filter(row => row.Sex == sexoption.value)[0];
     });
 
     // form the chart series for consumption by Highcharts
@@ -1423,7 +1423,7 @@ function performSearchMap (searchparams) {
     if (['Cases', 'AAIR'].indexOf(rankthemby) != -1) {  // the special case for AAIR/Cases incidence data
         DATA_CANCER
         .filter(row => row.Zone != 'Statewide')
-        .filter(row => row.years == searchparams.time && row.cancer == searchparams.site && row.sex == searchparams.sex)
+        .filter(row => row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)
         .forEach((row) => {
             let choropleth_score;
             switch (rankthemby) {
