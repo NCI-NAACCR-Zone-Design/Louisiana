@@ -91,10 +91,14 @@ class DownloadableZipsMaker:
                     'Hispanic_AAIR': float(row['H_AAIR']) if row['H_AAIR'] is not None else None,
                     'Hispanic_LCI': float(row['H_LCI']) if row['H_LCI'] is not None else None,
                     'Hispanic_UCI': float(row['H_UCI']) if row['H_UCI'] is not None else None,
-                    'Asian_PopTot': int(float(row['A_PopTot'])) if row['A_PopTot'] is not None else None,
-                    'Asian_AAIR': float(row['A_AAIR']) if row['A_AAIR'] is not None else None,
-                    'Asian_LCI': float(row['A_LCI']) if row['A_LCI'] is not None else None,
-                    'Asian_UCI': float(row['A_UCI']) if row['A_UCI'] is not None else None,
+                    'Asian_PopTot': int(float(row['API_PopTot'])) if row['API_PopTot'] is not None else None,
+                    'Asian_AAIR': float(row['API_AAIR']) if row['API_AAIR'] is not None else None,
+                    'Asian_LCI': float(row['API_LCI']) if row['API_LCI'] is not None else None,
+                    'Asian_UCI': float(row['API_UCI']) if row['API_UCI'] is not None else None,
+                    'AmerInd_PopTot': int(float(row['AIAN_PopTot'])) if row['AIAN_PopTot'] is not None else None,
+                    'AmerInd_AAIR': float(row['AIAN_AAIR']) if row['AIAN_AAIR'] is not None else None,
+                    'AmerInd_LCI': float(row['AIAN_LCI']) if row['AIAN_LCI'] is not None else None,
+                    'AmerInd_UCI': float(row['AIAN_UCI']) if row['AIAN_UCI'] is not None else None,
                 }
 
                 self.statsbycta[zoneid]['incidence'].append(thisdatarow)
@@ -110,15 +114,13 @@ class DownloadableZipsMaker:
                     raise ValueError("Demographic CSV: CTA Zone ID {} not found in geodata".format(zoneid))
 
                 self.statsbycta[zoneid]['demogs'] = {
-                    'PopAll': int(row['PopAll']),
-                    'QNSES': int(row['QNSES']) if row['QNSES'] != '' else None,
-                    'PerRural': round(float(row['PerRural']), 1),
-                    'PerUninsured': round(float(row['PerUninsured']), 1),
-                    'PerForeignBorn': round(float(row['PerForeignBorn']), 1),
-                    'PerWhite': round(float(row['PerWhite']), 1),
-                    'PerBlack': round(float(row['PerBlack']), 1),
-                    'PerHispanic': round(float(row['PerHispanic']), 1),
-                    'PerAsian': round(float(row['PerAPI']), 1),
+                    'TotalPop': int(row['TotalPop']),
+                    'Pct100Pov': float(row['Pct100Pov']),
+                    'PctMinority': float(row['PctMinority']),
+                    'PctHispanic': float(row['PctHispanic']),
+                    'PctBlackNH': float(row['PctBlackNH']),
+                    'PctAPINH': float(row['PctAPINH']),
+                    'PctRural': float(row['PctRural']),
                 }
 
     def aggregateCountyData(self):
@@ -265,16 +267,13 @@ class DownloadableZipsMaker:
             'Asian_LCI',
             'Asian_UCI',
             # demographics, which tend to vary a lot between setups
-            'QNSES',
-            'PopAll',
-            'PerRural',
-            'PerUninsured',
-            'PerForeignBorn',
-            'PerWhite',
-            'PerBlack',
-            'PerAsian',
-            'PerHispanic',
-            'PerAsian',
+            'TotalPop',
+            'Pct100Pov',
+            'PctMinority',
+            'PctHispanic',
+            'PctBlackNH',
+            'PctAPINH',
+            'PctRural',
         ]
 
     def fetchRowsForCTA(self, zoneid):

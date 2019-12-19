@@ -7,7 +7,7 @@
                  xmlns:gmi="http://www.isotc211.org/2005/gmi"
                  xsi:schemaLocation="http://www.isotc211.org/2005/gmi http://www.ngdc.noaa.gov/metadata/published/xsd/schema.xsd">
    <gmd:fileIdentifier>
-      <gco:CharacterString>tl_2019_06_place.shp.iso.xml</gco:CharacterString>
+      <gco:CharacterString>tl_2019_22_place.shp.iso.xml</gco:CharacterString>
    </gmd:fileIdentifier>
    <gmd:language>
       <gco:CharacterString>eng</gco:CharacterString>
@@ -39,7 +39,7 @@ dataset
       <gco:CharacterString>2009-02-15 </gco:CharacterString>
    </gmd:metadataStandardVersion>
    <gmd:dataSetURI>
-      <gco:CharacterString>http://www2.census.gov/geo/tiger/TIGER2019/PLACE/tl_2019_06_place.zip</gco:CharacterString>
+      <gco:CharacterString>http://www2.census.gov/geo/tiger/TIGER2019/PLACE/tl_2019_22_place.zip</gco:CharacterString>
    </gmd:dataSetURI>
    <!-- This is the ptvctinf/sdtsterm/sdtstype from section 3 of the FGDC Standard (Spatial Data Organization) -->
 <gmd:spatialRepresentationInfo>
@@ -53,7 +53,7 @@ dataset
                                                 complex </gmd:MD_GeometricObjectTypeCode>
                </gmd:geometricObjectType>
                <gmd:geometricObjectCount>
-                  <gco:Integer>1521</gco:Integer>
+                  <gco:Integer>474</gco:Integer>
                </gmd:geometricObjectCount>
             </gmd:MD_GeometricObjects>
          </gmd:geometricObjects>
@@ -80,7 +80,7 @@ dataset
          <gmd:citation>
             <gmd:CI_Citation>
                <gmd:title>
-                  <gco:CharacterString>TIGER/Line Shapefile, 2019,  state, California, Current Place State-based</gco:CharacterString>
+                  <gco:CharacterString>TIGER/Line Shapefile, 2019,  state, Louisiana, Current Place State-based</gco:CharacterString>
                </gmd:title>
                <gmd:alternateTitle>
                   <gco:CharacterString>National Geospatial Data Asset (NGDA) Place</gco:CharacterString>
@@ -235,13 +235,13 @@ The boundaries of most incorporated places in this shapefile are as of January 1
                   <gco:CharacterString>State or Equivalent Entity</gco:CharacterString>
                </gmd:keyword>
                <gmd:keyword>
-                  <gco:CharacterString>California</gco:CharacterString>
+                  <gco:CharacterString>Louisiana</gco:CharacterString>
                </gmd:keyword>
                <gmd:keyword>
-                  <gco:CharacterString>CA</gco:CharacterString>
+                  <gco:CharacterString>LA</gco:CharacterString>
                </gmd:keyword>
                <gmd:keyword>
-                  <gco:CharacterString>06</gco:CharacterString>
+                  <gco:CharacterString>22</gco:CharacterString>
                </gmd:keyword>
                <gmd:type>
                   <gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
@@ -303,16 +303,16 @@ The boundary information in the TIGER/Line Shapefiles are for statistical data c
                <gmd:geographicElement>
                   <gmd:EX_GeographicBoundingBox id="boundingGeographicBoundingBox">
                      <gmd:westBoundLongitude>
-                        <gco:Decimal>-124.482003</gco:Decimal>
+                        <gco:Decimal>-94.043352</gco:Decimal>
                      </gmd:westBoundLongitude>
                      <gmd:eastBoundLongitude>
-                        <gco:Decimal>-114.131211</gco:Decimal>
+                        <gco:Decimal>-88.758388</gco:Decimal>
                      </gmd:eastBoundLongitude>
                      <gmd:southBoundLatitude>
-                        <gco:Decimal>32.528832</gco:Decimal>
+                        <gco:Decimal>28.855127</gco:Decimal>
                      </gmd:southBoundLatitude>
                      <gmd:northBoundLatitude>
-                        <gco:Decimal>42.009503</gco:Decimal>
+                        <gco:Decimal>33.019543</gco:Decimal>
                      </gmd:northBoundLatitude>
                   </gmd:EX_GeographicBoundingBox>
                </gmd:geographicElement>
@@ -426,7 +426,7 @@ The boundary information in the TIGER/Line Shapefiles are for statistical data c
                <gmd:onLine>
                   <gmd:CI_OnlineResource>
                      <gmd:linkage>
-                        <gmd:URL>http://www2.census.gov/geo/tiger/TIGER2019/PLACE/tl_2019_06_place.zip</gmd:URL>
+                        <gmd:URL>http://www2.census.gov/geo/tiger/TIGER2019/PLACE/tl_2019_22_place.zip</gmd:URL>
                      </gmd:linkage>
                      <gmd:name>
                         <gco:CharacterString>Shapefile Zip File</gco:CharacterString>

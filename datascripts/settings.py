@@ -27,17 +27,9 @@ WEBSITE_URL = "https://www.example.com"
 
 # CTA Zones shapefile, and which fields to use from it
 INPUT_ZONESFILE = "./inputs/CTAZones.shp"
-CTAZONES_SHAPEFILE_IDFIELD = "Zones_CA11"
+CTAZONES_SHAPEFILE_IDFIELD = "Zone"
 CTAZONES_SHAPEFILE_NAMEFIELD = "ZoneName"
 REPROJECTED_ZONESFILE = "./tempfiles/ctazones.shp"
-
-# the XLSX spreadsheets for demographics and for cancer incidence
-# what's the XLS file to use, and what's the name of the worksheet?
-INPUT_CANCERXLS = "./inputs/IncidenceByCTAZone.xlsx"
-INPUT_CANCERXLS_SHEETNAME = "5-yr incidence rates"
-
-INPUT_DEMOGSXLS = "./inputs/DemographicsByCTAZone.xlsx"
-INPUT_DEMOGXLS_SHEETNAME = 'Sheet1'
 
 # Census Designated Places shapefile and the County shapefile
 # used for the CTA-to-City and CTA-to-County CSV lookup CSVs

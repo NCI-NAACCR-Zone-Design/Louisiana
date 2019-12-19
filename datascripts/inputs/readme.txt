@@ -14,21 +14,10 @@ AAIR                Age Adjusted Incidence Rate (AAIR) for this sex and cancer s
 LCI                 Lower value of the 95% confidence interval of the AAIR.
 UCI                 Upper value of the 95% confidence interval of the AAIR.
 
-White_PopTot        PopTot population, of cases in people identified as non-Hispanic White race/ethnicity.
-White_AAIR          AAIR, of cases in people identified as non-Hispanic White race/ethnicity.
-White_LCI           LCI, of cases in people identified as non-Hispanic White race/ethnicity.
-White_UCI           UCI, of cases in people identified as non-Hispanic White race/ethnicity.
-Black_PopTot        PopTot population, of cases in people identified as non-Hispanic Black race/ethnicity.
-Black_AAIR          AAIR, of cases in people identified as non-Hispanic Black race/ethnicity.
-Black_LCI           LCI, of cases in people identified as non-Hispanic Black race/ethnicity.
-Black_UCI           UCI, of cases in people identified as non-Hispanic Black race/ethnicity.
-Hispanic_PopTot     PopTot population, of cases in people identified as Hispanic race/ethnicity.
-Hispanic_AAIR       AAIR, of cases in people identified as Hispanic race/ethnicity.
-Hispanic_LCI        LCI, of cases in people identified as Hispanic race/ethnicity.
-Hispanic_UCI        UCI, of cases in people identified as Hispanic race/ethnicity.
-Asian_PopTot        PopTot population, of cases in people identified as Asian/Pacific Islander race/ethnicity.
-Asian_AAIR          AAIR, of cases in people identified as Asian/Pacific Islander race/ethnicity.
-Asian_LCI           LCI, of cases in people identified as Asian/Pacific Islander race/ethnicity.
-Asian_UCI           UCI, of cases in people identified as Asian/Pacific Islander race/ethnicity.
-
-PopAll              Population of the CTA Zone.
+TotalPop            Population
+Pct100Pov           % Below Poverty Level
+PctMinority         % Minority (not non-White Hispanic)
+PctHispanic         % Hispanic
+PctBlackNH          % Black (non-Hispanic)
+PctAPINH            % Asian/Pacific (non-Hispanic)
+PctRural            % Living in Rural Area
