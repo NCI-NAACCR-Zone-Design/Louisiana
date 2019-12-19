@@ -21,7 +21,7 @@ require('./printing-leaflet-easyPrint.js');
 
 // the map and some constants
 var MAP;
-var MAP_BBOX = [[ 39.313, -124.459 ], [ 42.024, -119.949 ]];  // [[s, w], [n, e]]
+var MAP_BBOX = [[32.092, -94.438], [33.146, -93.142]];  // [[s, w], [n, e]]
 
 var MIN_ZOOM = 6;
 var MAX_ZOOM = 15;
@@ -44,18 +44,26 @@ var DATA_URL_COUNTYGEOM = 'static/data/countybounds.json';
 // e.g. CTA + sex + cancersite + timeperiod = filter to 1 incidence row, then race=B means to use B_AAIR, B_LCI, B_UCI
 var SEARCHOPTIONS_CANCERSITE = [  // filter values for "cancer" field
     { value: 'AllSite', label: "All Cancer Sites" },
-    { value: 'Breast', label: "Breast Cancer" },
-    { value: 'CRC', label: "Colorectal Cancer" },
-    { value: 'Kidney', label: "Kidney and Renal Pelvis Cancer" },
-    { value: 'Liver', label: "Liver Cancer" },
+    { value: 'Prostate', label: "Prostate Cancer" },
     { value: 'Lung', label: "Lung Cancer" },
-    { value: 'Lymph', label: "Non-Hodgkins Lymphoma" },
+    { value: 'Breast', label: "Breast Cancer" },
+    { value: 'CRC', label: "Colonrectal Cancer" },
+    { value: 'Kidney', label: "Kidney and Renal Pelvis Cancer" },
+    { value: 'NHL', label: "Non-Hodgkin Lymphoma" },
+    { value: 'Urinary', label: "Urinary Bladder Cancer" },
     { value: 'Mela', label: "Melanoma of the Skin" },
     { value: 'Pancreas', label: "Pancreatic Cancer" },
-    { value: 'Prostate', label: "Prostate Cancer" },
+    { value: 'Leuks', label: "Leukemias" },
+    { value: 'Oral', label: "Oral Cavity and Pharynx Cancer" },
     { value: 'Thyroid', label: "Thyroid Cancer" },
-    { value: 'Urinary', label: "Urinary Bladder Cancer" },
     { value: 'Uterine', label: "Uterine Corpus Cancer" },
+    { value: 'Liver', label: "Liver Cancer" },
+    { value: 'Stomach', label: "Stomach Cancer" },
+    { value: 'Myeloma', label: "Myeloma" },
+    { value: 'Brain', label: "Brain Cancer" },
+    { value: 'Larynx', label: "Larynx Cancer" },
+    { value: 'Ovary', label: "Ovarian Cancer" },
+    { value: 'Esoph', label: "Esophagian Cancer" },
 ];
 var SEARCHOPTIONS_SEX = [  // filter values for "sex" field
     { value: 'Both', label: "All Sexes" },
@@ -63,17 +71,17 @@ var SEARCHOPTIONS_SEX = [  // filter values for "sex" field
     { value: 'Female', label: "Female" },
 ];
 var SEARCHOPTIONS_TIME = [  // filter values for "years" field
-    { value: '05yrs', label: "5-Year: 2012-2016" },
-    //{ value: '01yr', label: "1-Year: 2015" },
-    //{ value: '05yrs', label: "5-Year: 2011-2015" },
-    //{ value: '10yrs', label: "10-Year: 2006-2015" },
+    { value: '01yr', label: "1-Year: 2015" },
+    { value: '05yrs', label: "5-Year: 2011-2015" },
+    { value: '10yrs', label: "10-Year: 2006-2015" },
 ];
 var SEARCHOPTIONS_RACE = [  // field prefix for AAIR, LCI, UCI fields within the incidence row
     { value: '', label: "All Ethnicities" },
     { value: 'W', label: "Non-Hispanic White" },
     { value: 'B', label: "Non-Hispanic Black" },
     { value: 'H', label: "Hispanic" },
-    { value: 'A', label: "Asian/Pacific Islander" },
+    { value: 'API', label: "Asian/Pacific Islander" },
+    { value: 'AIAN', label: "American Indian/Alaska Native" },
 ];
 
 // if any of the cancer sites should apply to only one sex, you may define that here
@@ -83,6 +91,7 @@ var SEARCHOPTIONS_RACE = [  // field prefix for AAIR, LCI, UCI fields within the
 var CANCER_SEXES = {
     'Breast': 'Female',
     'Uterine': 'Female',
+    'Ovary': 'Female',
     'Prostate': 'Male',
 };
 
@@ -103,20 +112,18 @@ var DEMOGRAPHIC_TABLES = [
     {
         title: "Population & Income",
         rows: [
-            { field: 'PopAll', label: "Population", format: 'integer', tooltip_id: undefined },
-            { field: 'PerRural', label: "% Rural", format: 'percent', tooltip_id: 'pctrural' },
-            { field: 'PerUninsured', label: "% Without Health Insurance", format: 'percent', tooltip_id: 'pctuninsured' },
-            { field: 'QNSES', label: "Socioeconomic Status", format: 'text', tooltip_id: 'nses' },  // actually a number but always single digit, Statewide this is null and we don't want to show a 0
+            { field: 'TotalPop', label: "Population", format: 'integer', tooltip_id: undefined },
+            { field: 'Pct100Pov', label: "% Below Poverty Level", format: 'percent', tooltip_id: 'Pct100Pov' },
+            { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', tooltip_id: 'PctRural' },
         ],
     },
     {
         title: "Race & Ethnicity",
         rows: [
-            { field: 'PerWhite', label: "% Non-Hispanic White", format: 'percent', tooltip_id: 'pctrace' },
-            { field: 'PerBlack', label: "% Non-Hispanic Black", format: 'percent', tooltip_id: 'pctrace' },
-            { field: 'PerHispanic', label: "% Hispanic", format: 'percent', tooltip_id: 'pctrace' },
-            { field: 'PerAPI', label: "% Asian/Pacific Islander", format: 'percent', tooltip_id: 'pctrace' },
-            { field: 'PerForeignBorn', label: "% Foreign-Born", format: 'percent', tooltip_id: 'pctforeign' },
+            { field: 'PctMinority', label: "% Minority", format: 'percent', tooltip_id: 'PctMinority' },
+            { field: 'PctHispanic', label: "% Hispanic", format: 'percent', tooltip_id: 'PctHispanic' },
+            { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', tooltip_id: 'PctBlackNH' },
+            { field: 'PctAPINH', label: "% Asian/Pacific (non-Hispanic)", format: 'percent', tooltip_id: 'PctAPINH' },
         ],
     },
 ];
@@ -157,15 +164,13 @@ var CHOROPLETH_OPTIONS = [
     { field: 'Cases', label: "Cases", format: 'integer', colorramp: CHOROPLETH_STYLE_INCIDENCE },
     { field: 'AAIR', label: "Incidence", format: 'float', colorramp: CHOROPLETH_STYLE_INCIDENCE },
     // demographic data; customize this to suit your preferences
-    { field: 'PopAll', label: "Population", format: 'integer', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PerRural', label: "% Rural", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PerUninsured', label: "% Uninsured", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'QNSES', label: "Socioeconomic Status", format: 'text', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PerWhite', label: "% Non-Hispanic White", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PerBlack', label: "% Non-Hispanic Black", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PerHispanic', label: "% Hispanic", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PerAPI', label: "% Asian/Pacific Islander", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PerForeignBorn', label: "% Foreign-Born", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'TotalPop', label: "Population", format: 'integer', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'Pct100Pov', label: "% Below Poverty Level", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctMinority', label: "% Minority", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctHispanic', label: "% Hispanic", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctAPINH', label: "% Asian/Pacific (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
+    { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
 ];
 
 // the style to use for the MAP_LAYERS.county GeoJSON overlay
@@ -296,7 +301,7 @@ $(document).ready(function () {
         DATA_CTACOUNTY = datasets[4];
         DATA_CTACITY = datasets[5];
 
-        initFixDemographicDataset();
+        initValidateIncidenceDataset();
         initValidateDemographicDataset();
         initFixCountyOverlay();
 
