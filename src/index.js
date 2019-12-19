@@ -153,8 +153,10 @@ var CHOROPLETH_STYLE_DEMOGRAPHIC = {
 // see also leaflet-choroplethlegend.scss where their color gradients are defined
 // see formatFieldValue() for a list of supported format types
 var CHOROPLETH_OPTIONS = [
+    // incidence data; this should be left as-is
     { field: 'Cases', label: "Cases", format: 'integer', colorramp: CHOROPLETH_STYLE_INCIDENCE },
     { field: 'AAIR', label: "Incidence", format: 'float', colorramp: CHOROPLETH_STYLE_INCIDENCE },
+    // demographic data; customize this to suit your preferences
     { field: 'PopAll', label: "Population", format: 'integer', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PerRural', label: "% Rural", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PerUninsured', label: "% Uninsured", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
@@ -295,7 +297,7 @@ $(document).ready(function () {
         DATA_CTACITY = datasets[5];
 
         initFixDemographicDataset();
-        initFixCancerDataset();
+        initValidateDemographicDataset();
         initFixCountyOverlay();
 
         // and we can finally get started!
@@ -390,21 +392,142 @@ function initTooltips () {
 }
 
 
-function initFixCancerDataset () {
-    // various data fixes to the DATA_CANCER now that we have it
+function initValidateIncidenceDataset () {
+    // check the fields and domain values in the DATA_CANCER versus the settings in SEARCHOPTIONS_XXX et al.
+    const errors = [];
 
-    // no fixes necessary at this time
+    // the basic identifying fields, make sure they exist
+    if (! DATA_CANCER[0].Zone) errors.push("Field not found: Zone");
+    if (! DATA_CANCER[0].sex) errors.push("Field not found: sex");
+    if (! DATA_CANCER[0].cancer) errors.push("Field not found: cancer");
+    if (! DATA_CANCER[0].years) errors.push("Field not found: years");
 
-    // console.log(DATA_CANCER);
+    // the basic incidence fields then the race incidence fields, make sure they exist
+    if (! DATA_CANCER[0].PopTot) errors.push("Field not found: PopTot");
+    if (! DATA_CANCER[0].Cases) errors.push("Field not found: Cases");
+    if (! DATA_CANCER[0].AAIR) errors.push("Field not found: AAIR");
+    if (! DATA_CANCER[0].LCI) errors.push("Field not found: LCI");
+    if (! DATA_CANCER[0].UCI) errors.push("Field not found: UCI");
+    SEARCHOPTIONS_RACE.forEach(function (option) {
+        if (! option.value) return; // the blank All Races Combined value
+        if (! DATA_CANCER[0][`${option.value}_PopTot`]) errors.push(`Field not found: ${option.value}_PopTot`);
+        if (! DATA_CANCER[0][`${option.value}_Cases`]) errors.push(`Field not found: ${option.value}_Cases`);
+        if (! DATA_CANCER[0][`${option.value}_AAIR`]) errors.push(`Field not found: ${option.value}_AAIR`);
+        if (! DATA_CANCER[0][`${option.value}_LCI`]) errors.push(`Field not found: ${option.value}_LCI`);
+        if (! DATA_CANCER[0][`${option.value}_UCI`]) errors.push(`Field not found: ${option.value}_UCI`);
+    });
+
+    // the filter fields: make sure all of the stated domain values in fact match any rows; if not, it's surely a typo
+    // it only makes sense to check these if we did not encounter a "this field doesn't exist" error above
+    if (DATA_CANCER[0].cancer) {
+        SEARCHOPTIONS_CANCERSITE.forEach(function (option) {
+            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.cancer == option.value; }).length;
+            if (! matchesthisvalue) errors.push(`Site filtering option ${option.value} not found in the data.`);
+        });
+    }
+    if (DATA_CANCER[0].sex) {
+        SEARCHOPTIONS_SEX.forEach(function (option) {
+            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.sex == option.value; }).length;
+            if (! matchesthisvalue) errors.push(`Sex filtering option ${option.value} not found in the data.`);
+        });
+    }
+    if (DATA_CANCER[0].years) {
+        SEARCHOPTIONS_TIME.forEach(function (option) {
+            const matchesthisvalue = DATA_CANCER.filter(function (row) { return row.years == option.value; }).length;
+            if (! matchesthisvalue) errors.push(`Time filtering option ${option.value} not found in the data.`);
+        });
+    }
+
+    // the CANCER_SEXES sex-specific cancers; check that these are real site and sex options
+    Object.keys(CANCER_SEXES).forEach(function (site) {
+        const isanoption = SEARCHOPTIONS_CANCERSITE.filter(function (option) { return option.value == site; }).length;
+        if (! isanoption) errors.push(`Site ${site} in CANCER_SEXES is not an option in SEARCHOPTIONS_CANCERSITE`);
+    });
+    Object.values(CANCER_SEXES).forEach(function (sex) {
+        const isanoption = SEARCHOPTIONS_SEX.filter(function (option) { return option.value == sex; }).length;
+        if (! isanoption) errors.push(`Sex ${sex} in CANCER_SEXES is not an option in SEARCHOPTIONS_SEX`);
+    });
+
+    // check that all sex/time/site combinations will in fact match any rows, or else that they are noted in CANCER_SEXES
+    // and that for each known-valid combination, at least one row is Statewide so we know they are using it
+    // again, skip generating hundreds of errors if we the fields don't even exist (we caught that earlier)
+    if (DATA_CANCER[0].Zone && DATA_CANCER[0].cancer && DATA_CANCER[0].sex && DATA_CANCER[0].years) {
+        SEARCHOPTIONS_SEX.forEach(function (sexoption) {
+            SEARCHOPTIONS_TIME.forEach(function (timeoption) {
+                SEARCHOPTIONS_CANCERSITE.forEach(function (siteoption) {
+                    if (CANCER_SEXES[siteoption.value] && CANCER_SEXES[siteoption.value] != sexoption.value) return;
+
+                    const matchesthiscombo = DATA_CANCER.filter(function (row) {
+                        return row.years == timeoption.value && row.sex == sexoption.value && row.cancer == siteoption.value;
+                    });
+                    const hasstatewide = matchesthiscombo.filter(function (row) {
+                        return row.Zone == 'Statewide';
+                    });
+                    if (! matchesthiscombo.length) errors.push(`No data rows would match ${timeoption.value}/${siteoption.value}/${sexoption.value}`);
+                    else if (! hasstatewide.length) errors.push(`No Statewide data rows for ${timeoption.value}/${siteoption.value}/${sexoption.value}`);
+                });
+            });
+        });
+    }
+
+    // if we found errors, throw a tantrum and die
+    // log them to the error log in case they're watching the console, and throw them as an alert() in case they are not
+    if (errors.length) {
+        // throw them to the error log
+        errors.forEach(function (errmsg) {
+            console.error(`initValidateIncidenceDataset() ${errmsg}`);
+        });
+
+        // alert them
+        const errmsg = `initValidateIncidenceDataset() found errors in the incidence dataset:\n${errors.join("\n")}`;
+        alert(errmsg);
+
+        // die
+        throw "initValidateIncidenceDataset() reported errors. Quitting.";
+    }
 }
 
 
-function initFixDemographicDataset () {
-    // various data fixes to the DATA_DEMOGS now that we have it
+function initValidateDemographicDataset () {
+    // check the fields in the DATA_DEMOGS versus the settings in DEMOGRAPHIC_TABLES et al.
+    const errors = [];
 
-    // no data fixes at the moment; see docs where I describe re-exporting the CSV to fix number formats
+    // the basic identifying fields, make sure they exist
+    if (! DATA_DEMOGS[0].Zone) errors.push("Field not found: Zone");
 
-    // console.log(DATA_DEMOGS);
+    // go over the DEMOGRAPHIC_TABLES and CHOROPLETH_OPTIONS and make sure all stated fields exist
+    // having valid values, is their own problem...
+    DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
+        tableinfo.rows.forEach(function (rowinfo) {
+            if (typeof DATA_DEMOGS[0][rowinfo.field] == 'undefined') errors.push(`DEMOGRAPHIC_TABLES nonexistent demographic field ${rowinfo.field}`);
+        });
+    });
+    CHOROPLETH_OPTIONS.forEach(function (vizopt) {
+        if (vizopt.field == 'AAIR' || vizopt.field == 'Cases') return;  // these are fixed incidence fields, ignore
+        if (typeof DATA_DEMOGS[0][vizopt.field] == 'undefined') errors.push(`CHOROPLETH_OPTIONS nonexistent demographic field ${vizopt.field}`);
+    });
+
+    // there should be exactly one Statewide row of demographics (if we even have a Zone field at all)
+    if (DATA_DEMOGS[0].Zone) {
+        const hasstatewide = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Statewide'; });
+        if (hasstatewide.length != 1) errors.push(`Found ${hasstatewide.length} demographic rows for Statewide`);
+    }
+
+    // if we found errors, throw a tantrum and die
+    // log them to the error log in case they're watching the console, and throw them as an alert() in case they are not
+    if (errors.length) {
+        // throw them to the error log
+        errors.forEach(function (errmsg) {
+            console.error(`initValidateDemographicDataset() ${errmsg}`);
+        });
+
+        // alert them
+        const errmsg = `initValidateDemographicDataset() found errors in the incidence dataset:\n${errors.join("\n")}`;
+        alert(errmsg);
+
+        // die
+        throw "initValidateDemographicDataset() reported errors. Quitting.";
+    }
 }
 
 

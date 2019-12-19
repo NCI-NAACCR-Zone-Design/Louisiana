@@ -107,8 +107,8 @@ Verify the field and data requirements:
 * The `sex` field is domain values, and is used for filtering.
 * The `cancer` field is domain values, and is used for filtering.
 * The `years` field is domain values, and is used for filtering.
-* The incidence data fields `Cases` `AAIR` `LCI` `UCI` are used for reporting incidence and are required. The field `PopTot` is not used in the website, but may be used for downloadable ZIPs.
-* The same incidence fields must be defined for each race filter that you will define, and must be prefixed by the race's "short version". For example, If you use `W` as a domain value for race then that race will be reported using these fields: `W_Cases` `W_AAIR` `W_LCI` `W_UCI`.
+* The incidence data fields `Cases` `AAIR` `LCI` `UCI` and `PopTot` are used for reporting incidence and are required.
+* The same incidence fields must be defined for each race filter that you will define, and must be prefixed by the race's "short version". For example, If you use `W` as a domain value for race then that race will be reported using these fields: `W_Cases` `W_AAIR` `W_LCI` `W_UCI` `W_PopTot`.
 
 Copy your cancer incidence CSV into `static/data/cancerincidence.csv`
 
