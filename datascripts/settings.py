@@ -41,12 +41,12 @@ INPUT_DEMOGXLS_SHEETNAME = 'Sheet1'
 
 # Census Designated Places shapefile and the County shapefile
 # used for the CTA-to-City and CTA-to-County CSV lookup CSVs
-INPUT_COUNTYBOUNDS_SHP = "./inputs/tl_2019_us_county.shp"
+INPUT_COUNTYBOUNDS_SHP = "./inputs/counties.shp"
 COUNTYBOUNDS_IDFIELD = "COUNTYFP"
 COUNTYBOUNDS_NAMEFIELD = "NAME"
 REPROJECTED_COUNTY_SHP = "./tempfiles/counties.shp"
 
-INPUT_CITYBOUNDS_SHP = "./inputs/tl_2019_06_place.shp"
+INPUT_CITYBOUNDS_SHP = "./inputs/cities.shp"
 CITYBOUNDS_IDFIELD = "PLACEFP"
 CITYBOUNDS_NAMEFIELD = "NAME"
 REPROJECTED_CITY_SHP = "./tempfiles/cities.shp"

@@ -1,4 +1,4 @@
-## Westat Cancer Mapping Template
+# Westat Cancer Mapping Template
 
 This is a template for web developers to set to a website of cancer statistics like at https://www.californiahealthmaps.org/
 
@@ -9,11 +9,13 @@ See the project on Github at https://github.com/GreenInfo-Network/Westat-Cancer-
 See a demonstration at https://greeninfo-network.github.io/Westat-Cancer-Template/
 
 
-## Overview
-
-### Prerequisites
+## Prerequisites
 
 You need the **NVM** and **Yarn** command-line tools installed. To check, run `yarn --version` and `nvm --version`
+
+You will need Python 3 in order to run the data-preparation scripts under `datascripts/`. To check, run `python3 --version` and `pip3 -version`
+
+You will need the OSGEO/GDAL module for Python 3. To check, run `python3 -c 'from osgeo import ogr; print("OK")'` See https://pypi.org/project/GDAL/ for installation details.
 
 You need to set up a Github repository where this will be hosted. The repository may be private. It must have Github Pages enabled and set to serve from the `docs/` directory (not the `gh-pages` branch).
 
@@ -32,7 +34,8 @@ You need a shapefile of county boundaries for your state. A good source is ftp:/
 You need a shapefile of city/CDP boundaries for your state. A good source is You need a shapefile ftp://ftp2.census.gov/geo/tiger/TIGER2019/PLACE/
 
 
-### Getting Started
+
+## Getting Started
 
 Visit https://github.com/GreenInfo-Network/Westat-Cancer-Template Download and unpack the latest release ZIP file.
 
@@ -42,122 +45,145 @@ Select the appropriate Node version: `nvm use`
 
 Install dependencies: `yarn -i`
 
-Start the Webpack development web server: `npm run start` This will run a web server at http://localhost:8181/ where you can see your website under development.
+Start the Webpack development web server: `npm start` This will run a web server at http://localhost:8181/ where you can see your website under development.
 
-Edit the files under `src/` as needed. See the rest of this document for details on the types of changes you will want to make.
-
-See the `datascripts/` folder for details on integrating your own data. GDA DETAILS AND REVIEW
-
-Remember that you will need to run `npm run build` after changing static files such as data files or the favicon.
-
-When your site is all set up, deploy it!
+The package comes with a working dataset to serve as a demonstration and example. After a brief overview of the code, your next step will be to integrate your own data.
 
 
-### Deploying Your Website
 
-This is designed to work with Github Pages, serving from the `docs/` sub-folder. Make sure that you have set up a Github repository and Github Pages appropriately.
+## Overview of Directory Structure and Development
 
-Run `npm run build` to compile the source files into their browser-ready versions under `docs/` for Github Pages. Then commit and push as usual. As a convenience, the command `npm run deploy` will do this in a single step.
+### Directory Structure
 
+The `datascripts/` folder has scripts used when integrating your own data and updating it.
 
-## Configuring, Editing, and Integrating Your Data
+The `src/` directory contains the source code files, including the settings for what fields to expect in your demographic and incidence CSVs, the text/HTML that displays, and calculations and map controls. Later on in this document are some task-oriented tips on how you would make edits to your website.
 
-### Integrating Your Own Data
+The `static/data/` directory contains the data files that power the website: the CTA Zones geodata file, the incidence and demographics CSVs, the county reference overlay, and so on.
 
-The `datascripts/` folder has some tools written in Python for importing your own data.
+The `static/downloads/` directory, contains content accessed via the *Download* button on the website.
 
-The sample files provided in `datascripts/inputs/` were used to set up the template demo, and may be a useful reference.
+The rest of the `src/static/` directory is where you should put other static content such as images, logos, and your favicon.
 
-* *tl_2019_XX_place.shp* -- Shapefile of census designated places, used to create a CSV of which cities/towns intersect each CTA Zone.
-  * The provided version was downloaded from ftp://ftp2.census.gov/geo/tiger/TIGER2019/PLACE/ The FTP site names the files by the state's FIPS code, e.g. California is FIPS code *06*.
-  * This should be provided in WGS84 (plain lat-lon) SRS.
-  * Relevant attributes are as follows:
-    * `PLACEFP` -- The FIPS code for this county. Used as a unique ID. If you use a different field name, edit the `CITYBOUNDS_IDFIELD` setting in `settings.py`.
-    * `NAME` -- The name of the city/place. If you use a different field name, edit the `CITYBOUNDS_NAMEFIELD` setting in `datascripts/settings.py`
-* *tl_2019_us_county.shp* -- Shapefile of counties, used to create a CSV of which counties intersect each CTA Zone.
-  * This should be provided in WGS84 (plain lat-lon) SRS.
-  * The provided version was downloaded from ftp://ftp2.census.gov/geo/tiger/TIGER2019/COUNTY/ The FTP site has one county file for all of the United States, and you will need to crop it to your state.
-  * The following attributes are used (see `settings.py`) and others are ignored:
-    * `COUNTYFP` -- The FIPS code for this county. Used as a unique ID. If you use a different field name, edit the `COUNTYBOUNDS_IDFIELD` setting in `settings.py`.
-    * `NAME` -- The name of the county. If you use a different field name, edit the `COUNTYBOUNDS_NAMEFIELD` setting in `datascripts/settings.py`
-* *IncidenceByCTAZone.xlsx* -- Excel spreadsheet providing cancer incidence data.
-  * One row per combination of CTA Zone X Sex X Site X Time Frame.
-  * The `Zones` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
-  * The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" will not be recignozed as Statewide!
-  * The worksheet to use is defined in `settings.py` in the `INPUT_CANCERXLS_SHEETNAME` setting. If you get an error that the worksheet doesn't exist, check this setting.
-  * The fields must be named as follows, and in this sequence:
-    * `ID` -- a unique ID for this row, not really used and OK to just enter anything. Do not leave this blank, as this would look like a blank row and be skipped.
-    * `sex` -- Domain value for filtering by sex.
-    * `cancer` -- Domain value for filtering by cancer site.
-    * `years` -- Domain value for filtering by time frame.
-    * `Zones` -- CTA Zone ID, correspnding to a CTA Zone in the CTA Zones shapefile.
-    * `W_PopTot` -- the PopTot, Cases, AAIR, LCI, and UCI are repeated for each Race option W, B, H, A
-    * `W_Cases`
-    * `W_AAIR`
-    * `W_LCI`
-    * `W_UCI`
-    * `B_PopTot`
-    * `B_Cases`
-    * `B_AAIR`
-    * `B_LCI`
-    * `B_UCI`
-    * `H_PopTot`
-    * `H_Cases`
-    * `H_AAIR`
-    * `H_LCI`
-    * `H_UCI`
-    * `A_PopTot`
-    * `A_Cases`
-    * `A_AAIR`
-    * `A_LCI`
-    * `A_UCI`
-    * `PopTot` -- Total population for AAIR calculation purposes
-    * `Cases` -- Number of cases of this cancer site + sex + time in this CTA Zone
-    * `AAIR` -- Age-adjusted incidence rate of this cancer site + sex + time in this CTA Zone
-    * `LCI` -- Lower end of confidence interval (LCI) for the AAIR
-    * `UCI` -- Upper end of confidence interval (UCI) for the AAIR
-* *DemographicsByCTAZone.xlsx* -- Demographic statistics source file, Excel spreadsheet.
-  * One row per CTA Zone.
-  * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
-  * The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" will not be recignozed as Statewide!
-  * The worksheet to use is defined in `settings.py` in the `INPUT_DEMOGXLS_SHEETNAME` setting. If you get an error that the worksheet doesn't exist, check this setting.
-  * The set of fields will vary, and you will need to make some edits:
-    * Edit `make_demogcsv.py` to validate your fields, and also to copy them into the output CSV.
-    * Edit `aggregateDemographicData()` in `make_downloadables.py` to define what fields are placed in the downloadable CSV and ZIP files.
-* *CTAZones.shp* -- CTA Zones shapefile, providing boundaries for the map.
-  * This should be provided in WGS84 (plain lat-lon) SRS.
-  * Relevant attributes are as follows, and other fields will be ignored:
-    * `Zone` -- CTA Zone's unique ID, used to tie to other data (demogs, incidence). If you use a different feld name, edit the `CTAZONES_SHAPEFILE_IDFIELD` setting in `settings.py`.
-    * `ZoneName` -- CTA Zone's name for display. If you use a different feld name, edit the `CTAZONES_SHAPEFILE_NAMEFIELD` setting in `settings.py`.
-* *readme.txt* -- This file will be included in each of the downloadable ZIP files. This would be suitable as metadata such as a data dictionary, a disclaimer, credits, etc.
-  * Depending on your demographic statistics, you probably want to edit this.
+### Development
 
-The scripts are written for Python 3, and are as follows. It is recommended that they be run in this order.
+Program code under `src/` is written in ECMAScript 2017 and SASS, and compiled using Babel, Webpack, et al.
 
-* `python3 make_ctageofile.py` -- Creates `static/data/cta.json` which is the TopoJSON file providing CTA Zone boundaries for the map.
-* `python3 make_demogcsv.py` -- Creates `static/data/demographics.csv` which provides demographics for each CTA Zone.
-* `python3 make_incidencecsv.py` -- Creates `static/data/cancerincidence.csv` which provides incidence for each CTA Zone.
-* `python3 make_countygeofile.py` -- Creates `static/data/countybounds.json` which is the TopoJSON file providing county boundaries for the map.
-* `python3 make_placescsv.py` -- Creates `static/data/counties_by_cta.csv` and `static/data/cities_by_cta.csv` which provide a list of places intersecting each CTA Zone.
-* `python3 make_downloadables.py` -- Creates the downloadable ZIP files under `static/downloads/`.
+The command `npm start` will start Webpack's development server at http://localhost:8181/ and will open a browser window for you as well.
 
-If you get errors that some Python module is missing, install them via `pip3 install -r requirements.txt`
+The command `npm run build` will copy static assets and compiled code into the `docs/` directory, where it may be deployed to Github Pages as your website.
 
-Some settings may be adjsted in `settings.py` such as the URL of your website.
+While using the Webpack development server, making edits to `src/` will automatically recompile your application and reload the web page. **However, changes to `static/` will not trigger this**. After replacing a logo, for example, you must run `npm run build` and reload the page.
 
-After running all of them, be sure to run `npm run build` to update the web server so your new files will show up.
+### Deployment
+
+The intended workflow for deployment, is Github Pages serving from the `docs/` sub-folder. Make sure that you have set up a Github repository and set up its Github Pages settings appropriately.
+
+The command `npm run build` will compile the source files and static assets into their browser-ready versions under `docs/`. You may then commit and push as usual.
+
+As a convenience, the command `npm run deploy` will do this in a single step.
 
 
-### Changing Data Filtering Options
 
-The filtering options available for Sex, Cancer Site, Race/Ethnicity, and Time Range may need adjustment to fit your own data, if have a different set of options for these filters, or if you use different domain values for these fields.
+## Integrating Your Own Data
 
-The filter options may be defined in `index.js` by the `SEARCHOPTIONS_CANCERSITE`, `SEARCHOPTIONS_RACE`, `SEARCHOPTIONS_SEX`, and `SEARCHOPTIONS_TIME` options.
+### Demographics Data
 
-Some cancers may be specific to a single sex, e.g. uterine cancer does not occur in males, nor prostate in females. To address these cases, see the `CANCER_SEXES` setting. If a cancer site is selected which only applies to one sex, that sex will be automaticaly selected if that cancer is selected. If a sex is selected, then invalid cancer site options for that sex will be disabled.
+Verify the field and data requirements:
+* The `Zone` field is used as the CTA Zones' unique ID to tie to other data (incidence, boundary).
+* The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" or "All" will not be recognized as Statewide.
+
+Copy your demographics CSV into `static/data/demographics.csv`
+
+Edit `index.js` and set up `DEMOGRAPHIC_TABLES` to display the demographic data into the tables below the map. This defines a set of tables, what fields to display in each table, and how to label the fields and format their values (adding commas, rounding to 1 decimal, etc.).
+
+Edit `index.js` and set up `CHOROPLETH_OPTIONS` to offer demographics as a Color By option for the choropleth map.
+
+### Incidence Data
+
+Verify the field and data requirements:
+* The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
+* The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" or "All" will not be recognized as Statewide.
+* The `sex` field is domain values, and is used for filtering.
+* The `cancer` field is domain values, and is used for filtering.
+* The `years` field is domain values, and is used for filtering.
+* The incidence data fields `Cases` `AAIR` `LCI` `UCI` are used for reporting incidence and are required. The field `PopTot` is not used in the website, but may be used for downloadable ZIPs.
+* The same incidence fields must be defined for each race filter that you will define, and must be prefixed by the race's "short version". For example, If you use `W` as a domain value for race then that race will be reported using these fields: `W_Cases` `W_AAIR` `W_LCI` `W_UCI`.
+
+Copy your cancer incidence CSV into `static/data/cancerincidence.csv`
+
+Edit `index.js` and set up `SEARCHOPTIONS_CANCERSITE` to match your dataset's domain values.
+
+Edit `index.js` and set up `SEARCHOPTIONS_SEX` to match your dataset's domain values.
+
+Edit `index.js` and set up `SEARCHOPTIONS_TIME` to match your dataset's domain values.
+
+Edit `index.js` and set up `SEARCHOPTIONS_RACE` to match your dataset's domain values.
+
+If any of the cancer site options will be specific to one sex, edit `index.js` and set up `CANCER_SEXES` to auto-select that sex if that cancer site is selected.
+
+### CTA Zones Geodata
+
+Place your CTA Zones shapefile into `datascripts/inputs/` as `CTAZones.shp`.
+
+This should be provided in WGS84 (plain lat-lon) SRS.
+
+Relevant attributes are as follows. Other fields will be ignored.
+* `Zone` -- CTA Zone's unique ID, used to tie to other data (demogs, incidence).
+* `ZoneName` -- CTA Zone's name for display.
+
+Run `python3 make_ctageofile.py`. Ths will create `static/data/cta.json` which is the TopoJSON file providing CTA Zone boundaries for the map.
+
+### County Boundaries Geodata
+
+A recommended county boundaries dataset may be had from ftp://ftp2.census.gov/geo/tiger/TIGER2019/COUNTY/ The FTP site has one county file for all of the United States, and you will need to crop it to your state using the `STATEFP` field.
+
+Place your county boundaries shapefile into `datascripts/inputs/` as `counties.shp`.
+
+This should be provided in WGS84 (plain lat-lon) SRS.
+
+Relevant attributes are as follows. Other fields will be ignored.
+* `COUNTYFP` -- The FIPS code for this county. Used as a unique ID.
+* `NAME` -- The name of the county.
+
+Run `python3 make_countygeofile.py` to create `static/data/countybounds.json` which is the TopoJSON file providing county boundaries for the map.
+
+### City / Place Boundaries Geodata
+
+A recommended city/CDP boundaries dataset may be had from ftp://ftp2.census.gov/geo/tiger/TIGER2019/PLACE/ The FTP site names the files by the state's FIPS code, e.g. California is FIPS code *06*.
+
+Place your city/CDP boundaries shapefile into `datascripts/inputs/` as `cities.shp`.
+
+This should be provided in WGS84 (plain lat-lon) SRS.
+
+Relevant attributes are as follows. Other fields will be ignored.
+* `PLACEFP` -- The FIPS code for this county. Used as a unique ID.
+* `NAME` -- The name of the city/place.
+
+After both the counties and places datasets are in place, run `python3 make_placescsv.py` to create `static/data/counties_by_cta.csv` and `static/data/cities_by_cta.csv` which provide a list of places intersecting each CTA Zone.
+
+### Creating Downloadable Files
+
+The files offered by the Download button, are static ZIP files containing CSV extracts of merged demographic and incidence data.
+
+Edit `datascripts/make_downloadables.py` and define what demographic and incidence fields should be present in the downloadable content accessed by the Download button.
+* The function `aggregateDemographicData()` will read the demographic dataset and is where you can massage/correct/format the data for the downloadable CSVs, as well as rename the fields as they appear in the download CSVs.
+* The function `aggregateIncidenceData()` does simialrly, for the incidence data, massaging and formatting values and renaming them for the download CSVs.
+* The function `csvHeaderRow()` defines the sequence of fields as they appear in the final download CSV. All fields here must be the fields created in `aggregateIncidenceData()` and/or `aggregateDemographicData()` but it is not required that every field defined be used here.
+
+Edit the `datascripts/readme.txt` file to describe the CSV fields. This will be included in all of the downloadable ZIP files, and is suitable for metadata such as a data dictionary, a disclaimer, and credits/attributions.
+
+Run `python3 make_downloadables.py` to compile the downloadable ZIP files under `static/downloads/`.
+
+### Rebuilding For The Website
+
+Lastly, be sure to run `npm run build` to update the files as seen by the web server.
 
 
-### Cosmetic and Look-and-Feel
+
+## Further Customizations
+
+### HTML Content, Cosmetic Changes, Look-and-Feel
 
 * *Browser title bar* -- Look in `src/index.html` for the `title`.
 
@@ -173,7 +199,7 @@ Some cancers may be specific to a single sex, e.g. uterine cancer does not occur
 
 * *Bing API Key* -- Look in `src/index.html` for the definition of `BING_API_KEY` Until you set this, you will not be able to search for addresses. A Bing Maps API key is free, and their terms of use are quite flexible. See https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key for more information.
 
-* *About this Project* -- Look in `src/index.html` for the `learn-about`.
+* *About This Project* -- Look in `src/index.html` for the `learn-about`.
 
 * *Methodology* -- Look in `src/index.html` for the `learn-method`.
 
@@ -182,47 +208,3 @@ Some cancers may be specific to a single sex, e.g. uterine cancer does not occur
 * *Glossary* -- Look in `src/index.html` for the `learn-glossary`.
 
 * *Tooltip i icons* -- Within `src/index.html` you may create tooltip I icons, with HTML such as this: `<i class="fa fa-info-circle" aria-hidden="true" data-tooltip="yourtermhere"></i>` The tooltip HTML for each such tooltip, is provided in `tooltip_contents` Each DIV has a `data-tooltip` attribute corresponding to the `data-tooltip` used in the `<i>` element.
-
-
-### Customizing Data Download ZIP Files
-
-The downloadable ZIP files are created by the `datascripts/make_downloadables.py` script.
-
-#### Controlling Which Fields Appear
-
-The functions `aggregateIncidenceData()` and `aggregateDemographicData()` will read the incidence dataset and the demographic dataset, and will perform various massage/correction to the data, and will rename fields for the purpose of putting them in the output files.
-
-The function `csvHeaderRow()` defines the sequence of fields as they appear in the CSV. All fields here must be the fields created in `aggregateIncidenceData()` and `aggregateDemographicData()` However, it is *not required* that every field in `aggregateIncidenceData()` and `aggregateDemographicData()` be used in the final, downloadable CSVs.
-
-#### The Readme File
-
-All generated ZIP files will include the `datascripts/readme.txt` file. This would be suitable as metadata such as a data dictionary, a disclaimer, credits, etc.
-
-#### Website URL
-
-The CSVs contain a `URL` field, which is a hyperlink to the website with that CTA Zone automatically selected. The URL used is the `WEBSITE_URL` setting in `settings.py`
-
-#### Other Notes
-
-* The website's CSVs and JSON files under `static/data/` are the source for the content of the ZIP files. As such, it is recommended that `make_downloadables.py` be run *after* the other scripts which update those website files.
-* Don't forget to run `npm run build` after running `make_downloadables.py`, so your new files will show up in the website.
-
-
-### Adding or Changing Demographic Data
-
-If you want to add or change the demographic fields, the following checklist outlines the required updates. Most of these are covered elsewhere within this document.
-
-* The new demographics XLSX with the new fields: `datascripts/inputs/DemographicsByCTAZone.xlsx`
-  * The `Zone` field contains the CTA Zone ID, which must match those in the CTA Zones shapefile and incidence spreadsheets.
-* The data-prep script at `datascripts/make_demogcsv.py` will need modifications in three places:
-  * to validate the fields,
-  * to write the CSV's header row,
-  * and to write out the data rows.
-* The data-prep script at `datascripts/make_downloadables.py` will be used to re-create new downloadable CSVs and ZIPs, and you probably need to make some changes:
-  * Edit `aggregateDemographicData()` to reflect your demographic fields, as well as any data formatting, handling of no-data values, or other formatting.
-  * Edit `csvHeaderRow()` to put the massaged/formatted field into the final output CSV.
-  * Optional: Edit the `inputs/readme.txt` file which describes the fields.
-* Optional: Edit `DEMOGRAPHIC_TABLES` to display the demographic field in the tables below the map.
-  * Formatting of the values is controlled by the `format` option. See formatFieldValue() for a list of supported format types.
-* Optional: Edit `CHOROPLETH_OPTIONS` to offer the demographic field as a choropleth map option.
-  * Formatting of the values when displayed in the legend, is controlled by the `format` option. See formatFieldValue() for a list of supported format types.
