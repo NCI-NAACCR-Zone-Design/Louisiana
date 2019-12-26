@@ -15,7 +15,7 @@ You need the **NVM** and **Yarn** command-line tools installed. To check, run `y
 
 You will need Python 3 in order to run the data-preparation scripts under `datascripts/`. To check, run `python3 --version` and `pip3 -version`
 
-You will need the OSGEO/GDAL module for Python 3. To check, run `python3 -c 'from osgeo import ogr; print("OK")'` See https://pypi.org/project/GDAL/ for installation details.
+You will need the OSGEO/GDAL module for Python 3. To check, run `python3 -c 'from osgeo import ogr; print("OK")'` If it is not installed on your system, you will need to install GDAL and then Python's GDAL package. To install GDAL, see https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries for recommended packages for various operating systems, including Mac and Windows. To install the Python library, run `pip3 install GDAL`
 
 You need to set up a Github repository where this will be hosted. The repository may be private. It must have Github Pages enabled and set to serve from the `docs/` directory (not the `gh-pages` branch).
 
@@ -38,6 +38,8 @@ You need a shapefile of city/CDP boundaries for your state. A good source is You
 ## Getting Started
 
 Visit https://github.com/GreenInfo-Network/Westat-Cancer-Template Download and unpack the latest release ZIP file.
+
+Note: If you are using a Mac and you choose to move files out of that folder into some other folder, there are files starting with a `.` and these will not be visible in Mac's Finder by default. Use Command+Shift+Dot to show these files, or use the Console instead.
 
 Open your command-line tools and `cd` into the directory.
 
@@ -71,9 +73,11 @@ Program code under `src/` is written in ECMAScript 2017 and SASS, and compiled u
 
 The command `npm start` will start Webpack's development server at http://localhost:8181/ and will open a browser window for you as well.
 
-The command `npm run build` will copy static assets and compiled code into the `docs/` directory, where it may be deployed to Github Pages as your website.
+The command `npm run build` will copy static assets and compiled code into the `docs/` directory, where it may be deployed to Github Pages as your website. You will need to do this every time you change the content of `static/`, including replacing images or loading new data.
 
 While using the Webpack development server, making edits to `src/` will automatically recompile your application and reload the web page. **However, changes to `static/` will not trigger this**. After replacing a logo, for example, you must run `npm run build` and reload the page.
+
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
 
 ### Deployment
 
@@ -81,11 +85,13 @@ The intended workflow for deployment, is Github Pages serving from the `docs/` s
 
 The command `npm run build` will compile the source files and static assets into their browser-ready versions under `docs/`. You may then commit and push as usual.
 
-As a convenience, the command `npm run deploy` will do this in a single step.
+As a convenience, the command `npm run deploy` will do this in a single step: do a `npm run build`, then a `git commit` with a default message, then a `git push`.
 
 
 
 ## Integrating Your Own Data
+
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
 
 ### Demographics Data
 
@@ -98,6 +104,8 @@ Copy your demographics CSV into `static/data/demographics.csv`
 Edit `index.js` and set up `DEMOGRAPHIC_TABLES` to display the demographic data into the tables below the map. This defines a set of tables, what fields to display in each table, and how to label the fields and format their values (adding commas, rounding to 1 decimal, etc.).
 
 Edit `index.js` and set up `CHOROPLETH_OPTIONS` to offer demographics as a Color By option for the choropleth map.
+
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
 
 ### Incidence Data
 
@@ -122,6 +130,8 @@ Edit `index.js` and set up `SEARCHOPTIONS_RACE` to match your dataset's domain v
 
 If any of the cancer site options will be specific to one sex, edit `index.js` and set up `CANCER_SEXES` to auto-select that sex if that cancer site is selected.
 
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
+
 ### CTA Zones Geodata
 
 Place your CTA Zones shapefile into `datascripts/inputs/` as `CTAZones.shp`.
@@ -133,6 +143,8 @@ Relevant attributes are as follows. Other fields will be ignored.
 * `ZoneName` -- CTA Zone's name for display.
 
 Run `python3 make_ctageofile.py`. Ths will create `static/data/cta.json` which is the TopoJSON file providing CTA Zone boundaries for the map.
+
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
 
 ### County Boundaries Geodata
 
@@ -148,6 +160,8 @@ Relevant attributes are as follows. Other fields will be ignored.
 
 Run `python3 make_countygeofile.py` to create `static/data/countybounds.json` which is the TopoJSON file providing county boundaries for the map.
 
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
+
 ### City / Place Boundaries Geodata
 
 A recommended city/CDP boundaries dataset may be had from ftp://ftp2.census.gov/geo/tiger/TIGER2019/PLACE/ The FTP site names the files by the state's FIPS code, e.g. California is FIPS code *06*.
@@ -162,6 +176,8 @@ Relevant attributes are as follows. Other fields will be ignored.
 
 After both the counties and places datasets are in place, run `python3 make_placescsv.py` to create `static/data/counties_by_cta.csv` and `static/data/cities_by_cta.csv` which provide a list of places intersecting each CTA Zone.
 
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
+
 ### Creating Downloadable Files
 
 The files offered by the Download button, are static ZIP files containing CSV extracts of merged demographic and incidence data.
@@ -175,9 +191,13 @@ Edit the `datascripts/readme.txt` file to describe the CSV fields. This will be 
 
 Run `python3 make_downloadables.py` to compile the downloadable ZIP files under `static/downloads/`.
 
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
+
 ### Rebuilding For The Website
 
 Lastly, be sure to run `npm run build` to update the files as seen by the web server.
+
+Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
 
 
 

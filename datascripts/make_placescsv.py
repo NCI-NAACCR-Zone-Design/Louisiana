@@ -57,11 +57,20 @@ class PlacesIntersector:
             for thisplace in layer:
                 # work around twitchy hands making false intersections
                 # "% of CTA area" strategy doesn't work: small towns in large rural CTAs = small percentage
-                # but a town sliver over X acres, well, that should count as intersecting the town
+                # but a town sliver over X acres, well, that should count as intersecting the town.
+                #
+                # also work around boundary datasets that are so precisely snapped,
+                # that we get zero-area intersection as the overlapping boundary linestring of two areas
+                # this leads to harmless but scary "non-surface geometry" warnings
+                #
                 # also, note that we collect names here and unique-ify them in a second step
                 # multipolygon datasets means that a CTA may intersect the same place more than once!
                 geom = thisplace.GetGeometryRef()
-                iacres = geom.Intersection(ctageom).GetArea() * settings.SQMETERS_TO_ACRES
+                intersection = geom.Intersection(ctageom)
+
+                iacres = 0
+                if intersection.GetGeometryName() in ('POLYGON', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'):
+                    iacres = intersection.Area() * settings.SQMETERS_TO_ACRES
 
                 if iacres < 2000:
                     continue
