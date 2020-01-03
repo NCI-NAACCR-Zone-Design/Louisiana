@@ -187,7 +187,7 @@ Edit `datascripts/make_downloadables.py` and define what demographic and inciden
 * The function `aggregateIncidenceData()` does simialrly, for the incidence data, massaging and formatting values and renaming them for the download CSVs.
 * The function `csvHeaderRow()` defines the sequence of fields as they appear in the final download CSV. All fields here must be the fields created in `aggregateIncidenceData()` and/or `aggregateDemographicData()` but it is not required that every field defined be used here.
 
-Edit the `datascripts/readme.txt` file to describe the CSV fields. This will be included in all of the downloadable ZIP files, and is suitable for metadata such as a data dictionary, a disclaimer, and credits/attributions.
+Edit the `datascripts/inputs/readme.txt` file to describe the CSV fields. This will be included in all of the downloadable ZIP files, and is suitable for metadata such as a data dictionary, a disclaimer, and credits/attributions.
 
 Run `python3 make_downloadables.py` to compile the downloadable ZIP files under `static/downloads/`.
 
