@@ -55,8 +55,8 @@
     </script>
 
     <!-- our own awesomesauce -->
-    <link rel="stylesheet" type="text/css" href="index.css?Tue_Jan_07_2020_10_40_34_GMT_0800__Pacific_Standard_Time_" />
-    <script type="text/javascript" src="index.js?Tue_Jan_07_2020_10_40_34_GMT_0800__Pacific_Standard_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Wed_Jan_08_2020_18_39_03_GMT_0800__Pacific_Standard_Time_" />
+    <script type="text/javascript" src="index.js?Wed_Jan_08_2020_18_39_03_GMT_0800__Pacific_Standard_Time_"></script>
 </head>
 <body>
 
@@ -76,7 +76,7 @@
 
     <div class="container noprint">
         <p class="intro-text">
-            This is an interactive mapping tool of health data for various zones in my state. You can map cancer incidence for common invasive cancer sites and filter by sex and race/ethnicity. <a href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
+            [REPLACE state/registry] Cancer Maps is an interactive mapping tool of cancer data for [REPLACE num_zones] cancer reporting zones in [REPLACE state/registry]. You can map cancer incidence for the [REPLACE num_cancer_sites] most common invasive cancer sites and filter by sex and race/ethnicity. <a href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
         </p>
     </div><!--/container section-->
 
@@ -223,7 +223,7 @@
         </div>
 
         <p class="small">
-          According to Department of Public Health guidelines, cancer incidence rates cannot be reported if based on &lt;15 cancer cases and/or a population of &lt;10,000 to ensure confidentiality and stable statistical rates.
+          To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on [REPLACE suppression threshold] cancer cases. Distributions of selected population demographic factors are also provided for each zone. These data are from the decennial U.S. Census or the Census’s American Community Survey. 
         </p>
     </div><!--/container section-->
 
@@ -265,44 +265,38 @@
         <div class="tab-content">
             <div class="tab-pane container active" id="learn-about">
                 <p>
-                    The Health Maps project aims to provide data for geographies beyond county-level statistics to better serve cancer control,  public health, and policy efforts.
+                    The [REPLACE state/registry] Cancer Maps project aims to provide data for geographies beyond county-level statistics to better serve cancer control, public health, and policy efforts.
                 </p>
                 <p>
-                    Health Maps allows users to interactively map health data at a geographic level called zones, which are aggregates of census tracts. We have used a data-driven approach to define these zones, based on similar characteristics (poverty, urbanicity, racial/ethnic minority composition) and a minimum of 50,000 residents. These areas are generally smaller than county, but larger than census tract. Zones vary in population size from 51,229 to 98,764 with the number of census tracts ranging from 5 to 25.
+                    [REPLACE state/registry] Cancer Maps allows users to interactively map health data for [REPLACE state/registry] at a geographic level called zones, which are aggregates of census tracts. We have used a data-driven approach to define [REPLACE num_zones] zones for [REPLACE state/registry], based on similar characteristics (poverty, urbanicity, racial/ethnic minority composition) and a minimum of 50,000 residents. These areas are generally smaller than county, but larger than census tract. Zones vary in population size from [REPLACE min_pop] to [REPLACE max_pop] with the number of census tracts ranging from [REPLACE min_ct] to [REPLACE max_ct].
                 </p>
                 <p>
-                    Health Maps include 5-year cancer incidence rates based on the most current data for the most common invasive cancer sites by sex and race/ethnicity (non-Hispanic White, non-Hispanic Black, Hispanic, and non-Hispanic Asian/Pacific Islander). It also includes selected population sociodemographic data based on Census and American Community Survey data.
+                    [REPLACE state/registry] Cancer Maps include 5-year and 10-year cancer incidence rates based on the most current data for the [REPLACE num_cancer_sites] most common cancer sites by sex and race/ethnicity ([REPLACE/CONFIRM list] non-Hispanic White, non-Hispanic Black, Hispanic, and non-Hispanic Asian/Pacific Islander). It also includes selected population demographic data based on 2010 Census and 2012-2016 American Community Survey data. Cancer incidence rates will be updated annually as more current data become available.
                 </p>
                 <p class="title">Project Team</p>
                 <p>
-                    <a target="_blank" href="http://cancerregistry.ucsf.edu">Greater Bay Area Cancer Registry (University of California, San Francisco)</a>
-                    <br/>
-                    <a target="_blank" href="https://csp.usc.edu/">Los Angeles Cancer Surveillance Program (University of Southern California)</a>
+                    <a target="_blank" href="[REPLACE]">[REPLACE state/registry name]</a>
                     <br/>
                     <a target="_blank" href="http://seer.cancer.gov">National Cancer Institute</a>
                     <br/>
                     <a target="_blank" href="https://www.westat.com/project/using-gis-interpret-spatial-context-and-cancer-risk">Westat, Inc.</a>
-                    <br/>
-                    <a target="_blank" href="http://healthpolicy.ucla.edu/chis/Pages/default.aspx">California Health Interview Survey</a>
                 </p>
                 <p class="title">Funding</p>
                 <p>
-                    <a target="_blank" href="https://www.cdph.ca.gov/Programs/CCDPHP/DCDIC/CDSRB/Pages/California-Cancer-Registry.aspx">California Department of Public Health</a>
+                    <a target="_blank" href="[REPLACE]">[REPLACE state/registry funding source]</a>
                     <br/>
                     <a target="_blank" href="http://seer.cancer.gov">National Cancer Institute</a>
-                    <br/>
-                    University of California, Davis, Comprehensive Cancer Center
                 </p>
             </div><!--/tab-pane -->
             <div class="tab-pane container" id="learn-method">
                 <p>
-                    On this website, data are shown by cancer reporting zone.  These zones have been designed so that they have a minimum population, have similar demographic and socioeconomic characteristics, and are geographically compact (they minimize the distance between different parts of the zone).  The minimum population for each zone is 50,000 people.
+                    On this website, data are shown by cancer reporting zone. These zones have been designed so that they have a minimum population, have similar demographic and socioeconomic characteristics, and are geographically compact (they minimize the distance between different parts of the zone). The minimum population for each zone is 50,000 people.
                 </p>
                 <p>
-                    Counties with larger populations (more than 100,000 people) were divided into multiple zones by combining adjacent census tracts.  For the rest of the state, adjacent counties and parts of counties were combined to form zones.  Three demographic and socioeconomic characteristics were used to determine similarity: the percent minority population (percent of the population who are not non-Hispanic White), percent of the population with incomes below poverty, and the proportion of the population living in urban and rural areas.
+                    Counties with larger populations (more than 100,000 people) were divided into multiple zones by combining adjacent census tracts. For the rest of the state, adjacent counties and parts of counties were combined to form zones. Three demographic and socioeconomic characteristics were used to determine similarity: the percent minority population (percent of the population who are not non-Hispanic White), percent of the population with incomes below poverty, and the proportion of the population living in urban and rural areas.
                 </p>
                 <p>
-                    We used population data from Census 2010 and Census 2010 tract geographies to construct the zones.  Poverty data came from the American Community Survey 2012-2016 5-year data.  We used a software zone design program called <a href="https://www.geodata.soton.ac.uk/software/AZTool/" target="_blank">AZTool</a> to identify aggregations of adjacent tracts and counties that optimize the three objectives: a target population of 50,000, geographic compactness, and similarity in terms of minority population, poverty, and urbanicity characteristics.
+                    We used population data from Census 2010 and Census 2010 tract geographies to construct the zones. Poverty data came from the American Community Survey 2012-2016 5-year data. We used a software zone design program called <a href="https://www.geodata.soton.ac.uk/software/AZTool/" target="_blank">AZTool</a> to identify aggregations of adjacent tracts and counties that optimize the three objectives: a target population of 50,000, geographic compactness, and similarity in terms of minority population, poverty, and urbanicity characteristics
                 </p>
             </div><!--/tab-pane -->
             <div class="tab-pane container" id="learn-faq">
@@ -315,7 +309,7 @@
                         </button>
                     </h2>
                     <div id="faq1" class="usa-accordion__content" hidden="">
-                        Census tract aggregation zones are developed based on combining adjacent census tracts on the basis of similarity in population sociodemographic characteristics: poverty, rurality, and racial/ethnic minority (i.e., non-White) composition. Zones are required to have a minimum population of 50,000. In total, there are 578 zones for California. Zones vary in population size from 51,229 to 98,764 with the number of census tracts ranging from 5 to 25. These areas are generally smaller than a county, but larger than census tract to help provide additional options for understanding disease burden and better facilitate public health and policy planning. 
+                        Census tract aggregation zones are developed based on combining adjacent census tracts on the basis of similarity in population sociodemographic characteristics: poverty, rurality, and racial/ethnic minority (i.e., non-White) composition. Zones are required to have a minimum population of 50,000. In total, there are [REPLACE num_zones] zones for [REPLACE state/registry]. Zones vary in population size from [REPLACE min_pop] to [REPLACE max_pop] with the number of census tracts ranging from [REPLACE min_ct] to [REPLACE max_ct]. These areas are generally smaller than a county, but larger than census tract to help provide additional options for understanding disease burden and better facilitate public health and policy planning.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -324,7 +318,7 @@
                         </button>
                     </h2>
                     <div id="faq2" class="usa-accordion__content" hidden="">
-                        The census tract aggregation zones were developed by the California Health Maps team including partners at Westat and the National Cancer Institute as part of a collaborative effort to provide cancer data at small (generally smaller than county) area levels. Stakeholder input was gathered and incorporated in the development process.
+                        The census tract aggregation zones were developed by the [REPLACE state/registry] Cancer Maps team including partners at Westat and the National Cancer Institute as part of a collaborative effort to provide cancer data at small (generally smaller than county) area levels. Stakeholder input was gathered and incorporated in the development process.
                     </div>
 
                     <h2 class="usa-accordion__heading">
@@ -333,19 +327,17 @@
                         </button>
                     </h2>
                     <div id="faq12" class="usa-accordion__content" hidden="">
-                        Counties in California can span up to hundreds of miles and include large and diverse populations. Surveillance of cancer burden at these large geographic scales may not be meaningful nor adequate for identifying areas with higher  disease rates. This information can be used by cancer centers, healthcare organizations, community organizations, and policy makers better serve cancer control, public health, and policy efforts.
+                        Counties in [REPLACE state/registry] can span up to hundreds of miles and include large and diverse populations or cover sparsely populated rural areas. Surveillance of cancer burden at these large geographic scales may not be meaningful nor adequate for identifying areas with higher disease rates. This information can be used by cancer centers, healthcare organizations, community organizations, and policy makers better serve cancer control, public health, and policy efforts.
                     </div>
 
     
                     <h2 class="usa-accordion__heading">
                         <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq3">
-                        What is the California Cancer Registry?
+                        What is the [REPLACE state/registry] Registry?
                         </button>
                     </h2>
                     <div id="faq3" class="usa-accordion__content" hidden="">
-                        The <a target="_blank" href="http://ccrcal.org">California Cancer Registry (CCR)</a> is California's statewide population-based cancer surveillance system. It collects information about almost all cancers diagnosed in California. The CCR is recognized as one of the leading cancer registries in the world, and has been the cornerstone of a substantial amount of research on cancer in the California population. To date the CCR has collected detailed information on over 7 million cases of cancer among Californians diagnosed from 1988 forward, and more than 175,000 new cases are added annually.                    
-                        <br/><br/>
-                        The California Cancer Registry is established in accordance with California Health and Safety (HSC) code, sections 103875-103885, requiring that cancer information be reported by law. HSC code section 100330 is also passed, requiring that all information collected remains confidential, patient identities kept anonymous, and patients informed, in accordance with California Code of Regulations, Title 17, Section 2593. Under this authority, all health care providers and facilities providing diagnostic or treatment services to cancer patients in California are required to report information about such patients to the state cancer registry, via the regional registries. The Department has designated the three regional cancer registries in California, the <a target="_blank" href="https://crgc-cancer.org/">Cancer Registry of Greater California</a>, the <a target="_blank" href="https://csp.usc.edu/">Los Angeles Cancer Surveillance System</a>, and the <a target="_blank" href="http://cancerregistry.ucsf.edu">Greater Bay Area Cancer Registry</a> as its agents for the purpose of collecting such data on behalf of this registry. The three California registries are part of the National Cancer Institute’s <a target="_blank" href="http://seer.cancer.gov">Surveillance, Epidemiology and End Results (SEER) Program</a>.
+                        [REPLACE blurb about this state/registry]
                     </div>
 
                     <h2 class="usa-accordion__heading">
@@ -355,7 +347,7 @@
                     </h2>
 
                     <div id="faq13" class="usa-accordion__content" hidden="">
-                        As we are reporting cancer incidence rates for small areas, the minimum reporting requirements allow us to report rates for the top 12 cancer sites.
+                        As we are reporting cancer incidence rates for small areas, the minimum reporting requirements allow us to report rates for the top [REPLACE num_cancer_sites] cancer sites.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -364,16 +356,16 @@
                         </button>
                     </h2>
                     <div id="faq4" class="usa-accordion__content" hidden="">
-                        We plan to update California Health Maps to include the most current 5-year cancer incidence data as they become available, typically in the Spring of each year.
+                        We plan to update [REPLACE state/registry] Cancer Maps to include the most current cancer incidence data as they become available, typically in the Spring of each year.
                     </div>
     
                     <h2 class="usa-accordion__heading">
                         <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq5">
-                        Why are cancer incidence data available only through 2016? Why are population sociodemographic data only reported for 2008-2012?
+                        Why are cancer incidence data available only through 2016? Why are population sociodemographic data only reported for 2012-2016?
                         </button>
                     </h2>
                     <div id="faq5" class="usa-accordion__content" hidden="">
-                        It takes several years for cancer incidence data for an entire population to be considered “complete,” that is, when a cancer registry is confident that all new cases of cancer have been reported. Selected population sociodemographic data and population estimates for calculating cancer incidence rates are from the 2010 Census short form, the most recent year of complete census data. Additional sociodemographic data are from the 2008-2012 American Community Survey; although more current American Community Survey data are available, these years were selected to more closely correspond to the other sociodemographic data and the population estimate data used for calculating cancer incidence rates.
+                        It takes several years for cancer incidence data for an entire population to be considered "complete," that is, when a cancer registry is confident that all new cases of cancer have been reported. Selected population sociodemographic data and population estimates for calculating cancer incidence rates are from the 2010 Census short form, the most recent year of complete census data. Additional sociodemographic data are from the 2012-2016 American Community Survey; although more current American Community Survey data are available, these years were selected to more closely correspond to the population estimate data used for calculating cancer incidence rates.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -382,7 +374,7 @@
                         </button>
                     </h2>
                     <div id="faq6" class="usa-accordion__content" hidden="">
-                        For the purposes of determining voting districts and congressional Representation, the U.S. Census is required by the Constitution to count everyone in the country every 10 years, but they do a lot more than that. The <a target="_blank" href="https://www.census.gov/programs-surveys/acs">American Community Survey</a> has been conducted by the U.S. Census Bureau since 2005 and provides detailed population and housing information replacing data previously collected on the Census long form.
+                        For the purposes of determining voting districts and congressional Representation, the U.S. Census is required by the Constitution to count everyone in the country every 10 years, but they do a lot more than that. The <a target="_blank" href="https://www.census.gov/programs-surveys/acs">American Community Survey</a> (ACS) has been conducted by the U.S. Census Bureau since 2005 and provides detailed population and housing information replacing data previously collected on the Census long form.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -391,25 +383,15 @@
                         </button>
                     </h2>
                     <div id="faq7" class="usa-accordion__content" hidden="">
-                        According to California Department of Public Health guidelines, cancer incidence rates cannot be reported if based on &lt;15 cancer cases and/or a population &lt;10,000 to ensure confidentiality and stable statistical rates. 
+                        To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on [REPLACE suppression threshold] cancer cases.
                     </div>
-    
-                    <h2 class="usa-accordion__heading">
-                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq8">
-                        Can zones be aggregated and a new cancer incidence rate be calculated?
-                        </button>
-                    </h2>
-                    <div id="faq8" class="usa-accordion__content" hidden="">
-                        Not at this time, but a detailed list of zones and corresponding census tracts can be <a href="static/californiahealthmaps_zonedtracts.xlsx" target="_blank">downloaded here</a>.
-                    </div>
-    
                     <h2 class="usa-accordion__heading">
                         <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq9">
                         Why are data not available for other or more granular racial/ethnic groups (e.g., American Indians, Asian or Latinx ethnic groups) or non-binary genders?
                         </button>
                     </h2>
                     <div id="faq9" class="usa-accordion__content" hidden="">
-                        We have not reported small-area level cancer incidence data for smaller racial/ethnic groups or non-binary genders due to small cancer case counts and population estimates at the zone levels to ensure confidentiality and stable statistical rates. In addition, at this time, some of these data are not consistently collected within the California Cancer Registry nor available in population estimate data.
+                        We have not reported small-area level cancer incidence data for smaller racial/ethnic groups or non-binary genders due to small cancer case counts and population estimates at the zone levels to ensure confidentiality and stable statistical rates. In addition, at this time, some of these data are not consistently collected within the [REPLACE state/registry] Cancer Registry nor available in population estimate data.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -418,7 +400,7 @@
                         </button>
                     </h2>
                     <div id="faq10" class="usa-accordion__content" hidden="">
-                        Studies have shown that where we live (and work and learn) affect our opportunities for physical activity, social engagement and support, access to healthy and affordable food, and exposure to stress and harmful chemicals.​ These factors can influence opportunities for health promotion and disease prevention.
+                        Studies have shown that where we live (and work and learn) affect our opportunities for physical activity, social engagement and support, access to healthy and affordable food, and exposure to stress and harmful chemicals. These factors can influence opportunities for health promotion and disease prevention.
                         <br/><br/>
                         Cancer is a group of diseases with many possible causes including genetic and clinical factors as well as social determinants of health. Common risk factors for cancer include smoking and tobacco use, diet and physical activity, sun and other types of radiation, viruses (e.g., HPV, Hepatitis B and C), chronic inflammation, and environmental exposures. Neighborhoods may influence cancer through multiple pathways including material deprivation, psychosocial mechanisms, health behaviors, and access to resources.
                     </div>
@@ -429,25 +411,9 @@
                         </button>
                     </h2>
                     <div id="faq11" class="usa-accordion__content" hidden="">
-                        The neighborhood data are provided to characterize the zones based on several key social and built environment attributes. These are cross-sectional data on neighborhoods and cancer incidence so inferences regarding causes of cancer cannot be made. We have provided these data for the zones to help provide additional context for the observed cancer incidence rates. For example, a zone may have high colorectal cancer incidence rates; understanding the population-level characteristics of that zone can help community organizations and healthcare facilities target their screening and prevention programs toward the predominant populations within the zone.
+                        The neighborhood data are provided to characterize the zones based on several key social and built environment attributes. These are unrelated measures of neighborhood characteristics and cancer incidence, so inferences regarding causes of cancer cannot be made. We have provided these data for the zones to help provide additional context for the observed cancer incidence rates. For example, if a zone has high colorectal cancer incidence rates, understanding the population-level characteristics of that zone can help community organizations and healthcare facilities target their screening and prevention programs toward the predominant populations within the zone.
                         <br/><br/>
-                        Neighborhood measures were developed using data from census tracts. For socioeconomic status, we averaged the index scores across the census tracts within each zone and determined statewide quintiles at the zone-level. For Census/ACS other measures, we calculated a population weighted average of the values across census tracts for each zone. CHIS data estimates were developed using small area estimation methods described in these publications: <a target="_blank" href="https://ajph.aphapublications.org/doi/full/10.2105/AJPH.2015.302810">Generating Health Estimates by Zip Code: A Semiparametric Small Area Estimation Approach Using the California Health Interview Survey</a> and <a target="_blank" href="https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssa.12351">A design‐based approach to small area estimation using a semiparametric generalized linear mixed model</a>. For 500 Cities/CDC BRFSS measures, we averaged the values across census tracts for each zone; for more details on how they developed census tract estimates please see <a target="blank" href="https://www.cdc.gov/500cities/methodology.htm">the 500 Cities methodology page</a>.
-                    </div>
-                    <h2 class="usa-accordion__heading">
-                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq12">
-                            What is CHIS?
-                        </button>
-                    </h2>
-                    <div id="faq11" class="usa-accordion__content" hidden="">
-                        The <a href="https://healthpolicy.ucla.edu/chis/Pages/default.aspx" target="_blank">California Health Interview Survey</a> (CHIS) is the largest state health survey in the nation. It is a web and telephone survey that asks questions on a wide range of health topics. CHIS is conducted on a continuous basis allowing the survey to generate timely one-year estimates. CHIS provides representative data on all 58 counties in California and provides a detailed picture of the health and health care needs of California’s large and diverse population.
-                    </div>
-                    <h2 class="usa-accordion__heading">
-                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq12">
-                            What is 500 Cities?
-                        </button>
-                    </h2>
-                    <div id="faq11" class="usa-accordion__content" hidden="">
-                        The <a href="https://www.cdc.gov/500cities/index.htm" target="_blank">500 Cities</a> project is a collaboration between CDC, the Robert Wood Johnson Foundation, and the CDC Foundation. The purpose of the 500 Cities Project is to provide city- and census tract-level small area estimates for chronic disease risk factors, health outcomes, and clinical preventive service use for the largest 500 cities in the United States. Data sources used to generate these measures include Behavioral Risk Factor Surveillance System (BRFSS) data (2016, 2015), Census Bureau 2010 census population data, and American Community Survey (ACS) 2012-2016, 2011-2015 estimates.
+                        Neighborhood measures were developed using data from census tracts. We used the tract-level count data from the Census and American Community Survey to calculate measures for each zone.
                     </div>
                 </div><!--/accordion-->
             </div><!--/tab-pane -->
@@ -460,61 +426,26 @@
                     <b>Aggregation:</b> Collections of smaller units grouped together for the purposes of statistical reporting. See Methodology for more information.
                 </p>
                 <p>
-                    <b>Age-Adjusted Incidence Rate (AAIR):</b> Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the California Health Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
+                    <b>Age-Adjusted Incidence Rate (AAIR):</b> Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the [REPLACE state/registry] Cancer Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
                 </p>
                 <p>
-                    <b>Breast Cancer Screening:</b> Percent of women aged 50-74 years who have received a mammogram in the past 2 years.<br>
-                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+                    <b>Confidence Interval:</b> A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers of cases are subject to less variation.
                 </p>
                 <p>
-                    <b>Cervical Cancer Screening:</b> Percent of women aged 21–65 years who have not received a hysterectomy and have received a Papanicolaou (Pap) smear within the previous 3 years.<br>
-                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-                </p>
-                <p>
-                    <b>Confidence Interval:</b> A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers are subject to less variation.
-                </p>
-                <p>
-                    <b>Colorectal Cancer Screening:</b> Percent of adults aged 50–75 years who have received a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the past 10 years.<br>
-                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-                </p>
-                <p>
-                    <b>Data Suppression:</b> According to California Department of Public Health guidelines, cancer incidence rates cannot be reported if based on fewer than 15 cancer cases and/or 10,000 population counts. Incidence rates with fewer than 15 cases and/or 10,000 population-at-risk for a given cancer site/sex/racial or ethnic group are not shown to ensure confidentiality and stable statistical rates.
-                </p>
-                <p>
-                    <b>Delayed Care:</b> Percent of adults who delayed or did not get medicine/medical services in the past year.<br>
-                    <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+                    <b>Data Suppression:</b> To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on [REPLACE suppression threshold] cancer cases.
                 </p>
                 <p>
                     <b>Demographics:</b> Statistical data relating to the population and particular groups within it.
                 </p>
                 <p>
-                    <b>Food Insecure:</b> Percent of adults in low-income households (&lt;200% of the Federal Poverty Line) that are hungry or at risk of hunger.<br>
-                    <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
+                    <b>Incidence:</b> The number of new cases of cancer diagnosed in the selected time period.
                 </p>
                 <p>
-                    <b>Foreign Born:</b> Percent of residents who were born outside the United States.<br>
-                    <span class="source">Source: American Community Survey, 2008-2012.</span>
+                    <b>% Population with income below poverty:</b> Percent of the population with income below the federal poverty level.<br>
+                    <span class="source">Source: US Census, 2010.</span>
                 </p>
                 <p>
-                    <b>Incidence:</b> The number of new cases of cancer diagnosed in 2012-2016 (5 years).
-                </p>
-                <p>
-                    <b>Neighborhood Socioeconomic Status:</b> A composite measure of seven indicator variables created by principal component analysis; indicators include: education, blue collar job, unemployment, household income, poverty, rent, and house value.<br>
-                    <span class="source">Source: American Community Survey, 2008-2012.</span>
-                </p>
-                <p>
-                    <b>Over 65:</b> Percent of residents age 65 years and older.<br>
-                    <span class="source">Source: American Community Survey, 2008-2012.</span>
-                </p>
-                <p>
-                    <b>Adult Obesity:</b> Percent of adults with a body mass index (kilograms/square meter) of 30 or greater.<br> <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
-                </p>
-                <p>
-                    <b>Physical Activity:</b> Percent of adults that walked at least 150 minutes in the past week for either leisure or transportation.<br>
-                    <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
-                </p>
-                <p>
-                    <b>Race/Ethnicity:</b> Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites.
+                    <b>Race/Ethnicity:</b> [REPLACE/CONFIRM LIST] Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites. 
                 </p>
                 <p>
                     <b>Racial/Ethnic Composition:</b> Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
@@ -522,26 +453,10 @@
                 </p>
                 <p>
                     <b>Rural:</b> Percent of residents who reside in blocks that are designated as rural.<br>
-                    <span class="source">Source: American Community Survey, 2008-2012.</span>
+                    <span class="source">Source: US Census, 2010.</span>
                 </p>
                 <p>
-                    <b>Sex:</b> California Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
-                </p>
-                <p>
-                    <b>Smoking:</b> Percent of adults who are current smokers.<br>
-                    <span class="source">Source: California Health Interview Survey, 2015-2016.</span>
-                </p>
-                <p>
-                    <b>Uninsured:</b> Percent of residents who did not have health insurance.<br>
-                    <span class="source">Source: American Community Survey, 2008-2012.</span>
-                </p>
-                <p>
-                    <b>Preventive Care:</b> Percent of men or women 65 years and older who have received all of the following: an influenza vaccination in the past year; a pneumococcal vaccination ever; either a fecal occult blood test (FOBT) within the past year, a sigmoidoscopy within the past 5 years and a FOBT within the past 3 years, or a colonoscopy within the previous 10 years; and (for women only) a mammogram in the past 2 years.<br>
-                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
-                </p>
-                <p>
-                    <b>Routine Checkups:</b> Percent of adults who report having been to a doctor for a routine checkup (e.g., a general physical exam, not an exam for a specific injury, illness, condition) in the previous year.<br>
-                    <span class="source">Source: 500 Cities/Behavioral Risk Factor Surveillance System, 2018.</span>
+                    <b>Sex:</b> [REPLACE state/registry] Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
                 </p>
                 <!-- end of Definitions P items -->
             </div><!--/tab-pane -->
@@ -555,13 +470,11 @@
     <footer class="footer noprint">
         <div class="container">
             <div class="row">
-                <div class="col-sm-6 left">
-                    <a href="https://www.greeninfo.org/" target="_blank"><img src="./static/greeninfo.png" style="height: 30px;" /></a>
-                    &nbsp;
-                    Designed by <a href="https://www.greeninfo.org/" target="_blank">GreenInfo Network</a>
+                <div class="col-sm-8 left small">
+                    This mapping tool is based on <a href="https://www.californiahealthmaps.org/">California Health Maps</a>, which is led by the Greater Bay Area Cancer Registry, University of California, San Francisco. Originally developed by <a href="https://www.greeninfo.org/" target="_blank">GreenInfo Network</a>,
                 </div>
-                <div class="col-sm-6 right small">
-                This mapping tool is based on <a href="https://www.californiahealthmaps.org/">California Health Maps</a>, which is led by the Greater Bay Area Cancer Registry, University of California, San Francisco.
+                <div class="col-sm-4 right small">
+                    [REPLACE state/registry citation information]
                 </div>
             </div>
         </div>
@@ -576,39 +489,31 @@
     -->
     <div id="tooltip_contents" tabindex="-1">
         <div aria-hidden="true" data-tooltip="race">
-            Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites.
+            Race/ethnicity is categorized as: [REPLACE/CONFIRM] All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites. 
         </div>
         <div aria-hidden="true" data-tooltip="sex">
-            California Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+            [REPLACE state/registry] Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
         </div>
         <div aria-hidden="true" data-tooltip="cases">
-            The number of new cases of cancer diagnosed in 2012-2016 (5 years)
+            To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on [REPLACE suppression threshold] cancer cases.
         </div>
         <div aria-hidden="true" data-tooltip="aair">
-            Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the California Health Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
+            Age-Adjusted Incidence Rate (AAIR): Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the [REPLACE state/registry] Cancer Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
         </div>
         <div aria-hidden="true" data-tooltip="confidenceinterval">
-              A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers are subject to less variation.
+              A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers of cases are subject to less variation.
         </div>
-        <div aria-hidden="true" data-tooltip="pctuninsured">
-            Percent of residents who did not have health insurance.<br>
-            <span class="source">Source: American Community Survey, 2008-2012.</span>
+        <div aria-hidden="true" data-tooltip="Pct100Pov">
+            Percent of the population with income below the federal poverty level.<br>
+            <span class="source">Source: US Census, 2010.</span>
         </div>
-        <div aria-hidden="true" data-tooltip="pctrace">
+        <div aria-hidden="true" data-tooltip="PctRace">
             Distribution of residents’ race/ethnicity (e.g., % Hispanic, % non-Hispanic White, % non-Hispanic Black, % non-Hispanic Asian/Pacific Islander).<br>
             <span class="source">Source: US Census, 2010.</span>
         </div>
-        <div aria-hidden="true" data-tooltip="pctforeign">
-            Percent of residents who were born outside the United States.<br>
-            <span class="source">Source: American Community Survey, 2008-2012.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="pctrural">
+        <div aria-hidden="true" data-tooltip="PctRural">
             Percent of residents who reside in blocks that are designated as rural.<br>
-            <span class="source">Source: American Community Survey, 2008-2012.</span>
-        </div>
-        <div aria-hidden="true" data-tooltip="nses">
-            A composite measure of seven indicator variables created by principal component analysis; indicators include: education, blue collar job, unemployment, household income, poverty, rent, and house value.<br>
-            <span class="source">Source: American Community Survey, 2008-2012.</span>
+            <span class="source">US Census, 2010.</span>
         </div>
     </div>
 
