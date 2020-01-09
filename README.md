@@ -209,15 +209,17 @@ Again, **do not forget to do `npm run build`** after making changes the content 
 
 * *Footer, credits, and citation* -- Look in `src/index.html` for the `footer`.
 
-* *Favicon* -- Replace `/static/favicon.png` with an appropriate image. Don't forget to `npm run build`.
+* *Favicon* -- Replace or change the refgerence to `/static/favicon.png` with an appropriate image. Don't forget to `npm run build`. The `/static` directory includes a number of options of boilerplate logos if desired.
 
-* *Introductory text/logo/navbar* -- Look in `src/index.html` for the `intro-text` section.
+* *Introductory text/logo/navbar* -- Look in `src/index.html` for the `intro-text` section. The `/static` directory includes a number of options of boilerplate logos if desired.
 
 * *Map starting view* -- Look in `src/index.js` for the definition of `MAP_BBOX` which defines lat-lng coordinates for `[[south, west], [north, east]]` The website http://bboxfinder.com is very useful here. *Note that the actual bounding box viewed depends on a lot of factors such as the size of the browser window, so the map view may not be precisely what you want and may not be the same on different displays.*
 
 * *Google Analytics* -- Look in `src/index.html` for a `script` tag pointing at *www.googletagmanager.com* Fill in your UA code _in two places_ here.
 
 * *Bing API Key* -- Look in `src/index.html` for the definition of `BING_API_KEY` Until you set this, you will not be able to search for addresses. A Bing Maps API key is free, and their terms of use are quite flexible. See https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key for more information.
+
+* *General page text* -- `src/index.html` contains a boilerplate version of site copy. Minimal intervention involves searching for the string `[REPLACE` and replacing or confirming any values mentioned there. This includes the name of the state/registry, cancer sites, relevant race/ethnicity categories, and various numeric thresholds used to describe the data.
 
 * *About This Project* -- Look in `src/index.html` for the `learn-about`.
 
@@ -227,4 +229,4 @@ Again, **do not forget to do `npm run build`** after making changes the content 
 
 * *Glossary* -- Look in `src/index.html` for the `learn-glossary`.
 
-* *Tooltip i icons* -- Within `src/index.html` you may create tooltip I icons, with HTML such as this: `<i class="fa fa-info-circle" aria-hidden="true" data-tooltip="yourtermhere"></i>` The tooltip HTML for each such tooltip, is provided in `tooltip_contents` Each DIV has a `data-tooltip` attribute corresponding to the `data-tooltip` used in the `<i>` element.
+* *Tooltip i icons* -- Within `src/index.html` you may create tooltip I icons, with HTML such as this: `<i class="fa fa-info-circle" aria-hidden="true" data-tooltip="yourtermhere"></i>` The tooltip HTML for each such tooltip, is provided in `tooltip_contents` Each DIV has a `data-tooltip` attribute corresponding to the `data-tooltip` used in the `<i>` element. For the Demographics table, be sure to cross reference to the `DEMOGRAPHICS_TABLE` element in `src/index.js`.
