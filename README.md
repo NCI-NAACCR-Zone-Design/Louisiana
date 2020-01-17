@@ -1,12 +1,12 @@
-# Westat Cancer Mapping Template
+Cancer Mapping Template
 
 This is a template for web developers to set to a website of cancer statistics like at https://www.californiahealthmaps.org/
 
 This is not a turnkey product with a 5-minute installer. It is a starting place for a web developer to set up a cancer mapper, and to begin customizing their own website.
 
-See the project on Github at https://github.com/NCI-NAACCR-Zone-Design/Westat-Cancer-Template/
+See the project on Github at https://github.com/NCI-NAACCR-Zone-Design/Cancer-Map-Template/
 
-See a demonstration at https://nci-naaccr-zone-design.github.io/Westat-Cancer-Template/
+See a demonstration at https://nci-naaccr-zone-design.github.io/Cancer-Map-Template/
 
 
 ## Prerequisites
