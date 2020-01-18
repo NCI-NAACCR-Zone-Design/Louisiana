@@ -1,4 +1,4 @@
-Cancer Mapping Template
+# Cancer Mapping Template
 
 This is a template for web developers to set to a website of cancer statistics like at https://www.californiahealthmaps.org/
 
