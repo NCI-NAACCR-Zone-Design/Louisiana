@@ -314,6 +314,7 @@ $(document).ready(function () {
         initDownloadButtons();
         initFaqAccordion();
         initGoogleAnalyticsHooks();
+        initTermsOfUse();
 
         initLoadInitialState();
         performSearch();
@@ -917,6 +918,42 @@ function initFaqAccordion () {
 }
 
 
+function initTermsOfUse () {
+    const $modal = $('#termsofusemodal');
+    const $acceptbutton = $modal.find('button');
+    const $attachtopleft = $('#above-map');
+
+    // not a real BS modal but a DIV with a contrived position and size, to make it cover up the map and data portions of the page
+    // so we have to do our own resizing handler, to make it continue to cover up even if they change size
+    $(window).resize(function () {
+        const height = $('#above-map').height() + $('#search-and-map').height() + $('#data-readouts').height() + $('#demographic-tables').height() + 25;  // extra for various padding, spacing, margins
+        const width = $('#search-and-map').width() + 15 + 15;  // add 2*15 to match .container padding
+
+        $modal.css({
+            height: `${height}px`,
+            width: `${width}px`,
+            top: `${$attachtopleft.offset().top}px`,
+            left: `${$attachtopleft.offset().left}px`,
+        });
+    });
+
+    // clickin the button = set the cookie and clear the modal
+    $acceptbutton.click(function () {
+        document.cookie = "termsaccepted=true;max-age=31536000";
+        $modal.addClass('d-none');
+    });
+
+    // unless we have a cookie set, go ahead and show the modal, triggering a resize event now to assert its size and position
+    const hastermscookie = document.cookie.split(';').filter(item => item.indexOf('termsaccepted=true') >= 0).length;
+    if (! hastermscookie) {
+        setTimeout(function () {
+            $(window).resize();
+            $modal.removeClass('d-none');
+        }, 0.5 * 1000);
+    }
+}
+
+
 function initGoogleAnalyticsHooks () {
     // the search widgets
     $('div.data-filters select[name="site"]').change(function () {
@@ -1246,20 +1283,20 @@ function performSearchIncidenceReadout (searchparams) {
 
     // show/hide the CTA columns (well, actually, each individual cell)
     if (searchparams.ctaid == 'Statewide') {
-        $('div.data-readouts [data-region="cta"]').hide();
+        $('#data-readouts [data-region="cta"]').hide();
     }
     else {
-        $('div.data-readouts [data-region="cta"]').show();
+        $('#data-readouts [data-region="cta"]').show();
     }
 
     // now fill in the blanks
-    $('div.data-readouts span[data-region="cta"][data-statistic="cases"]').text(text_cases_cta);
-    $('div.data-readouts span[data-region="cta"][data-statistic="aair"]').text(text_aair_cta);
-    $('div.data-readouts span[data-region="cta"][data-statistic="lciuci"]').text(text_lciuci_cta);
+    $('#data-readouts span[data-region="cta"][data-statistic="cases"]').text(text_cases_cta);
+    $('#data-readouts span[data-region="cta"][data-statistic="aair"]').text(text_aair_cta);
+    $('#data-readouts span[data-region="cta"][data-statistic="lciuci"]').text(text_lciuci_cta);
 
-    $('div.data-readouts span[data-region="state"][data-statistic="cases"]').text(text_cases_state);
-    $('div.data-readouts span[data-region="state"][data-statistic="aair"]').text(text_aair_state);
-    $('div.data-readouts span[data-region="state"][data-statistic="lciuci"]').text(text_lciuci_state);
+    $('#data-readouts span[data-region="state"][data-statistic="cases"]').text(text_cases_state);
+    $('#data-readouts span[data-region="state"][data-statistic="aair"]').text(text_aair_state);
+    $('#data-readouts span[data-region="state"][data-statistic="lciuci"]').text(text_lciuci_state);
 }
 
 

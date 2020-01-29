@@ -85,7 +85,7 @@
     section: above the map and filters
     Download and Print, and Cancer Incidence to fill space
     -->
-    <div class="container above-map noprint">
+    <div class="container noprint" id="above-map">
         <div class="row">
             <div class="col-md">
                 <h2 class="nomargin" tabindex="0">Cancer Incidence <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="cases"></i></h2>
@@ -111,7 +111,7 @@
     <!--
     section: filters and map
     -->
-    <div class="container">
+    <div class="container" id="search-and-map">
         <div class="row">
             <div class="col-md noprint">
                 <!--
@@ -174,7 +174,7 @@
     filter summary, incidence stats, cities and counties lists
     overall AAIR and cases summary
     -->
-    <div class="container data-readouts">
+    <div class="container" id="data-readouts">
         <div class="row">
             <div class="col-md-6 col-lg-5">
                 <!-- the filter summary see performSearchShowFilters() -->
@@ -492,7 +492,7 @@
             Race/ethnicity is categorized as: [CONFIRM RACE LIST] non-Hispanic White, non-Hispanic Black, non-Hispanic Asian/Pacific Islander, non-Hispanic American Indian/Alaska Native, and Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites. 
         </div>
         <div aria-hidden="true" data-tooltip="sex">
-            [REPLACE STATE/REGISTRY] Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+            [REPLACE STATE/REGISTRY] Cancer Maps defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
         </div>
         <div aria-hidden="true" data-tooltip="cases">
             To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on fewer than [REPLACE REPORTING MIN CASES] cancer cases.
@@ -517,6 +517,27 @@
         </div>
     </div>
 
+    <!--
+    terms of use modal
+    not really a modal but a DIV which covers the map, search, and results
+    see initTermsOfUse() which sets the size & position, and closes it
+    -->
+    <div id="termsofusemodal" class="d-none">
+        <div>
+            <p>Use of [REPLACE STATE/REGISTRY] Cancer Maps implies consent to abide by the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or to use the information for any purpose other than for health statistical reporting and analysis, is against the law.</p>
+            <p>Therefore users will:</p>
+            <ul>
+                <li>Use these data for health statistical reporting and analysis only.</li>
+                <li>Make no attempt to learn the identity of any person or establishment included in these data.</li>
+                <li>Make no attempt to link to cancer data released with other geographic areas.</li>
+                <li>Make no disclosure or other use of the identity of any person or establishment discovered inadvertently and advise the [Registry name] of any such discovery.</li>
+            </ul>
+            <p>By clicking the button below, I agree to these terms of use.</p>
+            <div class="center">
+                <button class="btn btn-alternate">I Agree</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
