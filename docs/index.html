@@ -55,8 +55,8 @@
     </script>
 
     <!-- our own awesomesauce -->
-    <link rel="stylesheet" type="text/css" href="index.css?Wed_Jan_08_2020_18_39_03_GMT_0800__Pacific_Standard_Time_" />
-    <script type="text/javascript" src="index.js?Wed_Jan_08_2020_18_39_03_GMT_0800__Pacific_Standard_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Wed_Jan_29_2020_10_20_05_GMT_0800__Pacific_Standard_Time_" />
+    <script type="text/javascript" src="index.js?Wed_Jan_29_2020_10_20_05_GMT_0800__Pacific_Standard_Time_"></script>
 </head>
 <body>
 
@@ -76,7 +76,7 @@
 
     <div class="container noprint">
         <p class="intro-text">
-            [REPLACE state/registry] Cancer Maps is an interactive mapping tool of cancer data for [REPLACE num_zones] cancer reporting zones in [REPLACE state/registry]. You can map cancer incidence for the [REPLACE num_cancer_sites] most common invasive cancer sites and filter by sex and race/ethnicity. <a href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
+            [REPLACE STATE/REGISTRY] Cancer Maps is an interactive mapping tool of cancer data for [REPLACE NUM_ZONES] cancer reporting zones in [REPLACE STATE/REGISTRY]. You can map cancer incidence for the [REPLACE NUM_CANCER_SITES] most common invasive cancer sites and filter by sex and race/ethnicity. <a href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
         </p>
     </div><!--/container section-->
 
@@ -85,7 +85,7 @@
     section: above the map and filters
     Download and Print, and Cancer Incidence to fill space
     -->
-    <div class="container above-map noprint">
+    <div class="container noprint" id="above-map">
         <div class="row">
             <div class="col-md">
                 <h2 class="nomargin" tabindex="0">Cancer Incidence <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="cases"></i></h2>
@@ -111,7 +111,7 @@
     <!--
     section: filters and map
     -->
-    <div class="container">
+    <div class="container" id="search-and-map">
         <div class="row">
             <div class="col-md noprint">
                 <!--
@@ -174,7 +174,7 @@
     filter summary, incidence stats, cities and counties lists
     overall AAIR and cases summary
     -->
-    <div class="container data-readouts">
+    <div class="container" id="data-readouts">
         <div class="row">
             <div class="col-md-6 col-lg-5">
                 <!-- the filter summary see performSearchShowFilters() -->
@@ -223,7 +223,7 @@
         </div>
 
         <p class="small">
-          To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on [REPLACE suppression threshold] cancer cases. Distributions of selected population demographic factors are also provided for each zone. These data are from the decennial U.S. Census or the Census’s American Community Survey. 
+          To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on fewer than [REPLACE REPORTING MIN CASES] cancer cases. Distributions of selected population demographic factors are also provided for each zone. These data are from the decennial U.S. Census or the Census’s American Community Survey.
         </p>
     </div><!--/container section-->
 
@@ -265,17 +265,17 @@
         <div class="tab-content">
             <div class="tab-pane container active" id="learn-about">
                 <p>
-                    The [REPLACE state/registry] Cancer Maps project aims to provide data for geographies beyond county-level statistics to better serve cancer control, public health, and policy efforts.
+                    The [REPLACE STATE/REGISTRY] Cancer Maps project aims to provide data for geographies beyond county-level statistics to better serve cancer control, public health, and policy efforts.
                 </p>
                 <p>
-                    [REPLACE state/registry] Cancer Maps allows users to interactively map health data for [REPLACE state/registry] at a geographic level called zones, which are aggregates of census tracts. We have used a data-driven approach to define [REPLACE num_zones] zones for [REPLACE state/registry], based on similar characteristics (poverty, urbanicity, racial/ethnic minority composition) and a minimum of 50,000 residents. These areas are generally smaller than county, but larger than census tract. Zones vary in population size from [REPLACE min_pop] to [REPLACE max_pop] with the number of census tracts ranging from [REPLACE min_ct] to [REPLACE max_ct].
+                    [REPLACE STATE/REGISTRY] Cancer Maps allows users to interactively map health data for [REPLACE STATE/REGISTRY] at a geographic level called zones, which are aggregates of census tracts. We have used a data-driven approach to define [REPLACE NUM_ZONES] zones for [REPLACE STATE/REGISTRY], based on similar characteristics (poverty, urbanicity, racial/ethnic minority composition) and a minimum of 50,000 residents. These areas are generally smaller than county, but larger than census tract. Zones vary in population size from [REPLACE MINIMUM ZONE POPULATION] to [REPLACE MAXIMUM ZONE POPULATION] with the number of census tracts ranging from [REPLACE MINIMUM TRACTS PER ZONE] to [REPLACE MAXIMUM TRACTS PER ZONE].
                 </p>
                 <p>
-                    [REPLACE state/registry] Cancer Maps include 5-year and 10-year cancer incidence rates based on the most current data for the [REPLACE num_cancer_sites] most common cancer sites by sex and race/ethnicity ([REPLACE/CONFIRM list] non-Hispanic White, non-Hispanic Black, Hispanic, and non-Hispanic Asian/Pacific Islander). It also includes selected population demographic data based on 2010 Census and 2012-2016 American Community Survey data. Cancer incidence rates will be updated annually as more current data become available.
+                    [REPLACE STATE/REGISTRY] Cancer Maps include 5-year and 10-year cancer incidence rates based on the most current data for the [REPLACE NUM_CANCER_SITES] most common cancer sites by sex and race/ethnicity ([CONFIRM RACE LIST] non-Hispanic White, non-Hispanic Black, non-Hispanic Asian/Pacific Islander, non-Hispanic American Indian/Alaska Native, and Hispanic. It also includes selected population demographic data based on 2010 Census and 2012-2016 American Community Survey data. Cancer incidence rates will be updated annually as more current data become available.
                 </p>
                 <p class="title">Project Team</p>
                 <p>
-                    <a target="_blank" href="[REPLACE]">[REPLACE state/registry name]</a>
+                    <a target="_blank" href="[REPLACE REGISTRY WEBSITE]">[REPLACE STATE/REGISTRY]</a>
                     <br/>
                     <a target="_blank" href="http://seer.cancer.gov">National Cancer Institute</a>
                     <br/>
@@ -283,7 +283,7 @@
                 </p>
                 <p class="title">Funding</p>
                 <p>
-                    <a target="_blank" href="[REPLACE]">[REPLACE state/registry funding source]</a>
+                    <a target="_blank" href="[REPLACE FUNDING URL]">[REPLACE FUNDING SOURCE]</a>
                     <br/>
                     <a target="_blank" href="http://seer.cancer.gov">National Cancer Institute</a>
                 </p>
@@ -309,7 +309,7 @@
                         </button>
                     </h2>
                     <div id="faq1" class="usa-accordion__content" hidden="">
-                        Census tract aggregation zones are developed based on combining adjacent census tracts on the basis of similarity in population sociodemographic characteristics: poverty, rurality, and racial/ethnic minority (i.e., non-White) composition. Zones are required to have a minimum population of 50,000. In total, there are [REPLACE num_zones] zones for [REPLACE state/registry]. Zones vary in population size from [REPLACE min_pop] to [REPLACE max_pop] with the number of census tracts ranging from [REPLACE min_ct] to [REPLACE max_ct]. These areas are generally smaller than a county, but larger than census tract to help provide additional options for understanding disease burden and better facilitate public health and policy planning.
+                        Census tract aggregation zones are developed based on combining adjacent census tracts on the basis of similarity in population sociodemographic characteristics: poverty, rurality, and racial/ethnic minority (i.e., non-White) composition. Zones are required to have a minimum population of 50,000. In total, there are [REPLACE NUM_ZONES] zones for [REPLACE STATE/REGISTRY]. Zones vary in population size from [REPLACE MINIMUM ZONE POPULATION] to [REPLACE MAXIMUM ZONE POPULATION] with the number of census tracts ranging from [REPLACE MINIMUM TRACTS PER ZONE] to [REPLACE MAXIMUM TRACTS PER ZONE]. These areas are generally smaller than a county, but larger than census tract to help provide additional options for understanding disease burden and better facilitate public health and policy planning.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -318,7 +318,7 @@
                         </button>
                     </h2>
                     <div id="faq2" class="usa-accordion__content" hidden="">
-                        The census tract aggregation zones were developed by the [REPLACE state/registry] Cancer Maps team including partners at Westat and the National Cancer Institute as part of a collaborative effort to provide cancer data at small (generally smaller than county) area levels. Stakeholder input was gathered and incorporated in the development process.
+                        The census tract aggregation zones were developed by the [REPLACE STATE/REGISTRY] Cancer Maps team including partners at Westat and the National Cancer Institute as part of a collaborative effort to provide cancer data at small (generally smaller than county) area levels. Stakeholder input was gathered and incorporated in the development process.
                     </div>
 
                     <h2 class="usa-accordion__heading">
@@ -327,17 +327,17 @@
                         </button>
                     </h2>
                     <div id="faq12" class="usa-accordion__content" hidden="">
-                        Counties in [REPLACE state/registry] can span up to hundreds of miles and include large and diverse populations or cover sparsely populated rural areas. Surveillance of cancer burden at these large geographic scales may not be meaningful nor adequate for identifying areas with higher disease rates. This information can be used by cancer centers, healthcare organizations, community organizations, and policy makers better serve cancer control, public health, and policy efforts.
+                        Counties in [REPLACE STATE/REGISTRY] can span up to hundreds of miles and include large and diverse populations or cover sparsely populated rural areas. Surveillance of cancer burden at these large geographic scales may not be meaningful nor adequate for identifying areas with higher disease rates. This information can be used by cancer centers, healthcare organizations, community organizations, and policy makers better serve cancer control, public health, and policy efforts.
                     </div>
 
     
                     <h2 class="usa-accordion__heading">
                         <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq3">
-                        What is the [REPLACE state/registry] Registry?
+                        What is the [REPLACE STATE/REGISTRY] Registry?
                         </button>
                     </h2>
                     <div id="faq3" class="usa-accordion__content" hidden="">
-                        [REPLACE blurb about this state/registry]
+                        [REPLACE ABOUT BLURB]
                     </div>
 
                     <h2 class="usa-accordion__heading">
@@ -347,7 +347,7 @@
                     </h2>
 
                     <div id="faq13" class="usa-accordion__content" hidden="">
-                        As we are reporting cancer incidence rates for small areas, the minimum reporting requirements allow us to report rates for the top [REPLACE num_cancer_sites] cancer sites.
+                        As we are reporting cancer incidence rates for small areas, the minimum reporting requirements allow us to report rates for the top [REPLACE NUM_CANCER_SITES] cancer sites.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -356,7 +356,7 @@
                         </button>
                     </h2>
                     <div id="faq4" class="usa-accordion__content" hidden="">
-                        We plan to update [REPLACE state/registry] Cancer Maps to include the most current cancer incidence data as they become available, typically in the Spring of each year.
+                        We plan to update [REPLACE STATE/REGISTRY] Cancer Maps to include the most current cancer incidence data as they become available, typically in the Spring of each year.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -383,7 +383,7 @@
                         </button>
                     </h2>
                     <div id="faq7" class="usa-accordion__content" hidden="">
-                        To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on [REPLACE suppression threshold] cancer cases.
+                        To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on fewer than [REPLACE REPORTING MIN CASES] cancer cases.
                     </div>
                     <h2 class="usa-accordion__heading">
                         <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq9">
@@ -391,7 +391,7 @@
                         </button>
                     </h2>
                     <div id="faq9" class="usa-accordion__content" hidden="">
-                        We have not reported small-area level cancer incidence data for smaller racial/ethnic groups or non-binary genders due to small cancer case counts and population estimates at the zone levels to ensure confidentiality and stable statistical rates. In addition, at this time, some of these data are not consistently collected within the [REPLACE state/registry] Cancer Registry nor available in population estimate data.
+                        We have not reported small-area level cancer incidence data for smaller racial/ethnic groups or non-binary genders due to small cancer case counts and population estimates at the zone levels to ensure confidentiality and stable statistical rates. In addition, at this time, some of these data are not consistently collected within the [REPLACE STATE/REGISTRY] Cancer Registry nor available in population estimate data.
                     </div>
     
                     <h2 class="usa-accordion__heading">
@@ -426,13 +426,13 @@
                     <b>Aggregation:</b> Collections of smaller units grouped together for the purposes of statistical reporting. See Methodology for more information.
                 </p>
                 <p>
-                    <b>Age-Adjusted Incidence Rate (AAIR):</b> Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the [REPLACE state/registry] Cancer Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
+                    <b>Age-Adjusted Incidence Rate (AAIR):</b> Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the [REPLACE STATE/REGISTRY] Cancer Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
                 </p>
                 <p>
                     <b>Confidence Interval:</b> A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers of cases are subject to less variation.
                 </p>
                 <p>
-                    <b>Data Suppression:</b> To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on [REPLACE suppression threshold] cancer cases.
+                    <b>Data Suppression:</b> To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on fewer than [REPLACE REPORTING MIN CASES] cancer cases.
                 </p>
                 <p>
                     <b>Demographics:</b> Statistical data relating to the population and particular groups within it.
@@ -456,7 +456,7 @@
                     <span class="source">Source: US Census, 2010.</span>
                 </p>
                 <p>
-                    <b>Sex:</b> [REPLACE state/registry] Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+                    <b>Sex:</b> [REPLACE STATE/REGISTRY] Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
                 </p>
                 <!-- end of Definitions P items -->
             </div><!--/tab-pane -->
@@ -474,7 +474,7 @@
                     This mapping tool is based on <a href="https://www.californiahealthmaps.org/">California Health Maps</a>, which is led by the Greater Bay Area Cancer Registry, University of California, San Francisco. Originally developed by <a href="https://www.greeninfo.org/" target="_blank">GreenInfo Network</a>,
                 </div>
                 <div class="col-sm-4 right small">
-                    [REPLACE state/registry citation information]
+                    [REPLACE CITATION INFO]
                 </div>
             </div>
         </div>
@@ -489,16 +489,16 @@
     -->
     <div id="tooltip_contents" tabindex="-1">
         <div aria-hidden="true" data-tooltip="race">
-            Race/ethnicity is categorized as: [REPLACE/CONFIRM] All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites. 
+            Race/ethnicity is categorized as: [CONFIRM RACE LIST] non-Hispanic White, non-Hispanic Black, non-Hispanic Asian/Pacific Islander, non-Hispanic American Indian/Alaska Native, and Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites. 
         </div>
         <div aria-hidden="true" data-tooltip="sex">
-            [REPLACE state/registry] Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
+            [REPLACE STATE/REGISTRY] Cancer Maps defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
         </div>
         <div aria-hidden="true" data-tooltip="cases">
-            To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on [REPLACE suppression threshold] cancer cases.
+            To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on fewer than [REPLACE REPORTING MIN CASES] cancer cases.
         </div>
         <div aria-hidden="true" data-tooltip="aair">
-            Age-Adjusted Incidence Rate (AAIR): Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the [REPLACE state/registry] Cancer Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
+            Age-Adjusted Incidence Rate (AAIR): Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the [REPLACE STATE/REGISTRY] Cancer Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
         </div>
         <div aria-hidden="true" data-tooltip="confidenceinterval">
               A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers of cases are subject to less variation.
@@ -517,6 +517,27 @@
         </div>
     </div>
 
+    <!--
+    terms of use modal
+    not really a modal but a DIV which covers the map, search, and results
+    see initTermsOfUse() which sets the size & position, and closes it
+    -->
+    <div id="termsofusemodal" class="d-none">
+        <div>
+            <p>Use of [REPLACE STATE/REGISTRY] Cancer Maps implies consent to abide by the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or to use the information for any purpose other than for health statistical reporting and analysis, is against the law.</p>
+            <p>Therefore users will:</p>
+            <ul>
+                <li>Use these data for health statistical reporting and analysis only.</li>
+                <li>Make no attempt to learn the identity of any person or establishment included in these data.</li>
+                <li>Make no attempt to link to cancer data released with other geographic areas.</li>
+                <li>Make no disclosure or other use of the identity of any person or establishment discovered inadvertently and advise the [Registry name] of any such discovery.</li>
+            </ul>
+            <p>By clicking the button below, I agree to these terms of use.</p>
+            <div class="center">
+                <button class="btn btn-alternate">I Agree</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
