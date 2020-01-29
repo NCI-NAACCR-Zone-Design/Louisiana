@@ -203,23 +203,46 @@ Again, **do not forget to do `npm run build`** after making changes the content 
 
 ## Further Customizations
 
-### HTML Content, Cosmetic Changes, Look-and-Feel
+### HTML Site/Registry Name and Statistics
+
+The file `src/index.html` contains a boilerplate version of site copy, with several places where you will want to enter the name of your website/registry/project, statistical thresholds and values, and so on.
+
+Search for the `[REPLACE` string throughout `src/index.html` and replace the values mentioned there. Some are simple values amenable to simple search-and-replace, but most are narrative text that may require more involvement.
+
+A list of such replacements is:
+* `[REPLACE STATE/REGISTRY]` -- The name of your state, project, or cancer registry. Commonly used with the phrase "Cancer Maps" after it, indicating the name of this website. A simple search-and-replace should work here.
+* `[REPLACE NUM_CANCER_SITES]` -- The number of cancer sites by which data may be searched. Usually the same as the number of `SEARCHOPTIONS_CANCERSITE` entries.
+* `[CONFIRM RACE LIST]` -- A list of the races/ethnicities by which data may be searched. This should reflect the `SEARCHOPTIONS_RACE` entries.
+* `[REPLACE NUM_ZONES]` -- The number of CTA Zones used for the analysis.
+* `[REPLACE MINIMUM ZONE POPULATION]` -- The minimum population of a CTA Zone. Used in a statement describing CTA Zones.
+* `[REPLACE MAXIMUM ZONE POPULATION]` -- The maximum population of a CTA Zone. Used in a statement describing CTA Zones.
+* `[REPLACE MINIMUM TRACTS PER ZONE]` -- The minimum number of census tracts forming any CTA Zone. Used in a statement describing CTA Zones.
+* `[REPLACE MAXIMUM TRACTS PER ZONE]` -- The maximum number of census tracts forming any CTA Zone. Used in a statement describing CTA Zones.
+* `[REPLACE REPORTING MIN CASES]` -- The minimum number of cancer cases in a CTZ Zone, to be reported.
+* `[REPLACE REGISTRY WEBSITE]` -- A hyperlink URL to this website's parent agency, cancer registry, etc., in the FAQ.
+* `[REPLACE FUNDING URL]` -- A hyperlink URL to the agency which funded this website. Displayed in the FAQ alongside the FUNDING SOURCE.
+* `[REPLACE FUNDING SOURCE]` -- A statement/description of who funded the website. Displayed in the FAQ alongside the FUNDING URL.
+* `[REPLACE ABOUT BLURB]` -- A statement/description of the website, in "What is the XXX Registry" section of the FAQ.
+* `[REPLACE CITATION INFO]` -- A statement/description of how this website should be cited in literature.
+
+Since this is free-form narrative text, you may choose to rewrite or rephrase whole blocks of text, in addition to or instead of making the string replacements suggested above.
+
+
+### Other HTML Content, Cosmetic Changes, Look-and-Feel
 
 * *Browser title bar* -- Look in `src/index.html` for the `title`.
 
 * *Footer, credits, and citation* -- Look in `src/index.html` for the `footer`.
 
-* *Favicon* -- Replace or change the refgerence to `/static/favicon.png` with an appropriate image. Don't forget to `npm run build`. The `/static` directory includes a number of options of boilerplate logos if desired.
+* *Favicon* -- Replace or change the refgerence to `/static/favicon.png` with an appropriate image. Don't forget to `npm run build`. The `/static` directory includes several boilerplate logos if desired.
 
-* *Introductory text/logo/navbar* -- Look in `src/index.html` for the `intro-text` section. The `/static` directory includes a number of options of boilerplate logos if desired.
+* *Introductory text/logo/navbar* -- Look in `src/index.html` for the `intro-text` section. The `/static` directory includes several boilerplate logos if desired.
 
 * *Map starting view* -- Look in `src/index.js` for the definition of `MAP_BBOX` which defines lat-lng coordinates for `[[south, west], [north, east]]` The website http://bboxfinder.com is very useful here. *Note that the actual bounding box viewed depends on a lot of factors such as the size of the browser window, so the map view may not be precisely what you want and may not be the same on different displays.*
 
 * *Google Analytics* -- Look in `src/index.html` for a `script` tag pointing at *www.googletagmanager.com* Fill in your UA code _in two places_ here.
 
 * *Bing API Key* -- Look in `src/index.html` for the definition of `BING_API_KEY` Until you set this, you will not be able to search for addresses. A Bing Maps API key is free, and their terms of use are quite flexible. See https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key for more information.
-
-* *General page text* -- `src/index.html` contains a boilerplate version of site copy. Minimal intervention involves searching for the string `[REPLACE` and replacing or confirming any values mentioned there. This includes the name of the state/registry, cancer sites, relevant race/ethnicity categories, and various numeric thresholds used to describe the data.
 
 * *About This Project* -- Look in `src/index.html` for the `learn-about`.
 
