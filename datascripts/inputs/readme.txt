@@ -1,4 +1,16 @@
-Fields in this CSV data file.
+TERMS OF USE
+
+Use of [NAME OF WEBSITE] implies consent to abide by the terms of these data use restrictions. Any effort to determine the identity of any reported cases, or to use the information for any purpose other than for health statistical reporting and analysis, is against the law.
+
+Therefore users will:
+
+Use these data for health statistical reporting and analysis only.
+Make no attempt to learn the identity of any person or establishment included in these data.
+Make no attempt to link to cancer data released with other geographic areas.
+Make no disclosure or other use of the identity of any person or establishment discovered inadvertently and advise the [REGISTRY NAME] of any such discovery.
+
+
+FIELDS IN THE CSV DATA FILE
 
 Zone                The CTA Zone ID
 Counties            A comma-joined list of counties touching this CTA Zone.

@@ -187,7 +187,7 @@ Edit `datascripts/make_downloadables.py` and define what demographic and inciden
 * The function `aggregateIncidenceData()` does simialrly, for the incidence data, massaging and formatting values and renaming them for the download CSVs.
 * The function `csvHeaderRow()` defines the sequence of fields as they appear in the final download CSV. All fields here must be the fields created in `aggregateIncidenceData()` and/or `aggregateDemographicData()` but it is not required that every field defined be used here.
 
-Edit the `datascripts/inputs/readme.txt` file to describe the CSV fields. This will be included in all of the downloadable ZIP files, and is suitable for metadata such as a data dictionary, a disclaimer, and credits/attributions.
+Edit the `datascripts/inputs/readme.txt` file to describe the CSV fields, and to include the name of your website or project as needed. This file will be included in all of the downloadable ZIP files, and is suitable for metadata such as a data dictionary, a disclaimer, and credits/attributions.
 
 Run `python3 make_downloadables.py` to compile the downloadable ZIP files under `static/downloads/`.
 
@@ -230,3 +230,7 @@ Again, **do not forget to do `npm run build`** after making changes the content 
 * *Glossary* -- Look in `src/index.html` for the `learn-glossary`.
 
 * *Tooltip i icons* -- Within `src/index.html` you may create tooltip I icons, with HTML such as this: `<i class="fa fa-info-circle" aria-hidden="true" data-tooltip="yourtermhere"></i>` The tooltip HTML for each such tooltip, is provided in `tooltip_contents` Each DIV has a `data-tooltip` attribute corresponding to the `data-tooltip` used in the `<i>` element. For the Demographics table, be sure to cross reference to the `DEMOGRAPHICS_TABLE` element in `src/index.js`.
+
+### Downloadable Data Files
+
+* *readme.txt* -- See `datascripts/readme.txt`
