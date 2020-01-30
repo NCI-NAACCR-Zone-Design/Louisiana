@@ -72,9 +72,9 @@ class DownloadableZipsMaker:
 
                 # more data workarounds: some of the fields are integer/float so let's make sure they're kept that way
                 thisdatarow = {
-                    'Sex': row['sex'],
-                    'Cancer': row['cancer'],
-                    'Years': row['years'],
+                    'Sex': row['Sex'],
+                    'Cancer': row['Cancer'],
+                    'Years': row['Years'],
                     'PopTot': int(float(row['PopTot'])) if row['PopTot'] is not None else None,
                     'AAIR': float(row['AAIR']) if row['AAIR'] is not None else None,
                     'LCI': float(row['LCI']) if row['LCI'] is not None else None,
