@@ -551,9 +551,7 @@ function initPrintPage () {
     // with a map it's never simple to change sizes, and with them in table cells side-by-side it's even weirder
     // entering print mode, we want the left-side content hidden (it is, via nopprint) then to expand the map's cell to full-width, then trigger Leaflet resize
     // leaving print mode, need to undo all of that
-    //
     // also, have the Print button change text, so folks don't get impatient waiting for that delay as we redraw the map
-    //
     // also, the chart is now on the edge so gets clipped, so try to resize it and not do that
 
     const $printbutton = $('#printpagebutton');
@@ -565,23 +563,21 @@ function initPrintPage () {
     $printbutton.data('ready-html', $printbutton.html() );  // fetch whatever the HTML is when the page loads, so we don't have to repeat ourselves here
     $printbutton.data('busy-html', '<i class="fa fa-clock"></i> Printing');
 
-    $printbutton.click(function () {
+    window.addEventListener('beforeprint', function () {
         $mapdomnode.className = 'col-12';
         MAP.invalidateSize();
         $printbutton.html( $printbutton.data('busy-html') );
 
         $incidencebarchart.addClass('printing');
         window.dispatchEvent(new Event('resize'));
+    });
 
-        setTimeout(function () {
-            window.print();
+    window.addEventListener('afterprint', function () {
+        $incidencebarchart.removeClass('printing');
 
-            $incidencebarchart.removeClass('printing');
-
-            $mapdomnode.className = originalclasslist;
-            MAP.invalidateSize();
-            $printbutton.html( $printbutton.data('ready-html') );
-        }, 1 * 1000);
+        $mapdomnode.className = originalclasslist;
+        MAP.invalidateSize();
+        $printbutton.html( $printbutton.data('ready-html') );
     });
 }
 
