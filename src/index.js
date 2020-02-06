@@ -1120,7 +1120,7 @@ function performSearchShowFilters (searchparams) {
         const text = getLabelFor('time', searchparams.time);
         if (getOptionCount('time') > 1) {  // some datasets have only 1 option, so reiterating it with an X to clear it, is silly
             const $box = $('<span data-filter="time"></span>').text(text).appendTo($filtersummary);
-            $box.prop('tabindex', '0').addClass('data-filter-clear').append('<div class="summary-close"><i class="fa fa-times noprint" tabindex="0" aria-label="Click to clear this filter"></i></div>');
+            // no X for this one, since time is a selection and not a filter, and a value is always present
         }
     }
 
