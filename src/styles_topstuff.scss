@@ -41,6 +41,11 @@ div.container.intro-text {
     }
 }
 
+.intro-text a:link, .intro-text a:visited {
+    font-weight: 900;
+    color: $midpurple;
+    font-size: 1.05rem;
+}
 
 
 /*
