@@ -1,3 +1,4 @@
+
 # Cancer Mapping Template
 
 This is a template for web developers to set up a website of cancer statistics like at https://www.californiahealthmaps.org/
@@ -11,13 +12,31 @@ See a demonstration at https://nci-naaccr-zone-design.github.io/Cancer-Map-Templ
 
 ## Prerequisites
 
+### Software Setup
+
 You need the **NVM** and **Yarn** command-line tools installed. To check, run `yarn --version` and `nvm --version`
 
 You will need Python 3 in order to run the data-preparation scripts under `datascripts/`. To check, run `python3 --version` and `pip3 -version`
 
 You will need the OSGEO/GDAL module for Python 3. To check, run `python3 -c 'from osgeo import ogr; print("OK")'` If it is not installed on your system, you will need to install GDAL and then Python's GDAL package. To install GDAL, see https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries for recommended packages for various operating systems, including Mac and Windows. To install the Python library, run `pip3 install GDAL`
 
+#### A note about Yarn on Ubuntu and Windows Subsystem for Linux (WSL)
+
+If you are using Ubuntu or WSL, there is a different and completely unrelated *yarn* command as part of the *cmdtest* package. _Do not use the Yarn that comes with cmdtest._ If your `yarn` says that `-i` is not a known option, you're running the wrong one and you need to install it as follows:
+
+```
+sudo apt remove cmdtest
+sudo apt remove yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt update && sudo apt install --no-install-recommends yarn
+```
+
+### Github and Hosting
+
 You need to set up a Github repository where this will be hosted. The repository may be private. It must have Github Pages enabled and set to serve from the `docs/` directory (not the `gh-pages` branch).
+
+### Data
 
 You need a shapefile of the CTA Zones. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
 
