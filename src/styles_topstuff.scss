@@ -41,6 +41,18 @@ div.container.intro-text {
     }
 }
 
+.intro-text a:link, .intro-text a:visited {
+    text-decoration: none;
+}
+
+#visitlearn {
+    /* override the .btn height and padding */
+    height: 25px;
+    padding: 1px 10px 0px 10px;
+    margin-left: 5px;
+}
+
+
 /*
  * DOWNLOAD / PRINT BAR
  * but not the Download button and its weird behaviors; that has its own stylesheet
