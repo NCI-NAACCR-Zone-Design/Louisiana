@@ -32,10 +32,6 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update && sudo apt install --no-install-recommends yarn
 ```
 
-### Github and Hosting
-
-You need to set up a Github repository where this will be hosted. The repository may be private. It must have Github Pages enabled and set to serve from the `docs/` directory (not the `gh-pages` branch).
-
 ### Data
 
 You need a shapefile of the CTA Zones. See the *Integrating Your Own Data* section of this document which describes data details and a provided example file.
@@ -52,6 +48,16 @@ You need a shapefile of county boundaries for your state. A good source is ftp:/
 
 You need a shapefile of city/CDP boundaries for your state. A good source is You need a shapefile ftp://ftp2.census.gov/geo/tiger/TIGER2019/PLACE/
 
+### Hosting
+
+You will need a place to host the website.
+
+The resulting files which will comprise the website, are static files and no database nor server-side scripting is required. As such, the website files may be hosted on any web server or many serverless systems such as Amazon S3.
+
+An overview of some options are listed below. For more details, see the **Deployment** section.
+* **Github Pages** You need to set up a Github repository where this will be hosted. The repository may be private. It must have Github Pages enabled and set to serve from the `docs/` directory (not the `gh-pages` branch). Github Pages is free to use, if your soure code repository is public.
+* **Commodity Web Hosting** The resulting website is static HTML files, and can be hosted on any commodity web server such as  Dreamhost, Bluehost, or HostGator. Pricing varies, with many options as little as $5 per month, and web hosts provide technical support if you have trouble getting your website files online.
+* **Amazon S3** Amazon S3 is a very low-price option for hosting static files, and it can be configured to serve your website. Though more involved to set up, hosting is very inexpensive, as little as $0.50 per month. You will need to sign up for Amazon Web Services and create a S3 bucket, then configure that bucket for website hosting. For more information, see https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html
 
 
 ## Getting Started
@@ -100,13 +106,12 @@ Again, **do not forget to do `npm run build`** after making changes the content 
 
 ### Deployment
 
-The intended workflow for deployment, is Github Pages serving from the `docs/` sub-folder. Make sure that you have set up a Github repository and set up its Github Pages settings appropriately.
+The command `npm run build` will compile the source files and static assets into their browser-ready versions under `docs/`. The contents of this folder are the ready-to-run website; no server-side database nor scripting services are required.
 
-The command `npm run build` will compile the source files and static assets into their browser-ready versions under `docs/`. You may then commit and push as usual.
-
-As a convenience, the command `npm run deploy` will do this in a single step: do a `npm run build`, then a `git commit` with a default message, then a `git push`.
-
-
+* **Github Pages** After using `npm run build`, run `git commit` and `git push` as usual, and Github Pages will update your website within 5 minutes. The command `npm run deploy` is a convenient shortcut: it will run the commands to build, add, commit, and push in one single command.
+* **Commodity Web Hosting** The contents of this folder (not the folder itself) may be uploaded into your hosting directory via FTP/SFTP using a file transfer client such as WinSCP or FileZilla.
+* **Amazon S3** The contents of this folder (not the folder itself) may be uploaded into your S3 bucket, via the S3 console or via a graphical client such as Cyberduck, S3 Browser, or DragonDisk.
+ 
 
 ## Integrating Your Own Data
 
