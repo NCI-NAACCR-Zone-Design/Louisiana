@@ -113,7 +113,6 @@ var DEMOGRAPHIC_TABLES = [
         title: "Population & Income",
         rows: [
             { field: 'TotalPop', label: "Population", format: 'integer', tooltip_id: undefined },
-            { field: 'Pct100Pov', label: "% Below Poverty Level", format: 'percent', tooltip_id: 'Pct100Pov' },
             { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', tooltip_id: 'PctRural' },
         ],
     },
@@ -123,7 +122,6 @@ var DEMOGRAPHIC_TABLES = [
             { field: 'PctMinority', label: "% Minority", format: 'percent', tooltip_id: 'PctRace' },
             { field: 'PctHispanic', label: "% Hispanic", format: 'percent', tooltip_id: 'PctRace' },
             { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', tooltip_id: 'PctRace' },
-            { field: 'PctAPINH', label: "% Asian/Pacific (non-Hispanic)", format: 'percent', tooltip_id: 'PctRace' },
         ],
     },
 ];
@@ -165,11 +163,9 @@ var CHOROPLETH_OPTIONS = [
     { field: 'AAIR', label: "Incidence", format: 'float', colorramp: CHOROPLETH_STYLE_INCIDENCE },
     // demographic data; customize this to suit your preferences
     { field: 'TotalPop', label: "Population", format: 'integer', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'Pct100Pov', label: "% Below Poverty Level", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctMinority', label: "% Minority", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctHispanic', label: "% Hispanic", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
-    { field: 'PctAPINH', label: "% Asian/Pacific (non-Hispanic)", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
     { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', colorramp: CHOROPLETH_STYLE_DEMOGRAPHIC },
 ];
 
