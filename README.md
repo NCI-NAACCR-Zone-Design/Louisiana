@@ -133,6 +133,8 @@ Edit `index.js` and set up `CHOROPLETH_OPTIONS` to offer demographics as a Color
 
 Edit `index.js` and set up `SEARCHOPTIONS_TIME` to match your dataset's domain values. The set of dates must match between the incidence and demographic datasets.
 
+Edit `index.js` and set `NATIONWIDE_DEMOGRAPHICS` to indicate whether your data will support *Nationwide* readouts, for comparison with the Zone and State stats.
+
 Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
 
 ### Incidence Data
@@ -158,6 +160,8 @@ Edit `index.js` and set up `SEARCHOPTIONS_TIME` to match your dataset's domain v
 Edit `index.js` and set up `SEARCHOPTIONS_RACE` to match your dataset's domain values.
 
 If any of the cancer site options will be specific to one sex, edit `index.js` and set up `CANCER_SEXES` to auto-select that sex if that cancer site is selected.
+
+Edit `index.js` and set `NATIONWIDE_INCIDENCE` to indicate whether your data will support *Nationwide* readouts, for comparison with the Zone and State stats.
 
 Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
 

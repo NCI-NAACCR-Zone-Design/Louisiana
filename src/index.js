@@ -91,6 +91,11 @@ var CANCER_SEXES = {
     'Prostate': 'Male',
 };
 
+// the demographics and incidence readouts will show stats for the CTA Zone, as well as Statewide and Nationwide stats for comparison
+// if your data will not have Nationwide stats, you may set either/both of these to false to turn that off
+var NATIONWIDE_DEMOGRAPHICS = true;
+var NATIONWIDE_INCIDENCE = false;
+
 // colors for the incidence bar chart; these mirror the SEARCHOPTIONS_SEX options
 var BARCHART_COLORS_SEX = {
     'Both': '#446374',
@@ -517,9 +522,12 @@ function initValidateDemographicDataset () {
     // same goes for Nationwide: 1 per time period
     if (DATA_DEMOGS[0].Zone) {
         const hasstatewide = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Statewide'; });
-        const hasnationwide = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Nationwide'; });
         if (hasstatewide.length != SEARCHOPTIONS_TIME.length) errors.push(`Found ${hasstatewide.length} demographic rows for Statewide`);
-        if (hasnationwide.length != SEARCHOPTIONS_TIME.length) errors.push(`Found ${hasnationwide.length} demographic rows for Nationwide`);
+
+        if (NATIONWIDE_DEMOGRAPHICS) {
+            const hasnationwide = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Nationwide'; });
+            if (hasnationwide.length != SEARCHOPTIONS_TIME.length) errors.push(`Found ${hasnationwide.length} demographic rows for Nationwide`);
+        }
     }
 
     // if we found errors, throw a tantrum and die
@@ -670,6 +678,7 @@ function initDemographicTables () {
                         <th class="nowrap left"><span class="subtitle" tabindex="0">${tableinfo.title}</span></th>
                         <th class="nowrap right" data-region="cta" aria-hidden="true">Zone</th>
                         <th class="nowrap right" data-region="state" aria-hidden="true">Statewide</th>
+                        <th class="nowrap right" data-region="nation" aria-hidden="true">Nationwide</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -686,6 +695,7 @@ function initDemographicTables () {
                     <th scope="row">${tablerowinfo.label} ${tooltiphtml}</th>
                     <td class="right nowrap" data-region="cta"><span data-region="cta" data-statistic="${tablerowinfo.field}"></span></td>
                     <td class="right nowrap" data-region="state"><span data-region="state" data-statistic="${tablerowinfo.field}"></span></td>
+                    <td class="right nowrap" data-region="nation"><span data-region="nation" data-statistic="${tablerowinfo.field}"></span></td>
                 </tr>
             `).appendTo($tbody);
         });
@@ -1159,9 +1169,11 @@ function performSearchDemographics (searchparams) {
     // see DEMOGRAPHIC_TABLES and initDemographicTables() which created these tables during setup
     const demogdata_cta = DATA_DEMOGS.filter(function (row) { return row.Zone == searchparams.ctaid && row.Years == searchparams.time; })[0];
     const demogdata_state = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Statewide' && row.Years == searchparams.time; })[0];
+    const demogdata_nation = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Nationwide' && row.Years == searchparams.time; })[0];
 
     const $demographics_section = $('#demographic-tables');
     const $ctastats = $demographics_section.find('[data-region="cta"]');
+    const $nationstats = $demographics_section.find('[data-region="nation"]');
 
     // show/hide the CTA Zone content, depending whether a CTA Zone was selected (that is, not Statewide)
     if (searchparams.ctaid == 'Statewide') {
@@ -1169,6 +1181,14 @@ function performSearchDemographics (searchparams) {
     }
     else {
         $ctastats.show();
+    }
+
+    // show/hide the Nationwide cells, depending on the global setting
+    if (NATIONWIDE_DEMOGRAPHICS) {
+        $nationstats.show();
+    }
+    else {
+        $nationstats.hide();
     }
 
     // fill in the blanks: the CTA name and ID
@@ -1183,12 +1203,18 @@ function performSearchDemographics (searchparams) {
     DEMOGRAPHIC_TABLES.forEach(function (tableinfo) {
         tableinfo.rows.forEach(function (tablerowinfo) {
             const $slots_cta = $demographics_section.find(`span[data-region="cta"][data-statistic="${tablerowinfo.field}"]`);
-            const $slots_state = $demographics_section.find(`span[data-region="state"][data-statistic="${tablerowinfo.field}"]`);
             const value_cta = formatFieldValue(demogdata_cta[tablerowinfo.field], tablerowinfo.format);
-            const value_state = formatFieldValue(demogdata_state[tablerowinfo.field], tablerowinfo.format);
-
             $slots_cta.text(value_cta);
+
+            const $slots_state = $demographics_section.find(`span[data-region="state"][data-statistic="${tablerowinfo.field}"]`);
+            const value_state = formatFieldValue(demogdata_state[tablerowinfo.field], tablerowinfo.format);
             $slots_state.text(value_state);
+
+            if (NATIONWIDE_DEMOGRAPHICS) {
+                const $slots_nation = $demographics_section.find(`span[data-region="nation"][data-statistic="${tablerowinfo.field}"]`);
+                const value_nation = formatFieldValue(demogdata_nation[tablerowinfo.field], tablerowinfo.format);
+                $slots_nation.text(value_nation);
+            }
         });
     });
 }

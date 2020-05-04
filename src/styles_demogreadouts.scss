@@ -12,28 +12,30 @@
             color: $nearblack;
         }
 
-        tbody {
-            tr:nth-child(odd) {
-                td, th[scope] {
-                    background-color: $yellow;
-                }
+        tr:nth-child(odd) {
+            td, th[scope] {
+                background-color: $yellow;
             }
+        }
 
-            td:first-child, td:nth-child(2) {
-                border-right: 5px solid white;
-            }
-            td:last-child {
-                color: $nearblack;
-            }
+        td:nth-child(2), td:nth-child(3) {  /* CTA, Statewide, not Nation */
+            border-right: 5px solid white;
+        }
+        th[data-region="state"], td[data-region="state"] {
+            color: $nearblack;
+        }
 
-            th[scope] {  /* TH must be used for semantics, esp screen readers and scope, but we want them to look like regular TDs */
-                font-weight: 400;
-                text-align: left;
-            }
+        th[scope] {  /* TH must be used for semantics, esp screen readers and scope, but we want them to look like regular TDs */
+            font-weight: 400;
+            text-align: left;
+        }
 
-            td:nth-child(2), td:nth-child(3) {  /* consistent width for the number columns */
-                width: 20%;
-            }
+        /* help make the column widths more consistent */
+        tbody th {
+            width: 40%;
+        }
+        tbody td {
+            width: 20%;
         }
     }
 
