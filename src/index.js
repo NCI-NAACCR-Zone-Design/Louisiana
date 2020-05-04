@@ -110,6 +110,7 @@ var DEMOGRAPHIC_TABLES = [
         rows: [
             { field: 'TotalPop', label: "Population", format: 'integer', tooltip_id: undefined },
             { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', tooltip_id: 'PctRural' },
+            { field: 'PctNoHealthIns', label: "% Without Health Insurance", format: 'percent', tooltip_id: undefined },
         ],
     },
     {
@@ -118,6 +119,13 @@ var DEMOGRAPHIC_TABLES = [
             { field: 'PctMinority', label: "% Minority", format: 'percent', tooltip_id: 'PctRace' },
             { field: 'PctHispanic', label: "% Hispanic", format: 'percent', tooltip_id: 'PctRace' },
             { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', tooltip_id: 'PctRace' },
+        ],
+    },
+    {
+        title: "Education",
+        rows: [
+            { field: 'PctEducBch', label: "% With Bachelors Degree or Higher", format: 'percent', tooltip_id: undefined },
+            { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent', tooltip_id: undefined },
         ],
     },
 ];
@@ -1149,8 +1157,8 @@ function performSearchDemographics (searchparams) {
     // distill demographic data for the selected CTA
     // ths has no connection to the cancer dataset at all
     // see DEMOGRAPHIC_TABLES and initDemographicTables() which created these tables during setup
-    const demogdata_cta = DATA_DEMOGS.filter(function (row) { return row.Zone == searchparams.ctaid; })[0];
-    const demogdata_state = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Statewide'; })[0];
+    const demogdata_cta = DATA_DEMOGS.filter(function (row) { return row.Zone == searchparams.ctaid && row.Years == searchparams.time; })[0];
+    const demogdata_state = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Statewide' && row.Years == searchparams.time; })[0];
 
     const $demographics_section = $('#demographic-tables');
     const $ctastats = $demographics_section.find('[data-region="cta"]');
