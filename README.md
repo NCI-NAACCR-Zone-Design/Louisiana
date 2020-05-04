@@ -122,12 +122,16 @@ Again, **do not forget to do `npm run build`** after making changes the content 
 Verify the field and data requirements:
 * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (incidence, boundary).
 * The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" or "All" will not be recognized as Statewide.
+* The special `Zone` name *Nationwide* should be used to indicate nationwide data. Other values such as "United States" or "All USA" will not be recognized as Nationwide.
+* The `Years` field is domain values, and is used for filtering.
 
 Copy your demographics CSV into `static/data/demographics.csv`
 
 Edit `index.js` and set up `DEMOGRAPHIC_TABLES` to display the demographic data into the tables below the map. This defines a set of tables, what fields to display in each table, and how to label the fields and format their values (adding commas, rounding to 1 decimal, etc.).
 
 Edit `index.js` and set up `CHOROPLETH_OPTIONS` to offer demographics as a Color By option for the choropleth map.
+
+Edit `index.js` and set up `SEARCHOPTIONS_TIME` to match your dataset's domain values. The set of dates must match between the incidence and demographic datasets.
 
 Again, **do not forget to do `npm run build`** after making changes the content of `static/`, including replacing images or loading new data.
 
@@ -136,6 +140,7 @@ Again, **do not forget to do `npm run build`** after making changes the content 
 Verify the field and data requirements:
 * The `Zone` field is used as the CTA Zones' unique ID to tie to other data (demographics, boundary).
 * The special `Zone` name *Statewide* should be used to indicate statewide data. Other values such as "California" or "LA" or "All" will not be recognized as Statewide.
+* The special `Zone` name *Nationwide* should be used to indicate nationwide data. Other values such as "United States" or "All USA" will not be recognized as Nationwide.
 * The `Sex` field is domain values, and is used for filtering.
 * The `Cancer` field is domain values, and is used for filtering.
 * The `Years` field is domain values, and is used for filtering.
@@ -148,7 +153,7 @@ Edit `index.js` and set up `SEARCHOPTIONS_CANCERSITE` to match your dataset's do
 
 Edit `index.js` and set up `SEARCHOPTIONS_SEX` to match your dataset's domain values.
 
-Edit `index.js` and set up `SEARCHOPTIONS_TIME` to match your dataset's domain values.
+Edit `index.js` and set up `SEARCHOPTIONS_TIME` to match your dataset's domain values. The set of dates must match between the incidence and demographic datasets.
 
 Edit `index.js` and set up `SEARCHOPTIONS_RACE` to match your dataset's domain values.
 

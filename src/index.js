@@ -71,7 +71,6 @@ var SEARCHOPTIONS_SEX = [  // filter values for "sex" field
     { value: 'Female', label: "Female" },
 ];
 var SEARCHOPTIONS_TIME = [  // filter values for "years" field
-    { value: '01yr', label: "1-Year: 2015" },
     { value: '05yrs', label: "5-Year: 2011-2015" },
     { value: '10yrs', label: "10-Year: 2006-2015" },
 ];
@@ -79,9 +78,6 @@ var SEARCHOPTIONS_RACE = [  // field prefix for AAIR, LCI, UCI fields within the
     { value: '', label: "All Ethnicities" },
     { value: 'W', label: "Non-Hispanic White" },
     { value: 'B', label: "Non-Hispanic Black" },
-    { value: 'H', label: "Hispanic" },
-    { value: 'API', label: "Asian/Pacific Islander" },
-    { value: 'AIAN', label: "American Indian/Alaska Native" },
 ];
 
 // if any of the cancer sites should apply to only one sex, you may define that here
@@ -509,10 +505,13 @@ function initValidateDemographicDataset () {
         if (typeof DATA_DEMOGS[0][vizopt.field] == 'undefined') errors.push(`CHOROPLETH_OPTIONS nonexistent demographic field ${vizopt.field}`);
     });
 
-    // there should be exactly one Statewide row of demographics (if we even have a Zone field at all)
+    // there should be as many Statewide demographics rows as there are options in SEARCHOPTIONS_TIME; that is, one per time period
+    // same goes for Nationwide: 1 per time period
     if (DATA_DEMOGS[0].Zone) {
         const hasstatewide = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Statewide'; });
-        if (hasstatewide.length != 1) errors.push(`Found ${hasstatewide.length} demographic rows for Statewide`);
+        const hasnationwide = DATA_DEMOGS.filter(function (row) { return row.Zone == 'Nationwide'; });
+        if (hasstatewide.length != SEARCHOPTIONS_TIME.length) errors.push(`Found ${hasstatewide.length} demographic rows for Statewide`);
+        if (hasnationwide.length != SEARCHOPTIONS_TIME.length) errors.push(`Found ${hasnationwide.length} demographic rows for Nationwide`);
     }
 
     // if we found errors, throw a tantrum and die
