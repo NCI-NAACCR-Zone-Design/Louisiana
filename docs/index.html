@@ -55,8 +55,8 @@
     </script>
 
     <!-- our own awesomesauce -->
-    <link rel="stylesheet" type="text/css" href="index.css?Mon_May_04_2020_17_13_58_GMT_0700__Pacific_Daylight_Time_" />
-    <script type="text/javascript" src="index.js?Mon_May_04_2020_17_13_58_GMT_0700__Pacific_Daylight_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Mon_May_04_2020_17_35_59_GMT_0700__Pacific_Daylight_Time_" />
+    <script type="text/javascript" src="index.js?Mon_May_04_2020_17_35_59_GMT_0700__Pacific_Daylight_Time_"></script>
 </head>
 <body>
 
@@ -184,28 +184,25 @@
                     <thead>
                         <tr>
                             <th class="left"><span class="title" tabindex="0">Cancer Statistics</span></th>
-                            <th data-region="cta">Zone</th>
-                            <th data-region="state">Statewide</th>
+                            <th scope="col">Cases</th>
+                            <th scope="col">Age Adjusted Incidence Rate <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="aair"></i><br/>(95% LCI, 95% UCI) <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="confidenceinterval"></i></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">Cases</th>
-                            <td class="center" data-region="cta"><span data-region="cta" data-statistic="cases"></span></td>
-                            <td class="center" data-region="state"><span data-region="state" data-statistic="cases"></span></td>
+                        <tr data-region="cta">
+                            <th scope="row">Zone</th>
+                            <td class="center"><span data-region="cta" data-statistic="cases"></span></td>
+                            <td class="center"><span data-region="cta" data-statistic="aair"></span> <span data-region="cta" data-statistic="lciuci"></span></span></td>
                         </tr>
-                        <tr>
-                            <th scope="row">Age Adjusted Incidence Rate <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="aair"></i><br/>(95% LCI, 95% UCI) <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="confidenceinterval"></i></th>
-                            <td class="center" data-region="cta">
-                                <span data-region="cta" data-statistic="aair"></span>
-                                <br/>
-                                <span data-region="cta" data-statistic="lciuci"></span>
-                            </td>
-                            <td class="center" data-region="state">
-                                <span data-region="state" data-statistic="aair"></span>
-                                <br/>
-                                <span data-region="state" data-statistic="lciuci"></span>
-                            </td>
+                        <tr data-region="state">
+                            <th scope="row">Statewide</th>
+                            <td class="center"><span data-region="state" data-statistic="cases"></span></td>
+                            <td class="center"><span data-region="state" data-statistic="aair"></span> <span data-region="state" data-statistic="lciuci"></span></span></td>
+                        </tr>
+                        <tr data-region="nation">
+                            <th scope="row">Nationwide</th>
+                            <td class="center"><span data-region="nation" data-statistic="cases"></span></td>
+                            <td class="center"><span data-region="nation" data-statistic="aair"></span> <span data-region="nation" data-statistic="lciuci"></span></td>
                         </tr>
                     </tbody>
                 </table>
