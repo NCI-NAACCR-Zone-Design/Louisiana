@@ -94,7 +94,7 @@ var CANCER_SEXES = {
 // the demographics and incidence readouts will show stats for the CTA Zone, as well as Statewide and Nationwide stats for comparison
 // if your data will not have Nationwide stats, you may set either/both of these to false to turn that off
 var NATIONWIDE_DEMOGRAPHICS = true;
-var NATIONWIDE_INCIDENCE = false;
+var NATIONWIDE_INCIDENCE = true;
 
 // colors for the incidence bar chart; these mirror the SEARCHOPTIONS_SEX options
 var BARCHART_COLORS_SEX = {
@@ -1252,15 +1252,14 @@ function performSearchPlaces (searchparams) {
 
 
 function performSearchIncidenceReadout (searchparams) {
-    // incidence data is two rows:
-    // one row of the incidence CSV for CTA+cancer+sex+date combiantion
-    // plus the Statewide row for the same cancer+sex+date combination
+    // incidence data is three rows: cases & incidence rate, for the selected Zone, the Statewide, and Nationwide
     // the race does not filter a row, but rather determines which fields are the relevant incidence/MOE numbers
     //
     // note that we could end up with 0 rows e.g. there is no row for Male Uterine nor Female Prostate
     // we could also end up with null values for some data, e.g. low sample sizes so they chose not to report a value
     const cancerdata_cta = DATA_CANCER.filter(row => row.Zone == searchparams.ctaid && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
     const cancerdata_state = DATA_CANCER.filter(row => row.Zone == 'Statewide' && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
+    const cancerdata_nation = DATA_CANCER.filter(row => row.Zone == 'Nationwide' && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
 
     let text_cases_cta = 'no data';
     let text_aair_cta = 'no data';
@@ -1306,12 +1305,42 @@ function performSearchIncidenceReadout (searchparams) {
         }
     }
 
+    let text_cases_nation = 'no data';
+    let text_aair_nation = 'no data';
+    let text_lciuci_nation = '';
+    if (NATIONWIDE_INCIDENCE && cancerdata_nation) {
+        const value_cases = searchparams.race ? cancerdata_nation[`${searchparams.race}_Cases`] : cancerdata_nation['Cases'];
+        const value_aair = searchparams.race ? cancerdata_nation[`${searchparams.race}_AAIR`] : cancerdata_nation['AAIR'];
+        const value_lci = searchparams.race ? cancerdata_nation[`${searchparams.race}_LCI`] : cancerdata_nation['LCI'];
+        const value_uci = searchparams.race ? cancerdata_nation[`${searchparams.race}_UCI`] : cancerdata_nation['UCI'];
+
+        const has_cases = ! isNaN(parseInt(value_cases));
+        const has_aair = ! isNaN(parseFloat(value_cases));
+
+        if (has_cases) text_cases_nation = value_cases.toLocaleString();
+        if (has_aair) text_aair_nation = value_aair.toFixed(1);
+
+        if (has_cases && has_aair) {
+            const lcitext = (searchparams.race ? cancerdata_nation[`${searchparams.race}_LCI`] : cancerdata_nation['LCI']).toFixed(1);
+            const ucitext = (searchparams.race ? cancerdata_nation[`${searchparams.race}_UCI`] : cancerdata_nation['UCI']).toFixed(1);
+            text_lciuci_nation = `(${lcitext}, ${ucitext})`;
+        }
+    }
+
     // show/hide the CTA columns (well, actually, each individual cell)
     if (searchparams.ctaid == 'Statewide') {
         $('#data-readouts [data-region="cta"]').hide();
     }
     else {
         $('#data-readouts [data-region="cta"]').show();
+    }
+
+    // show/hide the Nationwide content based on the NATIONWIDE_INCIDENCE config setting
+    if (NATIONWIDE_INCIDENCE) {
+        $('#data-readouts [data-region="nation"]').show();
+    }
+    else {
+        $('#data-readouts [data-region="nation"]').hide();
     }
 
     // now fill in the blanks
@@ -1322,6 +1351,10 @@ function performSearchIncidenceReadout (searchparams) {
     $('#data-readouts span[data-region="state"][data-statistic="cases"]').text(text_cases_state);
     $('#data-readouts span[data-region="state"][data-statistic="aair"]').text(text_aair_state);
     $('#data-readouts span[data-region="state"][data-statistic="lciuci"]').text(text_lciuci_state);
+
+    $('#data-readouts span[data-region="nation"][data-statistic="cases"]').text(text_cases_nation);
+    $('#data-readouts span[data-region="nation"][data-statistic="aair"]').text(text_aair_nation);
+    $('#data-readouts span[data-region="nation"][data-statistic="lciuci"]').text(text_lciuci_nation);
 }
 
 
