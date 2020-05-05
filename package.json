@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "webpack-dev-server --open --config webpack.config.js",
-    "build": "webpack -p --progress --colors --config webpack.config.js && cp -r static docs/",
+    "build": "webpack -p --progress --colors --config webpack.config.js && rm -rf docs/static && cp -r static docs/",
     "deploy": "npm run build && git add docs && git commit -m 'compile for deployment' && git push"
   },
   "repository": "https://github.com/GreenInfo-Network/Westat-Cancer-Template",

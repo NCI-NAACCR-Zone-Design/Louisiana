@@ -5,6 +5,7 @@ import csv
 import json
 import zipfile
 import copy
+import glob
 
 import settings
 
@@ -209,6 +210,11 @@ class DownloadableZipsMaker:
 
     def writeIndividualZipFiles(self):
         print("    Creating individual CTA ZIPs")
+
+        todelete = os.path.join(settings.DOWNLOADS_DIR, settings.PERCTA_ZIPFILES_FILENAME.replace('{}', '*'))
+        todelete = glob.glob(todelete)
+        for zipfilename in todelete:
+            os.unlink(zipfilename)
 
         with open(settings.DOWNLOADZIP_READMEFILE, 'r') as textfh:
             readmetext = textfh.read()
