@@ -203,7 +203,7 @@
                 <tr>
                     <th class="left"><span class="title" tabindex="0">Cancer Statistics</span></th>
                     <th scope="col">Cases</th>
-                    <th scope="col">Age Adjusted Incidence Rate <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="aair"></i><br/>(95% LCI, 95% UCI) <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="confidenceinterval"></i></th>
+                    <th scope="col" colspan="2">Age Adjusted Incidence Rate <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="aair"></i><br/>(95% LCI, 95% UCI) <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="confidenceinterval"></i></th>
                 </tr>
             </thead>
             <tbody>
@@ -211,16 +211,19 @@
                     <th scope="row">Zone</th>
                     <td class="center"><span data-region="cta" data-statistic="cases"></span></td>
                     <td class="center"><span data-region="cta" data-statistic="aair"></span> <span data-region="cta" data-statistic="lciuci"></span></span></td>
+                    <td class="d-none d-md-table-cell ucilcicandlechartcell"><span class="ucilcicandlechart" data-region="cta"></span></td>
                 </tr>
                 <tr data-region="state">
                     <th scope="row">Statewide</th>
                     <td class="center"><span data-region="state" data-statistic="cases"></span></td>
                     <td class="center"><span data-region="state" data-statistic="aair"></span> <span data-region="state" data-statistic="lciuci"></span></span></td>
+                    <td class="d-none d-md-table-cell ucilcicandlechartcell"><span class="ucilcicandlechart" data-region="state"></span></td>
                 </tr>
                 <tr data-region="nation">
                     <th scope="row">Nationwide</th>
                     <td class="center"><span data-region="nation" data-statistic="cases"></span></td>
                     <td class="center"><span data-region="nation" data-statistic="aair"></span> <span data-region="nation" data-statistic="lciuci"></span></td>
+                    <td class="d-none d-md-table-cell ucilcicandlechartcell"><span class="ucilcicandlechart" data-region="nation"></span></td>
                 </tr>
             </tbody>
         </table>
@@ -258,7 +261,7 @@
         <h2 class="title" role="header">Learn</h2>
 
         <ul class="nav nav-pills nav-justified">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#learn-about">About This Project</a></li>
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#learn-about">About</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-method">Methodology</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-faq">FAQs</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-glossary">Definitions</a></li>

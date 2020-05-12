@@ -38,21 +38,19 @@ div.container.learn-text {
         }
     }
     
-    @media (max-width: 991.98px) {  /* form a preferred line-break point for the Learn tabs */
+    @media (max-width: 436px) {  /* form a preferred line-break point for the Learn tabs on really tiny screens */
         .break {
             flex-basis: 100%;
             width: 0;
         }
-        .nav li.nav-item:nth-child(n+3) {
+        .nav li.nav-item:nth-child(n+4) {
             margin-top: 10px;
         }
     }
     
-    @media (max-width: 413.98px) {
+    @media (max-width: 413px) {  /* form a preferred line-break point for the Learn tabs on really tiny screens */
         .nav li.nav-item {
             flex-basis: 100%;
-        }
-        .nav li.nav-item:nth-child(n+2) {
             margin-top: 10px;
         }
     }
@@ -62,7 +60,7 @@ div.container.learn-text {
         padding-right: 0;
         padding-left: 0;
 
-        min-height: 50vh;  /* try to reduce the jumping effect as content of arying heights is swapped */
+        min-height: 50vh;  /* try to reduce the jumping effect as content of varying heights is swapped */
     }
 
 

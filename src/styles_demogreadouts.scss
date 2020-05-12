@@ -24,6 +24,9 @@
         th[data-region="state"], td[data-region="state"] {
             color: $nearblack;
         }
+        th[data-region="nation"], td[data-region="nation"] {
+            color: $nearblack;
+        }
 
         th[scope] {  /* TH must be used for semantics, esp screen readers and scope, but we want them to look like regular TDs */
             font-weight: 400;

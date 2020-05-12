@@ -1261,14 +1261,15 @@ function performSearchIncidenceReadout (searchparams) {
     const cancerdata_state = DATA_CANCER.filter(row => row.Zone == 'Statewide' && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
     const cancerdata_nation = DATA_CANCER.filter(row => row.Zone == 'Nationwide' && row.Years == searchparams.time && row.Cancer == searchparams.site && row.Sex == searchparams.sex)[0];
 
+    let cta_lci, cta_uci, cta_aair;
     let text_cases_cta = 'no data';
     let text_aair_cta = 'no data';
     let text_lciuci_cta = '';
     if (cancerdata_cta) {
-        const value_cases = searchparams.race ? cancerdata_cta[`${searchparams.race}_Cases`] : cancerdata_cta['Cases'];
-        const value_aair = searchparams.race ? cancerdata_cta[`${searchparams.race}_AAIR`] : cancerdata_cta['AAIR'];
-        const value_lci = searchparams.race ? cancerdata_cta[`${searchparams.race}_LCI`] : cancerdata_cta['LCI'];
-        const value_uci = searchparams.race ? cancerdata_cta[`${searchparams.race}_UCI`] : cancerdata_cta['UCI'];
+        const value_cases = searchparams.race ? cancerdata_cta[`${searchparams.race}_Cases`] : cancerdata_cta.Cases;
+        const value_aair = searchparams.race ? cancerdata_cta[`${searchparams.race}_AAIR`] : cancerdata_cta.AAIR;
+        const value_lci = searchparams.race ? cancerdata_cta[`${searchparams.race}_LCI`] : cancerdata_cta.LCI;
+        const value_uci = searchparams.race ? cancerdata_cta[`${searchparams.race}_UCI`] : cancerdata_cta.UCI;
 
         const has_cases = ! isNaN(parseInt(value_cases));
         const has_aair = ! isNaN(parseFloat(value_cases));
@@ -1277,20 +1278,26 @@ function performSearchIncidenceReadout (searchparams) {
         if (has_aair) text_aair_cta = value_aair.toFixed(1);
 
         if (has_cases && has_aair) {
-            const lcitext = (searchparams.race ? cancerdata_cta[`${searchparams.race}_LCI`] : cancerdata_cta['LCI']).toFixed(1);
-            const ucitext = (searchparams.race ? cancerdata_cta[`${searchparams.race}_UCI`] : cancerdata_cta['UCI']).toFixed(1);
+            const lcitext = (searchparams.race ? cancerdata_cta[`${searchparams.race}_LCI`] : cancerdata_cta.LCI).toFixed(1);
+            const ucitext = (searchparams.race ? cancerdata_cta[`${searchparams.race}_UCI`] : cancerdata_cta.UCI).toFixed(1);
             text_lciuci_cta = `(${lcitext}, ${ucitext})`;
         }
+
+        // tacked on months later, a need to stow these for some comparison charts
+        cta_aair = value_aair;
+        cta_lci = value_lci;
+        cta_uci = value_uci;
     }
 
+    let state_lci, state_uci, state_aair;
     let text_cases_state = 'no data';
     let text_aair_state = 'no data';
     let text_lciuci_state = '';
     if (cancerdata_state) {
-        const value_cases = searchparams.race ? cancerdata_state[`${searchparams.race}_Cases`] : cancerdata_state['Cases'];
-        const value_aair = searchparams.race ? cancerdata_state[`${searchparams.race}_AAIR`] : cancerdata_state['AAIR'];
-        const value_lci = searchparams.race ? cancerdata_state[`${searchparams.race}_LCI`] : cancerdata_state['LCI'];
-        const value_uci = searchparams.race ? cancerdata_state[`${searchparams.race}_UCI`] : cancerdata_state['UCI'];
+        const value_cases = searchparams.race ? cancerdata_state[`${searchparams.race}_Cases`] : cancerdata_state.Cases;
+        const value_aair = searchparams.race ? cancerdata_state[`${searchparams.race}_AAIR`] : cancerdata_state.AAIR;
+        const value_lci = searchparams.race ? cancerdata_state[`${searchparams.race}_LCI`] : cancerdata_state.LCI;
+        const value_uci = searchparams.race ? cancerdata_state[`${searchparams.race}_UCI`] : cancerdata_state.UCI;
 
         const has_cases = ! isNaN(parseInt(value_cases));
         const has_aair = ! isNaN(parseFloat(value_cases));
@@ -1299,20 +1306,26 @@ function performSearchIncidenceReadout (searchparams) {
         if (has_aair) text_aair_state = value_aair.toFixed(1);
 
         if (has_cases && has_aair) {
-            const lcitext = (searchparams.race ? cancerdata_state[`${searchparams.race}_LCI`] : cancerdata_state['LCI']).toFixed(1);
-            const ucitext = (searchparams.race ? cancerdata_state[`${searchparams.race}_UCI`] : cancerdata_state['UCI']).toFixed(1);
+            const lcitext = (searchparams.race ? cancerdata_state[`${searchparams.race}_LCI`] : cancerdata_state.LCI).toFixed(1);
+            const ucitext = (searchparams.race ? cancerdata_state[`${searchparams.race}_UCI`] : cancerdata_state.UCI).toFixed(1);
             text_lciuci_state = `(${lcitext}, ${ucitext})`;
         }
+
+        // tacked on months later, a need to stow these for some comparison charts
+        state_aair = value_aair;
+        state_lci = value_lci;
+        state_uci = value_uci;
     }
 
+    let nation_lci, nation_uci, nation_aair;
     let text_cases_nation = 'no data';
     let text_aair_nation = 'no data';
     let text_lciuci_nation = '';
     if (NATIONWIDE_INCIDENCE && cancerdata_nation) {
-        const value_cases = searchparams.race ? cancerdata_nation[`${searchparams.race}_Cases`] : cancerdata_nation['Cases'];
-        const value_aair = searchparams.race ? cancerdata_nation[`${searchparams.race}_AAIR`] : cancerdata_nation['AAIR'];
-        const value_lci = searchparams.race ? cancerdata_nation[`${searchparams.race}_LCI`] : cancerdata_nation['LCI'];
-        const value_uci = searchparams.race ? cancerdata_nation[`${searchparams.race}_UCI`] : cancerdata_nation['UCI'];
+        const value_cases = searchparams.race ? cancerdata_nation[`${searchparams.race}_Cases`] : cancerdata_nation.Cases;
+        const value_aair = searchparams.race ? cancerdata_nation[`${searchparams.race}_AAIR`] : cancerdata_nation.AAIR;
+        const value_lci = searchparams.race ? cancerdata_nation[`${searchparams.race}_LCI`] : cancerdata_nation.LCI;
+        const value_uci = searchparams.race ? cancerdata_nation[`${searchparams.race}_UCI`] : cancerdata_nation.UCI;
 
         const has_cases = ! isNaN(parseInt(value_cases));
         const has_aair = ! isNaN(parseFloat(value_cases));
@@ -1321,10 +1334,15 @@ function performSearchIncidenceReadout (searchparams) {
         if (has_aair) text_aair_nation = value_aair.toFixed(1);
 
         if (has_cases && has_aair) {
-            const lcitext = (searchparams.race ? cancerdata_nation[`${searchparams.race}_LCI`] : cancerdata_nation['LCI']).toFixed(1);
-            const ucitext = (searchparams.race ? cancerdata_nation[`${searchparams.race}_UCI`] : cancerdata_nation['UCI']).toFixed(1);
+            const lcitext = (searchparams.race ? cancerdata_nation[`${searchparams.race}_LCI`] : cancerdata_nation.LCI).toFixed(1);
+            const ucitext = (searchparams.race ? cancerdata_nation[`${searchparams.race}_UCI`] : cancerdata_nation.UCI).toFixed(1);
             text_lciuci_nation = `(${lcitext}, ${ucitext})`;
         }
+
+        // tacked on months later, a need to stow these for some comparison charts
+        nation_aair = value_aair;
+        nation_lci = value_lci;
+        nation_uci = value_uci;
     }
 
     // show/hide the CTA columns (well, actually, each individual cell)
@@ -1355,6 +1373,20 @@ function performSearchIncidenceReadout (searchparams) {
     $('#incidence-readouts span[data-region="nation"][data-statistic="cases"]').text(text_cases_nation);
     $('#incidence-readouts span[data-region="nation"][data-statistic="aair"]').text(text_aair_nation);
     $('#incidence-readouts span[data-region="nation"][data-statistic="lciuci"]').text(text_lciuci_nation);
+
+    // part 2
+    // tacked on several months later, a candle chart (sort of) for the LCI/UCI/AAIR of these regions
+    // but existing candle chart UIs aen't suited, as they want a really custom UI
+    const $candlechart_cta = $('#incidence-readouts span.ucilcicandlechart[data-region="cta"]');
+    const $candlechart_state = $('#incidence-readouts span.ucilcicandlechart[data-region="state"]');
+    const $candlechart_nation = $('#incidence-readouts span.ucilcicandlechart[data-region="nation"]');
+
+    const minlci = (nation_lci && nation_uci) ? Math.min(cta_lci, state_lci, nation_lci) : Math.min(cta_lci, state_lci);
+    const maxuci = (nation_lci && nation_uci) ? Math.max(cta_uci, state_uci, nation_uci) : Math.max(cta_uci, state_uci);
+
+    updateCandleChart($candlechart_cta, 'Selected Area', cta_aair, cta_lci, cta_uci, minlci, maxuci);
+    updateCandleChart($candlechart_state, 'Statewide', state_aair, state_lci, state_uci, minlci, maxuci);
+    updateCandleChart($candlechart_nation, 'Nationwide', nation_aair, nation_lci, nation_uci, minlci, maxuci);
 }
 
 
@@ -1790,4 +1822,40 @@ function formatFieldValue (value, format) {
     }
 
     return formatted;
+}
+
+
+function updateCandleChart($candlediv, subtitle, aair, lci, uci, minlci, maxuci) {
+    // create the new contents
+    // - thin line for the full range, always 100% width
+    // - thicker line for the LCI/UCI range in this area, with its width scaled to the full range of min/max LCI/UCI
+    // - point for the AAIR, with its position scaled to the full range of min/max LCI/UCI
+    $candlediv.empty();
+    const $fullrangeline = $('<span class="fullrangeline"></span>').appendTo($candlediv);
+    const $ucilcirangeline = $('<span class="ucilcirangeline"></span>').appendTo($candlediv);
+    const $aairpoint = $('<span class="aairpoint"></span>').appendTo($candlediv);
+
+    // the span.ucilcicandlechart CSS defines the thickness and colors, and their absolute positioning
+    // $fullrangeline is always 100% across, so no work needed
+    // $ucilcirangeline needs its width and left scaled, to indicate lci & uci along the range of minlci & maxuci
+    // $aairpoint needs its left scaled so its center (depends on the width) indicates the AAIR along the range of minlci & maxuci
+
+    const fullcirange = maxuci - minlci;
+
+    const aairpointradius = 5;  // see span.aairpoint, its WxH hould be 1+2*radius
+    const aairleftpercent = 100 * (aair - minlci) / fullcirange;
+    $aairpoint.css({
+        left: `calc(${aairleftpercent}% - ${aairpointradius}px)`,
+    });
+
+    const cirangeidthpercent = 100 * (uci - lci) / fullcirange;
+    const cirangeleftpercent = 100 * (lci - minlci) / fullcirange;
+    $ucilcirangeline.css({
+        width: `${cirangeidthpercent}%`,
+        left: `${cirangeleftpercent}%`,
+    });
+
+    // some accessibility and user-friendliness touches
+    const charttooltip = `${subtitle} LCI ${lci}, UCI ${uci}, AAIR ${aair}`;
+    $candlediv.attr('aria-label', charttooltip).prop('title', charttooltip);
 }

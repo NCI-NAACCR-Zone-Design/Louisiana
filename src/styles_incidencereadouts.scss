@@ -26,16 +26,47 @@
                 &:first-child, &:nth-child(2) {
                     border-right: 5px solid white;
                 }
-
-                &:last-child {
-                    color: $nearblack;
-                }
             }
 
             span[data-statistic="lciuci"] {  /* exception: subtext in a cell, with special colors */
                 color: $midgrey;
                 font-size: 16px;
             }
+        }
+    }
+
+    /* those UCI/LCI dot chart things, sort of like candle charts but they aren't */
+    td.ucilcicandlechartcell {
+        width: 25%;
+    }
+    span.ucilcicandlechart {
+        width: 100%;
+
+        display: inline-block;
+        height: 11px;
+
+        position: relative;
+        span.fullrangeline {  /* 1px line through the middle, indicating the full range */
+            background-color: $midpurple;
+            position: absolute;
+            top: 5px;
+            width: 100%;
+            height: 1px;
+        }
+        span.ucilcirangeline {  /* thicker line through the indicated range for this area */
+            background-color: $midpurple;
+            position: absolute;
+            top: 3px;
+            height: 5px;
+            left: 0;  /* overridden in code*/
+            width: 100%;  /* overridden in code*/
+        }
+        span.aairpoint {
+            background-color: $midpurple;
+            position: absolute;
+            height: 11px; width: 11px;  /* width means radius means calculating offset to put its center at the indicated left; see code */
+            border-radius: 50%;
+            left: 0;  /* overridden in code*/
         }
     }
 }
