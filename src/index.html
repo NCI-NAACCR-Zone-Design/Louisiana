@@ -170,42 +170,14 @@
 
 
     <!--
-    section: data readouts
-    filter summary, incidence stats, cities and counties lists
-    overall AAIR and cases summary
+    section: filter summary
+    as buttons which can clear each filter
     -->
-    <div class="container" id="data-readouts">
+    <div class="container" id="filters-and-aairbarchart">
         <div class="row">
             <div class="col-md-6 col-lg-5">
                 <!-- the filter summary see performSearchShowFilters() -->
                 <div class="data-filters-summary" role="heading"></div>
-
-                <table class="table-sm">
-                    <thead>
-                        <tr>
-                            <th class="left"><span class="title" tabindex="0">Cancer Statistics</span></th>
-                            <th scope="col">Cases</th>
-                            <th scope="col">Age Adjusted Incidence Rate <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="aair"></i><br/>(95% LCI, 95% UCI) <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="confidenceinterval"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr data-region="cta">
-                            <th scope="row">Zone</th>
-                            <td class="center"><span data-region="cta" data-statistic="cases"></span></td>
-                            <td class="center"><span data-region="cta" data-statistic="aair"></span> <span data-region="cta" data-statistic="lciuci"></span></span></td>
-                        </tr>
-                        <tr data-region="state">
-                            <th scope="row">Statewide</th>
-                            <td class="center"><span data-region="state" data-statistic="cases"></span></td>
-                            <td class="center"><span data-region="state" data-statistic="aair"></span> <span data-region="state" data-statistic="lciuci"></span></span></td>
-                        </tr>
-                        <tr data-region="nation">
-                            <th scope="row">Nationwide</th>
-                            <td class="center"><span data-region="nation" data-statistic="cases"></span></td>
-                            <td class="center"><span data-region="nation" data-statistic="aair"></span> <span data-region="nation" data-statistic="lciuci"></span></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div><!--/left side-->
             <div class="col-md-6 col-lg-7" id="incidence-barchart-section">
                 <!-- incidence rate barchart by race and sex -->
@@ -218,6 +190,40 @@
                 <div class="incidence-barchart" id="incidence-barchart" aria-label="Chart of AAIR by race and sex for the selected filters"></div>
             </div><!--/right side-->
         </div>
+    </div><!--/container section-->
+
+
+    <!--
+    section: incidence readouts
+    overall AAIR and cases summary table, for CTA, Statewide and Nationwide
+    -->
+    <div class="container" id="incidence-readouts">
+        <table class="table-sm">
+            <thead>
+                <tr>
+                    <th class="left"><span class="title" tabindex="0">Cancer Statistics</span></th>
+                    <th scope="col">Cases</th>
+                    <th scope="col">Age Adjusted Incidence Rate <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="aair"></i><br/>(95% LCI, 95% UCI) <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="confidenceinterval"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-region="cta">
+                    <th scope="row">Zone</th>
+                    <td class="center"><span data-region="cta" data-statistic="cases"></span></td>
+                    <td class="center"><span data-region="cta" data-statistic="aair"></span> <span data-region="cta" data-statistic="lciuci"></span></span></td>
+                </tr>
+                <tr data-region="state">
+                    <th scope="row">Statewide</th>
+                    <td class="center"><span data-region="state" data-statistic="cases"></span></td>
+                    <td class="center"><span data-region="state" data-statistic="aair"></span> <span data-region="state" data-statistic="lciuci"></span></span></td>
+                </tr>
+                <tr data-region="nation">
+                    <th scope="row">Nationwide</th>
+                    <td class="center"><span data-region="nation" data-statistic="cases"></span></td>
+                    <td class="center"><span data-region="nation" data-statistic="aair"></span> <span data-region="nation" data-statistic="lciuci"></span></td>
+                </tr>
+            </tbody>
+        </table>
 
         <p class="small">
           To ensure confidentiality and stable statistical rates, cancer incidence rates are not reported if based on fewer than [REPLACE REPORTING MIN CASES] cancer cases. Distributions of selected population demographic factors are also provided for each zone. These data are from the decennial U.S. Census or the Census’s American Community Survey.
@@ -226,17 +232,16 @@
 
 
     <!--
-    section: data readouts
-    filter summary, incidence stats, cities and counties lists
-    demographics tables for the CTA and Statewide, broken up by type of demographic
+    section: demographic readouts
+    for the CTA and Statewide and Nationwide, broken up by type of demographic
+    see initDemographicTables() and DEMOGRAPHIC_TABLES where tables are laid out here in this DIV
+    see performSearchDemographics() where those tables' values are filled in
     -->
     <div class="container" id="demographic-tables">
         <span role="heading">
             <span class="title" tabindex="0" aria-label="Name of area reported"><span data-statistics="ctaname">Statewide</span> <span data-statistics="ctaid"></span></span>
             <br/>
         </span>
-
-        <!-- see initDemographicTables() and DEMOGRAPHIC_TABLES where tables are laid out here in this DIV, and performSearchDemographics() where those tables' values are filled in -->
     </div><!--/container section-->
 
 

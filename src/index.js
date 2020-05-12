@@ -935,7 +935,7 @@ function initTermsOfUse () {
     // not a real BS modal but a DIV with a contrived position and size, to make it cover up the map and data portions of the page
     // so we have to do our own resizing handler, to make it continue to cover up even if they change size
     $(window).resize(function () {
-        const height = $('#above-map').height() + $('#search-and-map').height() + $('#data-readouts').height() + $('#demographic-tables').height() + 25;  // extra for various padding, spacing, margins
+        const height = $('#above-map').height() + $('#search-and-map').height() + $('#filters-and-aairbarchart').height() + $('#demographic-tables').height() + 25;  // extra for various padding, spacing, margins
         const width = $('#search-and-map').width() + 15 + 15;  // add 2*15 to match .container padding
 
         $modal.css({
@@ -1329,32 +1329,32 @@ function performSearchIncidenceReadout (searchparams) {
 
     // show/hide the CTA columns (well, actually, each individual cell)
     if (searchparams.ctaid == 'Statewide') {
-        $('#data-readouts [data-region="cta"]').hide();
+        $('#incidence-readouts [data-region="cta"]').hide();
     }
     else {
-        $('#data-readouts [data-region="cta"]').show();
+        $('#incidence-readouts [data-region="cta"]').show();
     }
 
     // show/hide the Nationwide content based on the NATIONWIDE_INCIDENCE config setting
     if (NATIONWIDE_INCIDENCE) {
-        $('#data-readouts [data-region="nation"]').show();
+        $('#incidence-readouts [data-region="nation"]').show();
     }
     else {
-        $('#data-readouts [data-region="nation"]').hide();
+        $('#incidence-readouts [data-region="nation"]').hide();
     }
 
     // now fill in the blanks
-    $('#data-readouts span[data-region="cta"][data-statistic="cases"]').text(text_cases_cta);
-    $('#data-readouts span[data-region="cta"][data-statistic="aair"]').text(text_aair_cta);
-    $('#data-readouts span[data-region="cta"][data-statistic="lciuci"]').text(text_lciuci_cta);
+    $('#incidence-readouts span[data-region="cta"][data-statistic="cases"]').text(text_cases_cta);
+    $('#incidence-readouts span[data-region="cta"][data-statistic="aair"]').text(text_aair_cta);
+    $('#incidence-readouts span[data-region="cta"][data-statistic="lciuci"]').text(text_lciuci_cta);
 
-    $('#data-readouts span[data-region="state"][data-statistic="cases"]').text(text_cases_state);
-    $('#data-readouts span[data-region="state"][data-statistic="aair"]').text(text_aair_state);
-    $('#data-readouts span[data-region="state"][data-statistic="lciuci"]').text(text_lciuci_state);
+    $('#incidence-readouts span[data-region="state"][data-statistic="cases"]').text(text_cases_state);
+    $('#incidence-readouts span[data-region="state"][data-statistic="aair"]').text(text_aair_state);
+    $('#incidence-readouts span[data-region="state"][data-statistic="lciuci"]').text(text_lciuci_state);
 
-    $('#data-readouts span[data-region="nation"][data-statistic="cases"]').text(text_cases_nation);
-    $('#data-readouts span[data-region="nation"][data-statistic="aair"]').text(text_aair_nation);
-    $('#data-readouts span[data-region="nation"][data-statistic="lciuci"]').text(text_lciuci_nation);
+    $('#incidence-readouts span[data-region="nation"][data-statistic="cases"]').text(text_cases_nation);
+    $('#incidence-readouts span[data-region="nation"][data-statistic="aair"]').text(text_aair_nation);
+    $('#incidence-readouts span[data-region="nation"][data-statistic="lciuci"]').text(text_lciuci_nation);
 }
 
 

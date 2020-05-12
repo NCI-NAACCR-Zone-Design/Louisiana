@@ -1,0 +1,41 @@
+/*
+ * INCIDENCE RATE TABLE
+ */
+
+
+#incidence-readouts {
+    table {
+        width: 100%;
+
+        thead {
+            th {
+                font-size: 16px;
+                line-height: 16px;
+                text-align: center;
+            }
+        }
+
+        tbody {
+            td, th[scope] {  /* this table is weird: not striped, with white separation; tip: border-collapse applies to first+last too, throwing off pixel-perfect alignment to other stuff */
+                background-color: $lightpurple;
+                line-height: 20px;
+                font-size: 16px;
+                font-weight: 400;
+
+                border-bottom: 5px solid white;
+                &:first-child, &:nth-child(2) {
+                    border-right: 5px solid white;
+                }
+
+                &:last-child {
+                    color: $nearblack;
+                }
+            }
+
+            span[data-statistic="lciuci"] {  /* exception: subtext in a cell, with special colors */
+                color: $midgrey;
+                font-size: 16px;
+            }
+        }
+    }
+}
