@@ -389,8 +389,9 @@ function initTooltips () {
             animation: 'fade',
             animationDuration: 150,
             distance: 0,
-            maxWidth: 300,
-            side: [ 'right', 'bottom', 'top' ],
+            maxWidth: 400,
+            minWidth: 300,
+            side: [ 'right', 'left', 'bottom', 'top' ],
             contentCloning: true,
             interactive: true, // don't auto-dismiss on mouse activity inside, let user copy text, follow links, ...
             functionBefore: function (instance, helper) {  // close open ones before opening this one
