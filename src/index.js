@@ -1382,8 +1382,12 @@ function performSearchIncidenceReadout (searchparams) {
     const $candlechart_state = $('#incidence-readouts span.ucilcicandlechart[data-region="state"]');
     const $candlechart_nation = $('#incidence-readouts span.ucilcicandlechart[data-region="nation"]');
 
-    const minlci = (nation_lci && nation_uci) ? Math.min(cta_lci, state_lci, nation_lci) : Math.min(cta_lci, state_lci);
-    const maxuci = (nation_lci && nation_uci) ? Math.max(cta_uci, state_uci, nation_uci) : Math.max(cta_uci, state_uci);
+    let minlci = (nation_lci && nation_uci) ? Math.min(cta_lci, state_lci, nation_lci) : Math.min(cta_lci, state_lci);
+    let maxuci = (nation_lci && nation_uci) ? Math.max(cta_uci, state_uci, nation_uci) : Math.max(cta_uci, state_uci);
+    minlci -= 0.2 * (maxuci - minlci);  // pad both sides of the chart slightly
+    maxuci += 0.2 * (maxuci - minlci);  // so even very broad CIs have some breathing space
+    //minlci *= 0.8;  // an alternative padding mechanism of simply multiplying the LCI and UCI
+    //maxuci *= 1.2;  // but if course, this REALLY broadens the range a bit too much
 
     updateCandleChart($candlechart_cta, 'Selected Area', cta_aair, cta_lci, cta_uci, minlci, maxuci);
     updateCandleChart($candlechart_state, 'Statewide', state_aair, state_lci, state_uci, minlci, maxuci);
