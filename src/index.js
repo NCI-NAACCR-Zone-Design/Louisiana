@@ -1424,7 +1424,10 @@ function performSearchIncidenceBarChart (searchparams) {
             data: SEARCHOPTIONS_RACE.map(function (raceoption) {  // values in the series, corresponding to the barchart_categories = AAIR for each race option
                 if (! incidencedatarow) return 0;  // no data for this sex = return all-0s
                 const field = raceoption.value ? `${raceoption.value}_AAIR` : 'AAIR';  // AAIR=total overall incidence; X_AAIR=incidence rate for a given race
-                const value = incidencedatarow[field];
+
+                let value = incidencedatarow[field];
+                if (! value) value = 0;  // null becomes 0, for hackChartForNullValues()
+
                 return value;
             }),
         };
@@ -1438,7 +1441,7 @@ function performSearchIncidenceBarChart (searchparams) {
     // to achieve ideal height for the number of categories, without a lot of empty space for deployments with 2-3 races instead of 5-7
     // see also the groupPadding option which affects the spacing between categories
     const $barchartdiv = $('#incidence-barchart');
-    var chartheight = 20 + 15 + 15 + 50 * SEARCHOPTIONS_RACE.length;  // top legend + axis labels + credits + (categoryheight * numcategories)
+    var chartheight = 20 + 15 + 15 + 55 * SEARCHOPTIONS_RACE.length;  // top legend + axis labels + credits + (categoryheight * numcategories)
     $barchartdiv.css({
         height: `${chartheight}px`,
     });

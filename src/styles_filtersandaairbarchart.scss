@@ -42,7 +42,7 @@
     }
 
     #incidence-barchart {
-        height: 350px;
+        height: 350px;  /* overridden in XXX based on the options in SEARCHOPTIONS_RACE, to achieve ideal spacing and height */
         width: 100%;
         margin-top: 10px;  /* spacing from the title above */
 
