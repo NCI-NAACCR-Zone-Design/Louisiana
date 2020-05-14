@@ -1433,11 +1433,20 @@ function performSearchIncidenceBarChart (searchparams) {
     });
 
     // chart it!
+
+    // a special hack here, to adjust the barchart's DIV based on SEARCHOPTIONS_RACE
+    // to achieve ideal height for the number of categories, without a lot of empty space for deployments with 2-3 races instead of 5-7
+    // see also the groupPadding option which affects the spacing between categories
+    const $barchartdiv = $('#incidence-barchart');
+    var chartheight = 20 + 15 + 15 + 50 * SEARCHOPTIONS_RACE.length;  // top legend + axis labels + credits + (categoryheight * numcategories)
+    $barchartdiv.css({
+        height: `${chartheight}px`,
+    });
+
     // a special hack here to insert "data not calculated" text any place where data are 0
     // for this dataset, we know that 0 never happens and above we set nulls to be 0 for our purposes
     // we also have data labels so there will be a value label with the text 0 in it
     // the hack is to, after the chart draws, look for these labels that say "0" and replace their text
-
     const hackChartForNullValues = function () {
         $('#incidence-barchart g.highcharts-data-label tspan').each(function () {
             const $this = $(this);
@@ -1457,7 +1466,7 @@ function performSearchIncidenceBarChart (searchparams) {
         },
         plotOptions: {
             series: {
-                groupPadding: 0.15,
+                groupPadding: 0.1,
                 maxPointWidth: 12,
                 animation: {
                     duration: 0
