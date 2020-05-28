@@ -55,8 +55,8 @@
     </script>
 
     <!-- our own awesomesauce -->
-    <link rel="stylesheet" type="text/css" href="index.css?Wed_May_13_2020_21_52_03_GMT_0700__Pacific_Daylight_Time_" />
-    <script type="text/javascript" src="index.js?Wed_May_13_2020_21_52_03_GMT_0700__Pacific_Daylight_Time_"></script>
+    <link rel="stylesheet" type="text/css" href="index.css?Fri_May_22_2020_16_55_25_GMT_0700__Pacific_Daylight_Time_" />
+    <script type="text/javascript" src="index.js?Fri_May_22_2020_16_55_25_GMT_0700__Pacific_Daylight_Time_"></script>
 </head>
 <body>
 
@@ -434,6 +434,15 @@
                     <b>Age-Adjusted Incidence Rate (AAIR):</b> Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the [REPLACE STATE/REGISTRY] Cancer Maps, incidence rates are age-adjusted using the <a href="https://www.census.gov/census2000/states/us.html" target="_blank">U.S. 2000 Standard Population</a>.
                 </p>
                 <p>
+                    <b>% Below Poverty:</b> Percent of population below poverty level in the past 12 months.<br> 
+                    <span class="source">Sources:</span> 
+                </p>
+                <ul class="source">
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
+                <p>
                     <b>Confidence Interval:</b> A statistical measure of the precision of the observed incidence rate. The lower confidence interval (LCI) and upper confidence interval (UCI) provide a range within which the true rate is thought to be with 95% confidence. Rates based on larger numbers of cases are subject to less variation.
                 </p>
                 <p>
@@ -443,12 +452,26 @@
                     <b>Demographics:</b> Statistical data relating to the population and particular groups within it.
                 </p>
                 <p>
+                    <b>% Did Not Finish High School:</b> Percent of population with less than a high school graduate education.<br>
+                    <span class="source">Sources:</span> 
+                </p>
+                <ul class="source">
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
+                <p>
                     <b>Incidence:</b> The number of new cases of cancer diagnosed in the selected time period.
                 </p>
                 <p>
                     <b>% Population with income below poverty:</b> Percent of the population with income below the federal poverty level.<br>
-                    <span class="source">Source: US Census, 2010.</span>
+                    <span class="source">Sources:</span> 
                 </p>
+                <ul class="source">
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
                 <p>
                     <b>Race/Ethnicity:</b> [REPLACE/CONFIRM LIST] Race/ethnicity is categorized as: All races/ethnicities, Non-Hispanic (NH) White, NH Black, Asian/Pacific Islander, or Hispanic. "All races" includes all of the above, as well as other and unknown race/ethnicity and American Indian/Alaska Native. The latter two groups are not reported separately due to small numbers for many cancer sites. 
                 </p>
@@ -463,6 +486,24 @@
                 <p>
                     <b>Sex:</b> [REPLACE STATE/REGISTRY] Cancer Registry defines this field as the sex or gender of the cancer patient, and codes available are male, female, intersex, transsexual, and transgender (natal male, natal female, or not specified). However, categories beyond male and female are not consistently coded by medical reporting facilities, and population estimates for gender categories beyond male and female are not available. Thus, cancer incidence data are reported for only male and female sex at this time.
                 </p>
+                <p>
+                    <b>% With Bacherlors Degree:</b> Percent of population with a bachelor’s degree or higher.<br>
+                    <span class="source">Sources:</span> 
+                </p>
+                <ul class="source">
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
+                <p>
+                    <b>% Without Health Insurance:</b> Percent of population without health insurance.<br>
+                    <span class="source">Sources:</span> 
+                </p>
+                <ul class="source">
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
                 <!-- end of Definitions P items -->
             </div><!--/tab-pane -->
         </div><!--/tab-content-->
@@ -514,8 +555,51 @@
         </div>
         <div aria-hidden="true" data-tooltip="PctRural">
             Percent of residents who reside in blocks that are designated as rural.<br>
-            <span class="source">US Census, 2010.</span>
+            <span class="source">Source: US Census, 2010.</span>
         </div>
+        <div aria-hidden="true" data-tooltip="PctNoHealthIns">
+            Percent of population without health insurance.<br>
+            <span class="source">Sources: 
+                <ul>
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
+            </span>
+        </div>
+        <div aria-hidden="true" data-tooltip="PctBelowPov">
+            Percent of population below poverty level in the past 12 months.<br>
+            <span class="source">Sources: 
+                <ul>
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
+            </span>
+        </div>
+
+        <div aria-hidden="true" data-tooltip="PctEducBch">
+            Percent of population with a bachelor’s degree or higher. <br>
+            <span class="source">Sources: 
+                <ul>
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
+            </span>
+        </div>
+
+        <div aria-hidden="true" data-tooltip="PctEducLHS">
+            Percent of population with less than a high school graduate education.<br>
+            <span class="source">Sources: 
+                <ul>
+                    <li>1-year time period: American Community Survey, 2012-2016</li>
+                    <li>5-year time period: American Community Survey, 2012-2016</li>
+                    <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
+                </ul>
+            </span>
+        </div>
+
     </div>
 
     <!--

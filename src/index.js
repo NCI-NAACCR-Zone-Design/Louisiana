@@ -113,9 +113,10 @@ var DEMOGRAPHIC_TABLES = [
     {
         title: "Population & Income",
         rows: [
-            { field: 'TotalPop', label: "Population", format: 'integer', tooltip_id: undefined },
+            { field: 'TotalPop', label: "Total Population", format: 'integer', tooltip_id: undefined },
             { field: 'PctRural', label: "% Living in Rural Area", format: 'percent', tooltip_id: 'PctRural' },
-            { field: 'PctNoHealthIns', label: "% Without Health Insurance", format: 'percent', tooltip_id: undefined },
+            { field: 'PctNoHealthIns', label: "% Without Health Insurance", format: 'percent', tooltip_id: 'PctNoHealthIns' },
+            { field: 'PctBelowPov', label: "% Below Poverty", format: 'percent', tooltip_id: 'PctBelowPov' },
         ],
     },
     {
@@ -129,8 +130,8 @@ var DEMOGRAPHIC_TABLES = [
     {
         title: "Education",
         rows: [
-            { field: 'PctEducBch', label: "% With Bachelors Degree or Higher", format: 'percent', tooltip_id: undefined },
-            { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent', tooltip_id: undefined },
+            { field: 'PctEducBch', label: "% With Bachelors Degree or Higher", format: 'percent', tooltip_id: 'PctEducBch' },
+            { field: 'PctEducLHS', label: "% Did Not Finish High School", format: 'percent', tooltip_id: 'PctEducLHS' },
         ],
     },
 ];
