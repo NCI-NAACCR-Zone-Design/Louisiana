@@ -121,9 +121,9 @@ var DEMOGRAPHIC_TABLES = [
     {
         title: "Race & Ethnicity",
         rows: [
-            { field: 'PctMinority', label: "% Minority", format: 'percent', tooltip_id: 'PctRace' },
-            { field: 'PctHispanic', label: "% Hispanic", format: 'percent', tooltip_id: 'PctRace' },
-            { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', tooltip_id: 'PctRace' },
+            { field: 'PctMinority', label: "% Minority", format: 'percent', tooltip_id: 'PctMinority' },
+            { field: 'PctHispanic', label: "% Hispanic", format: 'percent', tooltip_id: 'PctHispanic' },
+            { field: 'PctBlackNH', label: "% Black (non-Hispanic)", format: 'percent', tooltip_id: 'PctBlackNH' },
         ],
     },
     {
