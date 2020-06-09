@@ -170,47 +170,16 @@
 
 
     <!--
-    section: data readouts
-    filter summary, incidence stats, cities and counties lists
-    overall AAIR and cases summary
+    section: filter summary
+    as buttons which can clear each filter
     -->
-    <div class="container" id="data-readouts">
+    <div class="container" id="filters-and-aairbarchart">
         <div class="row">
-            <div class="col-md-6 col-lg-5">
+            <div class="col-md-6 col-lg-4">
                 <!-- the filter summary see performSearchShowFilters() -->
                 <div class="data-filters-summary" role="heading"></div>
-
-                <table class="table-sm">
-                    <thead>
-                        <tr>
-                            <th class="left"><span class="title" tabindex="0">Cancer Statistics</span></th>
-                            <th data-region="cta">Zone</th>
-                            <th data-region="state">Statewide</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">Cases</th>
-                            <td class="center" data-region="cta"><span data-region="cta" data-statistic="cases"></span></td>
-                            <td class="center" data-region="state"><span data-region="state" data-statistic="cases"></span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Age Adjusted Incidence Rate <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="aair"></i><br/>(95% LCI, 95% UCI) <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="confidenceinterval"></i></th>
-                            <td class="center" data-region="cta">
-                                <span data-region="cta" data-statistic="aair"></span>
-                                <br/>
-                                <span data-region="cta" data-statistic="lciuci"></span>
-                            </td>
-                            <td class="center" data-region="state">
-                                <span data-region="state" data-statistic="aair"></span>
-                                <br/>
-                                <span data-region="state" data-statistic="lciuci"></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div><!--/left side-->
-            <div class="col-md-6 col-lg-7" id="incidence-barchart-section">
+            <div class="col-md-6 col-lg-8" id="incidence-barchart-section">
                 <!-- incidence rate barchart by race and sex -->
                 <span role="heading">
                     <span class="title" tabindex="0">Age Adjusted Incidence Rate</span>
@@ -266,17 +235,16 @@
 
 
     <!--
-    section: data readouts
-    filter summary, incidence stats, cities and counties lists
-    demographics tables for the CTA and Statewide, broken up by type of demographic
+    section: demographic readouts
+    for the CTA and Statewide and Nationwide, broken up by type of demographic
+    see initDemographicTables() and DEMOGRAPHIC_TABLES where tables are laid out here in this DIV
+    see performSearchDemographics() where those tables' values are filled in
     -->
     <div class="container" id="demographic-tables">
         <span role="heading">
             <span class="title" tabindex="0" aria-label="Name of area reported"><span data-statistics="ctaname">Statewide</span> <span data-statistics="ctaid"></span></span>
             <br/>
         </span>
-
-        <!-- see initDemographicTables() and DEMOGRAPHIC_TABLES where tables are laid out here in this DIV, and performSearchDemographics() where those tables' values are filled in -->
     </div><!--/container section-->
 
 
@@ -293,7 +261,7 @@
         <h2 class="title" role="header">Learn</h2>
 
         <ul class="nav nav-pills nav-justified">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#learn-about">About This Project</a></li>
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#learn-about">About</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-method">Methodology</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-faq">FAQs</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#learn-glossary">Definitions</a></li>
@@ -468,7 +436,6 @@
                     <span class="source">Sources:</span> 
                 </p>
                 <ul class="source">
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>
@@ -486,7 +453,6 @@
                     <span class="source">Sources:</span> 
                 </p>
                 <ul class="source">
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>
@@ -498,7 +464,6 @@
                     <span class="source">Source: US Census, 2010.</span>
                 </p>
                 <ul class="source">
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>
@@ -521,7 +486,6 @@
                     <span class="source">Sources:</span> 
                 </p>
                 <ul class="source">
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>
@@ -530,7 +494,6 @@
                     <span class="source">Sources:</span> 
                 </p>
                 <ul class="source">
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>
@@ -603,7 +566,6 @@
             Percent of population without health insurance.<br>
             <span class="source">Sources: 
                 <ul>
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>
@@ -613,7 +575,6 @@
             Percent of population below poverty level in the past 12 months.<br>
             <span class="source">Sources: 
                 <ul>
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>
@@ -624,7 +585,6 @@
             Percent of population with a bachelor’s degree or higher. <br>
             <span class="source">Sources: 
                 <ul>
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>
@@ -635,7 +595,6 @@
             Percent of population with less than a high school graduate education.<br>
             <span class="source">Sources: 
                 <ul>
-                    <li>1-year time period: American Community Survey, 2012-2016</li>
                     <li>5-year time period: American Community Survey, 2012-2016</li>
                     <li>10-year time period: American Community Survey, 2007-2011 and 2012-2016</li>
                 </ul>

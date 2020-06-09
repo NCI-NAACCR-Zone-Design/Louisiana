@@ -27,7 +27,7 @@ var MIN_ZOOM = 6;
 var MAX_ZOOM = 15;
 
 // for the geocoder: our Bing API key
-var BING_API_KEY = '';
+var BING_API_KEY = 'vvQdlzwrMOR0FuUe4xtmjBiJVcnjOJs28qLdCgD4zrUvZIx_Mvaeng';
 
 // URLs of our data files, storage for them in memory for filtering and querying, and raw copies for exporting
 var DATA_URL_CTAGEOM = 'static/data/cta.json';
@@ -208,7 +208,7 @@ var MAP_LAYERS = [
     },
     {
         id: 'counties',
-        label: "Counties",
+        label: "Parishes",
         layer: undefined,  // see initFixCountyOverlay() where we patch this in to become a L.GeoJSON layer, since that comes after startup promises but before initMap()
     },
     {
@@ -1229,7 +1229,7 @@ function performSearchPlaces (searchparams) {
     if (searchparams.ctaid == 'Statewide') return;
 
     // find the cities and counties here from our preared data
-    const counties = DATA_CTACOUNTY.filter(row => row.Zone == searchparams.ctaid).map(row => `${row.County} County`);
+    const counties = DATA_CTACOUNTY.filter(row => row.Zone == searchparams.ctaid).map(row => `${row.County} Parish`);
     const cities = DATA_CTACITY.filter(row => row.Zone == searchparams.ctaid).map(row => row.City);
     counties.sort();
     cities.sort();
@@ -1242,7 +1242,7 @@ function performSearchPlaces (searchparams) {
 
     if (counties.length) {
         const text = counties.join(', ');
-        const $block = $('<div></div>').html(`<b>Counties: </b>`).appendTo($box);
+        const $block = $('<div></div>').html(`<b>Parishes: </b>`).appendTo($box);
         $('<span></span>').text(text).appendTo($block);
     }
     if (cities.length) {
