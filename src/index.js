@@ -1629,7 +1629,8 @@ function performSearchMap (searchparams) {
         const score = ctascores[ctaid];
 
         let style;
-        if (score == null || score == undefined) {
+        if (score == null || score == undefined || score == '') {
+			console.log('No Data!!');
             style = Object.assign({}, CHOROPLETH_STYLE_NODATA);
         }
         else {
