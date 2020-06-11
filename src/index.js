@@ -27,7 +27,7 @@ var MIN_ZOOM = 6;
 var MAX_ZOOM = 15;
 
 // for the geocoder: our Bing API key
-var BING_API_KEY = 'vvQdlzwrMOR0FuUe4xtmjBiJVcnjOJs28qLdCgD4zrUvZIx_Mvaeng';
+var BING_API_KEY = 'AgvLS1nq1-vvQdlzwrMOR0FuUe4xtmjBiJVcnjOJs28qLdCgD4zrUvZIx_Mvaeng';
 
 // URLs of our data files, storage for them in memory for filtering and querying, and raw copies for exporting
 var DATA_URL_CTAGEOM = 'static/data/cta.json';
