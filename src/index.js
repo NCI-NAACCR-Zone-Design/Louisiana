@@ -1819,7 +1819,7 @@ function formatFieldValue (value, format) {
             break;
         case 'percent':
             formatted = parseFloat(value);
-            formatted = ! isNaN(formatted) ? (formatted < 1 ? '&lt; 1' : formatted.toFixed(1)) : '-';
+            formatted = ! isNaN(formatted) ? (formatted < 1 ? '< 1' : formatted.toFixed(1)) : '-';
             formatted = `${formatted} %`;
             break;
         case 'money':
