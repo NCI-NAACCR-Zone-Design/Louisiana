@@ -30,7 +30,7 @@ L.Control.ChoroplethLegend = L.Control.extend({
 
         // head text
         this.headtext = L.DomUtil.create('div', 'leaflet-choroplethlegend-headtext', this.content_expanded);
-        this.headtext.innerHTML = 'Color By';
+        this.headtext.innerHTML = 'Color By <i class="fa fa-info-circle" aria-hidden="true" data-tooltip="colorscale"></i>';
 
         // the choropleth-by-what-field selector and its optioons, driven by this.options.selectoptions
         this.selector = L.DomUtil.create('select', 'leaflet-choroplethlegend-select', this.content_expanded);

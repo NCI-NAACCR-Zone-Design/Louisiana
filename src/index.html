@@ -76,7 +76,7 @@
 	<br><br><br>
     <div class="container noprint">
         <p class="intro-text">
-            Louisiana Cancer Maps is an interactive mapping tool of cancer data for 71 cancer reporting zones in Louisiana. You can map cancer incidence for the 20 most common invasive cancer sites and filter by sex and race/ethnicity. <a class="btn btn-sm btn-alternate" id="visitlearn" href="#learn-text">Visit Learn</a> to review methodology, data sources, and more.
+            Louisiana Cancer Maps is an interactive mapping tool of cancer data for 71 cancer reporting zones in Louisiana. You can map cancer incidence for the 20 most common invasive cancer sites and filter by sex and race/ethnicity. <a class="btn btn-sm btn-alternate" id="visitlearn" href="#learn-text">Visit Learn</a> to understand the purpose of this tool and how the tool can be applied, as well as the zone design methodology, data sources, and FAQs.
         </p>
     </div><!--/container section-->
 
@@ -418,6 +418,16 @@
                         <br/><br/>
                         Neighborhood measures were developed using data from census tracts. We used the tract-level count data from the Census and American Community Survey to calculate measures for each zone.
                     </div>
+					
+					<h2 class="usa-accordion__heading">
+                        <button class="usa-accordion__button" aria-expanded="false" aria-controls="faq14">
+                            How are the map color scales determined?
+                        </button>
+                    </h2>
+                    <div id="faq14" class="usa-accordion__content" hidden="">
+						A map of the state shows the distribution of selected variables by quintiles. Each zone is colored according to the rate per 100,000 population (Incidence), count (Cases and Population), or percentage (% minority, % Hispanic, % Black, and % Living in Rural Area) of the chosen variable and how the zone compares relative to the other zones. If the zone falls in the lowest quintile (i.e., lowest 20% relative to all the zones), it is shown in the lightest color. With each increase in quintile, the associated color of the zone becomes darker. For Incidence or Cases, if a zone is shown in grey, then there were not enough cancer cases (less than 16) in the selected zone based on the selected criteria (e.g., time period, cancer site/type, sex, race/ethnicity) to report the incidence rate or case count. The numbers underneath the color scale show the range (i.e., the lowest and highest values) of the statistic for the chosen variable across the zones.
+                    </div>
+					
                 </div><!--/accordion-->
             </div><!--/tab-pane -->
             <div class="tab-pane container" id="learn-glossary">
@@ -488,7 +498,7 @@
                     This mapping tool is based on <a href="https://www.californiahealthmaps.org/">California Health Maps</a>, which is led by the Greater Bay Area Cancer Registry, University of California, San Francisco. Originally developed by <a href="https://www.greeninfo.org/" target="_blank">GreenInfo Network</a>,
                 </div>
                 <div class="col-sm-5 right small">
-                    Louisiana Cancer Maps, based on November 2018 submission data (2012-2016 and 2007-2016): <a href="https://sph.lsuhsc.edu/louisiana-tumor-registry">Louisiana Tumor Registry</a>, August 2020.
+                    Louisiana Cancer Maps, based on November 2018 submission data (2012-2016 and 2007-2016): <a href="https://sph.lsuhsc.edu/louisiana-tumor-registry">Louisiana Tumor Registry</a>, August 2020.<br>Contact the Louisiana Tumor Registry: <a href="mailto:LTR-info@lsuhsc.edu">LTR-info@lsuhsc.edu</a>
                 </div>
             </div>
         </div>
@@ -519,6 +529,9 @@
         </div>
 		<div aria-hidden="true" data-tooltip="aairchart">
             <b>Age-Adjusted Incidence Rate (AAIR):</b> Age-adjustment is a statistical method that allows comparisons of incidence rates to be made between populations with different age distributions. This is important since the incidence of most cancers increases with age. An age-adjusted cancer incidence (or death) rate is defined as the number of new cancers (or deaths) per 100,000 population that would occur in a certain period of time if that population had a ‘standard’ age distribution. In the Louisiana Cancer Maps, incidence rates are age-adjusted using the <a target="_blank" rel="nofollow" href="https://www.census.gov/census2000/states/us.html">U.S. 2000 Standard Population</a>.
+        </div>
+		<div aria-hidden="true" data-tooltip="colorscale">
+            For a detailed explanation on the color scale, please visit the FAQs section below.
         </div>
         <div aria-hidden="true" data-tooltip="PctMinority">
             Percent of residents whose race/ethnicity is not non-Hispanic White.<br>
